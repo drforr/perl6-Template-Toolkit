@@ -236,7 +236,7 @@ __TEST__
 yes
 __EXPECTED__
 
-#`( ALL-CASE enabled
+#`( ANY-CASE enabled
 	ok $tt._parse( q:to[__PARSED__], True ), 'any case';
 IF yes and true
 __PARSED__
@@ -280,7 +280,7 @@ __TEST__
 yes
 __EXPECTED__
 
-#`( ALL-CASE
+#`( ANY-CASE
 	ok $tt._parse( q:to[__PARSED__], True ), 'any case';
 IF yes AND ten && true and twenty && 30
 __PARSED__
@@ -388,7 +388,7 @@ __TEST__
 yes
 __EXPECTED__
 
-#`( ANY-CASE
+#`( ANY-CASE enabled
 	ok $tt._parse( q:to[__PARSED__], True ), 'any case';
 IF not false and not sad
 __PARSED__
@@ -448,7 +448,7 @@ __TEST__
 Normality is restored.  Anything you can't cope with is your own problem.
 __EXPECTED__
 
-#`( ANY-CASE
+#`( ANY-CASE enabled
 	ok $tt._parse( q:to[__PARSED__] );
 IF ten >= twenty or false
 __PARSED__
@@ -946,7 +946,6 @@ __EXPECTED__
 a = FOREACH b = [1 2 3]
 __PARSED__
 
-#`(
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% a = FOREACH b = [1 2 3] %]
 [% b %],
@@ -960,7 +959,6 @@ __EXPECTED__
 out = PROCESS userinfo FOREACH user = [ 'tom', 'dick', 'larry' ]
 __PARSED__
 
-#`(
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% BLOCK userinfo %]
 name: [% user +%]
@@ -975,13 +973,17 @@ name: dick
 name: larry
 __EXPECTED__
 
+	# XXX 'include' should not be interpreted here.
 	ok $tt._parse( q:to[__PARSED__] );
 include = a
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
-for = b
-__PARSED__
+# Doesn't (shouldn't) break any previous
+# 
+#	# XXX 'for' should not be interpreted here.
+#	ok $tt._parse( q:to[__PARSED__] );
+#for = b
+#__PARSED__
 
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% include = a %]
@@ -993,9 +995,11 @@ i(alpha)
 f(bravo)
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
-IF a AND b
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#IF a AND b
+#__PARSED__
 
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% IF a AND b %]
@@ -1007,9 +1011,11 @@ __TEST__
 good
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
-IF a and b
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#IF a and b
+#__PARSED__
 
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 # 'and', 'or' and 'not' can ALWAYS be expressed in lower case, regardless
@@ -1023,10 +1029,6 @@ __TEST__
 good
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
-include = a
-__PARSED__
-
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% include = a %]
 [% include %]
@@ -1034,9 +1036,11 @@ __TEST__
 alpha
 __EXPECTED__
 
+#`( ANY-CASE
 	ok $tt._parse( q:to[__PARSED__] );
 include foo bar='baz'
 __PARSED__
+)
 
 	# USE ANYCASE
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
@@ -1058,9 +1062,11 @@ __EXPECTED__
 USE cgi = CGI('id=abw&name=Andy+Wardley'); global.cgi = cgi
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
-global.cgi.param('name')
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#global.cgi.param('name')
+#__PARSED__
 
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% USE cgi = CGI('id=abw&name=Andy+Wardley'); global.cgi = cgi -%]
@@ -1092,6 +1098,7 @@ __EXPECTED__
 FOREACH key = global.cgi.param().sort
 __PARSED__
 
+#`(
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% FOREACH key = global.cgi.param().sort -%]
    * [% key %] : [% global.cgi.param(key) %]

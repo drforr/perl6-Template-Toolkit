@@ -12,7 +12,7 @@ grammar Template::Toolkit::Grammar
 
 	token Function-Name
 		{
-		| <[ a .. z ]> <[ a .. z 0 .. 9 _ ]>*
+		| <[ a .. z A .. Z ]> <[ a .. z A .. Z 0 .. 9 _ ]>*
 		}
 	token Path
 		{
@@ -26,7 +26,7 @@ grammar Template::Toolkit::Grammar
 
 	token Argument
 		{
-		| '"\\n"'
+		| <String>
 		| 'd' '=' 'e'
 		| 'f' '=' 'g'
 		| <[ a .. z ]>+
@@ -34,7 +34,7 @@ grammar Template::Toolkit::Grammar
 
 	rule Function-Call
 		{
-		| <Function-Name>  '(' <Argument>+ %% [ ',' | \s+ ] ')'
+		| <Function-Name>  '(' <Argument>* %% [ ',' | \s+ ] ')'
 		| <Function-Name>
 		| <Positive-Integer>
 		}
@@ -86,6 +86,7 @@ grammar Template::Toolkit::Grammar
 
 	rule Expression
 		{
+		| '[' <String>+ %% ',' ']'
 		| '[' <Integer>+ %% \s+ ']'
 		| 'BLOCK'
 		| 'INCLUDE' <Path-Name> <Named-Parameter>*
@@ -116,31 +117,40 @@ grammar Template::Toolkit::Grammar
 		| <Value> '=' <Expression>
 		}
 
+	rule Postfix-Directive
+		{
+		| <Value> '=' 'PROCESS' <Path-Name> 'FOREACH' <Value> '=' <Expression>
+		| <Value> '=' 'FOREACH' <Value> '=' <Expression>
+		| <Value> '=' 'IF' <Expression>
+		| <Value> '=' <Expression>
+		| <String> 'UNLESS' <Expression>
+		}
+
 	rule Directive
 		{
-		#| 'SET'? <Value> '=' <Expression>
 		| 'BLOCK' <Named-Parameter>+
 		| 'BLOCK' <Block-Name> <Named-Parameter>*
 		| 'CATCH'
+		| 'FOREACH' <Value> '=' <Expression>
 		| 'GET'? <Expression>
 		| 'GET'? <String>
-		| <Value> '=' 'IF' <Expression>
 		| 'IF' <Expression>
 		| 'INCLUDE' <Path-Name> <Named-Parameter>*
 		| 'ELSE'
 		| 'ELSIF' <Expression>
 		| 'END'
-		| <Value> '=' 'FOREACH' <Value> '=' <Expression>
 		| 'PROCESS' <Path-Name>
-		| <String> 'UNLESS' <Expression>
 		| 'UNLESS' <Expression>
+		| 'USE' <Plugin-Name> '=' <Function-Call>
 		| 'USE' <Plugin-Name>
 		| 'TRY'
+		| <Value> '=' <Expression>
+		| <Postfix-Directive>
 		}
 
 	rule TOP
 		{
-		| <Named-Parameter>+ # XXX Should be a directive
+		| <Postfix-Directive>+ # XXX Needs more thought.
 		| <Directive>+ %% [ ';' | \n ]
 		}
 	}
