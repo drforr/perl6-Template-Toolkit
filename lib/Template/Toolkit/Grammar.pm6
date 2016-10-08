@@ -40,7 +40,8 @@ grammar Template::Toolkit::Grammar
 
 	rule Function-Call
 		{
-		| <Function-Name>  [ '(' <Argument>* %% [ ',' | \s+ ] ')' ]?
+		| <Function-Name>
+		  [ '(' [ <Argument>* %% [ ',' | \s+ ] | <Argument>* ] ')' ]?
 		| <Positive-Integer>
 		}
 
@@ -120,21 +121,14 @@ grammar Template::Toolkit::Grammar
 		| <Value> '=' <Expression>
 		}
 
-	rule Postfix-Directive
-		{
-		| <Value> '=' 'BLOCK'
-		| <Value> '=' 'PROCESS' <Path-Name> 'FOREACH' <Value> '=' <Expression>
-		| <Value> '=' 'FOREACH' <Value> '=' <Expression>
-		| <Value> '=' 'IF' <Expression>
-		| <Value> '=' 'INCLUDE' <Path-Name> <Named-Parameter>*
-#		| <Value> '=' <Expression>
-		| <String> 'UNLESS' <Expression>
-		}
-
 	rule Directive
 		{
-		| 'BLOCK' <Named-Parameter>+
-		| 'BLOCK' <Block-Name> <Named-Parameter>*
+		(
+		| 'BLOCK'
+			(
+			| <Named-Parameter>+
+			| <Block-Name> <Named-Parameter>*
+			)
 		| 'CATCH'
 		| 'FOREACH' <Value> '=' <Expression>
 		| 'GET'? <Expression>
@@ -144,18 +138,29 @@ grammar Template::Toolkit::Grammar
 		| 'ELSIF' <Expression>
 		| 'END'
 		| 'PROCESS' <Path-Name>
-#		| 'SET'? <Value> '=' <Expression>
-		| 'UNLESS' <Expression>
-		| 'USE' <Plugin-Name> '=' <Function-Call>
-		| 'USE' <Plugin-Name>
+		| 'SET' <Value> '=' <Expression>
 		| 'TRY'
-		| <Postfix-Directive>
-		| 'SET'? <Value> '=' <Expression>
+		| 'UNLESS' <Expression>
+		| 'USE'
+			(
+			| <Plugin-Name> '=' <Function-Call>
+			| <Function-Call>
+			| <Plugin-Name>
+			)
+		| <String> 'UNLESS' <Expression>
+		| <Value> '='
+			(
+			| 'IF' <Expression>
+			| 'INCLUDE' <Path-Name> <Named-Parameter>*
+			| 'PROCESS' <Path-Name>
+			| <Expression>
+			)
+		)
+		';'?
 		}
 
 	rule TOP
 		{
-		| <Postfix-Directive>+ # XXX Needs more thought.
-		| <Directive>+ %% [ ';' | \n ]
+		| <Directive>+
 		}
 	}

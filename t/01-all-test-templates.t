@@ -1107,7 +1107,6 @@ __TEST__
    * name : Andy Wardley
 __EXPECTED__
 
-#`(
 	ok $tt._parse( q:to[__PARSED__] );
 FOREACH x = global.cgi.checkbox_group(
 		name     => 'words'
@@ -1131,10 +1130,13 @@ __EXPECTED__
 USE cgi('item=foo&items=one&items=two')
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
-cgi.params.item.join(', ')
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#cgi.params.item.join(', ')
+#__PARSED__
 
+#`(
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% USE cgi('item=foo&items=one&items=two') -%]
 item: [% cgi.params.item %]
