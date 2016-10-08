@@ -9,6 +9,11 @@ grammar Template::Toolkit::Grammar
 		{
 		| '-'? <Positive-Integer>
 		}
+	token Floating-Point
+		{
+		| '-'? <[ 1 .. 9 ]> <[ 0 .. 9 ]>* '.' <[ 0 .. 9 ]>+
+		| '-'? '0' '.' <[ 0 .. 9 ]>+
+		}
 
 	token Function-Name
 		{
@@ -36,6 +41,7 @@ grammar Template::Toolkit::Grammar
 		| 'd' '=' 'e'
 		| 'f' '=' 'g'
 		| <[ a .. z ]>+
+		| <Integer>
 		}
 
 	rule Function-Call
@@ -49,6 +55,7 @@ grammar Template::Toolkit::Grammar
 		{
 		| <Function-Call>+ %% '.'
 		| <String>
+		| <Floating-Point>
 		| <Integer>
 		}
 
@@ -137,6 +144,7 @@ grammar Template::Toolkit::Grammar
 		| 'ELSE'
 		| 'ELSIF' <Expression>
 		| 'END'
+		| 'META' <Pair>+
 		| 'PROCESS' <Path-Name>
 		| 'SET' <Value> '=' <Expression>
 		| 'TRY'
