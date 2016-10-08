@@ -1098,7 +1098,6 @@ __EXPECTED__
 FOREACH key = global.cgi.param().sort
 __PARSED__
 
-#`(
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% FOREACH key = global.cgi.param().sort -%]
    * [% key %] : [% global.cgi.param(key) %]
@@ -1108,10 +1107,11 @@ __TEST__
    * name : Andy Wardley
 __EXPECTED__
 
+#`(
 	ok $tt._parse( q:to[__PARSED__] );
 FOREACH x = global.cgi.checkbox_group(
 		name     => 'words'
-                values   => [ 'eenie', 'meenie', 'minie', 'moe' ]
+               values   => [ 'eenie', 'meenie', 'minie', 'moe' ]
 	        defaults => [ 'eenie', 'meenie' ] )
 __PARSED__
 

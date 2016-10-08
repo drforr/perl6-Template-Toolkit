@@ -24,8 +24,14 @@ grammar Template::Toolkit::Grammar
 		| <Path>+ %% '/'
 		}
 
+	rule Pair
+		{
+		| <[ a .. z ]>+ '=>' <Expression>
+		}
+
 	token Argument
 		{
+		| <Pair>
 		| <String>
 		| 'd' '=' 'e'
 		| 'f' '=' 'g'
@@ -34,8 +40,7 @@ grammar Template::Toolkit::Grammar
 
 	rule Function-Call
 		{
-		| <Function-Name>  '(' <Argument>* %% [ ',' | \s+ ] ')'
-		| <Function-Name>
+		| <Function-Name>  [ '(' <Argument>* %% [ ',' | \s+ ] ')' ]?
 		| <Positive-Integer>
 		}
 
@@ -88,8 +93,6 @@ grammar Template::Toolkit::Grammar
 		{
 		| '[' <String>+ %% ',' ']'
 		| '[' <Integer>+ %% \s+ ']'
-		| 'BLOCK'
-		| 'INCLUDE' <Path-Name> <Named-Parameter>*
 		| <Value> <Times> <Value> <Plus> <Value> <Times> <Value>
 		| <Value> <Or> <Value> <Or> <Value> <Or> <Value>
 		| <Value> <Plus> <Value> <Times> <Value>
@@ -119,10 +122,12 @@ grammar Template::Toolkit::Grammar
 
 	rule Postfix-Directive
 		{
+		| <Value> '=' 'BLOCK'
 		| <Value> '=' 'PROCESS' <Path-Name> 'FOREACH' <Value> '=' <Expression>
 		| <Value> '=' 'FOREACH' <Value> '=' <Expression>
 		| <Value> '=' 'IF' <Expression>
-		| <Value> '=' <Expression>
+		| <Value> '=' 'INCLUDE' <Path-Name> <Named-Parameter>*
+#		| <Value> '=' <Expression>
 		| <String> 'UNLESS' <Expression>
 		}
 
@@ -133,19 +138,19 @@ grammar Template::Toolkit::Grammar
 		| 'CATCH'
 		| 'FOREACH' <Value> '=' <Expression>
 		| 'GET'? <Expression>
-		| 'GET'? <String>
 		| 'IF' <Expression>
 		| 'INCLUDE' <Path-Name> <Named-Parameter>*
 		| 'ELSE'
 		| 'ELSIF' <Expression>
 		| 'END'
 		| 'PROCESS' <Path-Name>
+#		| 'SET'? <Value> '=' <Expression>
 		| 'UNLESS' <Expression>
 		| 'USE' <Plugin-Name> '=' <Function-Call>
 		| 'USE' <Plugin-Name>
 		| 'TRY'
-		| <Value> '=' <Expression>
 		| <Postfix-Directive>
+		| 'SET'? <Value> '=' <Expression>
 		}
 
 	rule TOP
