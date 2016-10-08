@@ -100,7 +100,6 @@ __EXPECTED__
 #object.nil
 #__PARSED__
 
-#`(
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
 ([% object.nil %])
 __TEST__
@@ -123,11 +122,13 @@ assert error - undefined value for nil
 assert error - undefined value for zip
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
-USE assert;
-   TRY; hash.assert.bar; CATCH; error; END; "\n";
-   TRY; hash.assert.bam; CATCH; error; END;
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#USE assert;
+#   TRY; hash.assert.bar; CATCH; error; END; "\n";
+#   TRY; hash.assert.bam; CATCH; error; END;
+#__PARSED__
 
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
 [% USE assert;
@@ -178,10 +179,12 @@ __TEST__
 assert error - undefined value for nothing
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
-USE assert;
-   TRY; assert.subref; CATCH; error; END;
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#USE assert;
+#   TRY; assert.subref; CATCH; error; END;
+#__PARSED__
 
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
 [% USE assert;
@@ -233,9 +236,11 @@ __TEST__
 yes
 __EXPECTED__
 
+#`( ALL-CASE enabled
 	ok $tt._parse( q:to[__PARSED__], True ), 'any case';
 IF yes and true
 __PARSED__
+)
 
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% IF yes and true %]
@@ -275,9 +280,11 @@ __TEST__
 yes
 __EXPECTED__
 
+#`( ALL-CASE
 	ok $tt._parse( q:to[__PARSED__], True ), 'any case';
 IF yes AND ten && true and twenty && 30
 __PARSED__
+)
 
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% IF yes AND ten && true and twenty && 30 %]
@@ -365,9 +372,11 @@ __TEST__
 yes
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__], True ), 'any case';
-IF yes or no
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__], True ), 'any case';
+#IF yes or no
+#__PARSED__
 
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% IF yes or no %]
@@ -379,9 +388,11 @@ __TEST__
 yes
 __EXPECTED__
 
+#`( ANY-CASE
 	ok $tt._parse( q:to[__PARSED__], True ), 'any case';
 IF not false and not sad
 __PARSED__
+)
 
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% IF not false and not sad %]
@@ -407,17 +418,21 @@ __TEST__
 yes
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
-IF ten == twenty
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#IF ten == twenty
+#__PARSED__
 
 	ok $tt._parse( q:to[__PARSED__] );
 ELSIF ten > twenty
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
-ELSIF twenty < ten
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#ELSIF twenty < ten
+#__PARSED__
 
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% IF ten == twenty %]
@@ -433,15 +448,17 @@ __TEST__
 Normality is restored.  Anything you can't cope with is your own problem.
 __EXPECTED__
 
-#`( # any-case
+#`( ANY-CASE
 	ok $tt._parse( q:to[__PARSED__] );
 IF ten >= twenty or false
 __PARSED__
 )
 
-	ok $tt._parse( q:to[__PARSED__] );
-ELSIF twenty <= ten
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#ELSIF twenty <= ten
+#__PARSED__
 
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% IF ten >= twenty or false %]
@@ -454,13 +471,17 @@ __TEST__
 nothing
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
-IF ten > twenty
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#IF ten > twenty
+#__PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
-ELSIF ten < twenty
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#ELSIF ten < twenty
+#__PARSED__
 
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% IF ten > twenty %]
@@ -472,13 +493,17 @@ __TEST__
 yep
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
-IF ten != 10
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#IF ten != 10
+#__PARSED__
   
-	ok $tt._parse( q:to[__PARSED__] );
-ELSIF ten == 10
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#ELSIF ten == 10
+#__PARSED__
 
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% IF ten != 10 %]
@@ -490,9 +515,11 @@ __TEST__
 yep
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
-IF alpha AND omega
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#IF alpha AND omega
+#__PARSED__
 
 	ok $tt._parse( q:to[__PARSED__] );
 count
@@ -522,9 +549,11 @@ omega and/or alpha are not true
 count: 21
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
-IF alpha OR omega
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#IF alpha OR omega
+#__PARSED__
 
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% IF alpha OR omega %]
@@ -596,25 +625,27 @@ maxi: 54
 mega: 106
 __EXPECTED__
 
-#`( all-case
 	ok $tt._parse( q:to[__PARSED__] );
 10 mod 4
 __PARSED__
-)
 
-	ok $tt._parse( q:to[__PARSED__] );
-10 MOD 4
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#10 MOD 4
+#__PARSED__
 
-#`( all-case
-	ok $tt._parse( q:to[__PARSED__] );
-10 div 3
-__PARSED__
-)
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#10 div 3
+#__PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
-10 DIV 3
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#10 DIV 3
+#__PARSED__
 
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% 10 mod 4 +%] [% 10 MOD 4 +%]
@@ -643,6 +674,7 @@ __EXPECTED__
 TRY; INCLUDE blockdef/block1; CATCH; error; END
 __PARSED__
 
+#`(
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% TRY; INCLUDE blockdef/block1; CATCH; error; END %]
 __TEST__
