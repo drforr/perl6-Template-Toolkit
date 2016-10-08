@@ -12,14 +12,15 @@ grammar Template::Toolkit::Grammar
 
 	token Function-Name
 		{
-		| <[ a .. z ]>+
+		| <[ a .. z ]> <[ a .. z 0 .. 9 _ ]>*
 		}
 	token Path
 		{
-		| <[ a .. z ]> <[ a .. z 0 .. 9 ]>*
+		| <[ a .. z ]> <[ a .. z 0 .. 9 _ ]>*
 		}
 	token Path-Name
 		{
+		| <String>
 		| <Path>+ %% '/'
 		}
 
@@ -101,17 +102,31 @@ grammar Template::Toolkit::Grammar
 		| <Value>
 		}
 
+	token Block-Name
+		{
+		| [ <[ a .. z ]> <[ a .. z 0 .. 9 _ ]>* ]+ %% ':'
+		| <String>
+		}
+
+	rule Named-Parameter
+		{
+		| <Value> '=' <Expression>
+		}
+
 	rule Directive
 		{
 		#| 'SET'? <Value> '=' <Expression>
+		| 'BLOCK' <Named-Parameter>+
+		| 'BLOCK' <Block-Name> <Named-Parameter>*
 		| 'CATCH'
 		| 'GET'? <Expression>
 		| 'GET'? <String>
 		| 'IF' <Expression>
-		| 'INCLUDE' <Path-Name>
+		| 'INCLUDE' <Path-Name> <Named-Parameter>*
 		| 'ELSE'
 		| 'ELSIF' <Expression>
 		| 'END'
+		| 'PROCESS' <Path-Name>
 		| <String> 'UNLESS' <Expression>
 		| 'UNLESS' <Expression>
 		| 'USE' <Plugin-Name>
@@ -120,7 +135,7 @@ grammar Template::Toolkit::Grammar
 
 	rule TOP
 		{
-		| ( <Value> '=' <Expression> )+
+		| <Named-Parameter>+ # XXX Should be a directive
 		| <Directive>+ %% [ ';' | \n ]
 		}
 	}

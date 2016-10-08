@@ -674,16 +674,17 @@ __EXPECTED__
 TRY; INCLUDE blockdef/block1; CATCH; error; END
 __PARSED__
 
-#`(
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% TRY; INCLUDE blockdef/block1; CATCH; error; END %]
 __TEST__
 file error - blockdef/block1: not found
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
-INCLUDE blockdef/block1
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#INCLUDE blockdef/block1
+#__PARSED__
 
 	# use on
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
@@ -702,9 +703,11 @@ __TEST__
 This is block 1, defined in blockdef, a is amazing
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
-TRY; INCLUDE blockdef/none; CATCH; error; END
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#TRY; INCLUDE blockdef/none; CATCH; error; END
+#__PARSED__
 
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
 [% TRY; INCLUDE blockdef/none; CATCH; error; END %]
@@ -726,13 +729,17 @@ __EXPECTED__
 BLOCK one
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
-INCLUDE one
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#INCLUDE one
+#__PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
-INCLUDE one/two b='brilliant'
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#INCLUDE one/two b='brilliant'
+#__PARSED__
 
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% BLOCK one -%]
@@ -800,10 +807,12 @@ this is block a
 this is block b
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
-INCLUDE header 
-   title = 'A New Beginning'
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#INCLUDE header 
+#   title = 'A New Beginning'
+#__PARSED__
 
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% INCLUDE header 
@@ -867,6 +876,7 @@ __EXPECTED__
 BLOCK eval_perl=0 tags="star"
 __PARSED__
 
+#`(
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% BLOCK eval_perl=0 tags="star" -%]
 This is an anonymous block
