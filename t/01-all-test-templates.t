@@ -876,7 +876,6 @@ __EXPECTED__
 BLOCK eval_perl=0 tags="star"
 __PARSED__
 
-#`(
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% BLOCK eval_perl=0 tags="star" -%]
 This is an anonymous block
@@ -889,9 +888,11 @@ __EXPECTED__
 b = INCLUDE foo
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
-c = INCLUDE foo a = 'ammended'
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#c = INCLUDE foo a = 'ammended'
+#__PARSED__
 
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% BLOCK foo %]
@@ -910,9 +911,11 @@ __EXPECTED__
 d = BLOCK
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
-a = 'charlie'
-__PARSED__
+# Doesn't break any previous
+# 
+#	ok $tt._parse( q:to[__PARSED__] );
+#a = 'charlie'
+#__PARSED__
 
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% d = BLOCK %]
@@ -943,6 +946,7 @@ __EXPECTED__
 a = FOREACH b = [1 2 3]
 __PARSED__
 
+#`(
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% a = FOREACH b = [1 2 3] %]
 [% b %],
@@ -956,6 +960,7 @@ __EXPECTED__
 out = PROCESS userinfo FOREACH user = [ 'tom', 'dick', 'larry' ]
 __PARSED__
 
+#`(
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% BLOCK userinfo %]
 name: [% user +%]

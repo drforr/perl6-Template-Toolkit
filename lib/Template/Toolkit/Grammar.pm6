@@ -86,6 +86,9 @@ grammar Template::Toolkit::Grammar
 
 	rule Expression
 		{
+		| '[' <Integer>+ %% \s+ ']'
+		| 'BLOCK'
+		| 'INCLUDE' <Path-Name> <Named-Parameter>*
 		| <Value> <Times> <Value> <Plus> <Value> <Times> <Value>
 		| <Value> <Or> <Value> <Or> <Value> <Or> <Value>
 		| <Value> <Plus> <Value> <Times> <Value>
@@ -121,11 +124,13 @@ grammar Template::Toolkit::Grammar
 		| 'CATCH'
 		| 'GET'? <Expression>
 		| 'GET'? <String>
+		| <Value> '=' 'IF' <Expression>
 		| 'IF' <Expression>
 		| 'INCLUDE' <Path-Name> <Named-Parameter>*
 		| 'ELSE'
 		| 'ELSIF' <Expression>
 		| 'END'
+		| <Value> '=' 'FOREACH' <Value> '=' <Expression>
 		| 'PROCESS' <Path-Name>
 		| <String> 'UNLESS' <Expression>
 		| 'UNLESS' <Expression>
