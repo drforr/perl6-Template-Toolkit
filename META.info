@@ -1,0 +1,14 @@
+{
+	"name"         : "Template::Toolkit",
+	"version"      : "*",
+	"description"  : "Template Toolkit drop-in replacement",
+	"test-depends" : [
+		"Test"
+	],
+	"provides"     : {
+		"Template::Toolkit::Grammar" : "lib/Template/Toolkit/Grammar.pm6"
+		"Template::Toolkit::Actions" : "lib/Template/Toolkit/Actions.pm6"
+		"Template::Toolkit"          : "lib/Template/Toolkit.pm6"
+	},
+	"source-url"   : "git://github.com/drforr/perl6-Template-Toolkit.git"
+}

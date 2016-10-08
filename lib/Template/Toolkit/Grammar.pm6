@@ -1,0 +1,3 @@
+grammar Template::Toolkit::Grammar
+	{
+	}
