@@ -15,6 +15,8 @@ is $tt._process(
 	Q{hello [% hello(2) %] world},
 	{ hello => sub { @_[0] == 2 and return 'gentle' } }
 ), Q{hello gentle world};
+#is $tt._process( Q{hello [% hello.cruel %] world}, { hello => { cruel => 'loving' } } ), Q{hello loving world};
+is $tt._process( Q{[% IF 1 %]hello[% END %]} ), Q{hello};
 
 #`(
 

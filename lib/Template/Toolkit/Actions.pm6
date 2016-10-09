@@ -1,56 +1,42 @@
 class Template::Toolkit::Actions {
 	has $.stashref;
 
-	my class Stash-Value {
-		has $.value-to-fetch;
-		method compile( $stashref ) {
-			sub ( $stashref ) { $stashref.{$.value-to-fetch} // '' }
-		}
-	}
+	use Template::Toolkit::Internals::Stash-Value;
+	use Template::Toolkit::Internals::Stash-Method;
+	use Template::Toolkit::Internals::Conditional;
+	use Template::Toolkit::Internals::Constant;
+	use Template::Toolkit::Internals::End;
 
-	my class Stash-Method {
-		has $.method-to-call;
-		has @.argument;
-		method compile( $stashref ) {
-			sub ( $stashref ) { $stashref.{$.method-to-call}.(|@.argument) // '' }
-		}
-	}
-
+	# Arguments might have to return to being objects due to stashrefs.
 	method Argument( $/ ) {
 		make +$/<Integer> ||
-			~$/<String>[0] # Note we don't wrap argument values.
+			~$/<String>[0]
 	}
 
 	method Function-Call( $/ ) {
 		if $/<Argument> {
-			make Stash-Method.new(
+			make Template::Toolkit::Internals::Stash-Method.new(
 				:method-to-call( ~$/<Function-Name> ),
 				:argument( $/<Argument>>>.ast )
 			)
 		}
 		else {
-			make Stash-Value.new(
+			make Template::Toolkit::Internals::Stash-Value.new(
 				:value-to-fetch( ~$/<Function-Name> )
 			)
 		}
 	}
 
-	my class Constant {
-		has $.value-to-fetch;
-		method compile( $stashref ) {
-			sub ( $stashref ) { $.value-to-fetch }
-		}
-	}
-
-#	method Positive-Integer( $/ ) {
-#	}
-
 	method Integer( $/ ) {
-		make Constant.new( :value-to-fetch( +$/ ) )
+		make Template::Toolkit::Internals::Constant.new(
+			:value-to-fetch( +$/ )
+		)
 	}
 
 	method String( $/ ) {
-		make Constant.new( :value-to-fetch( ~$/[0] ) )
+		make Template::Toolkit::Internals::Constant.new(
+			:value-to-fetch( ~$/[0] )
+		)
 	}
 
 	method Value( $/ ) {
@@ -78,8 +64,24 @@ class Template::Toolkit::Actions {
 		make $/<Expression>.ast
 	}
 
+	method Directive-End( $/ ) {
+		make Template::Toolkit::Internals::End.new
+	}
+
+	# IF normally won't have values immediately after it.
+	# We'll account for those later in testing.
+	#
+	method Directive-If( $/ ) {
+		make Template::Toolkit::Internals::Conditional.new(
+			:if-condition( $/<Expression>[0]<Value> )
+		)
+	}
+
 	method Directive( $/ ) {
-		make $/<Directive-Get>.ast
+		make
+			$/<Directive-Get>.ast ||
+			$/<Directive-If>.ast ||
+			$/<Directive-End>.ast
 	}
 
 	# The constant chaining of 'make...' seems redundant to me.

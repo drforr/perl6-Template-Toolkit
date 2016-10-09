@@ -143,6 +143,12 @@ class Template::Toolkit {
 	use Template::Toolkit::Grammar;
 	use Template::Toolkit::Actions;
 
+	use Template::Toolkit::Internals::Stash-Value;
+	use Template::Toolkit::Internals::Stash-Method;
+	use Template::Toolkit::Internals::Conditional;
+	use Template::Toolkit::Internals::Constant;
+	use Template::Toolkit::Internals::End;
+
 	# The original Perl 5 configuration options
 	#
 	#`(
@@ -510,6 +516,38 @@ class Template::Toolkit {
 		@element
 	}
 
+	# We need a precompilation step for several reasons.
+	#
+	method _precompile( Element @element ) {
+		my @result;
+		my @stack;
+		for @element -> $element {
+			given $element {
+				when $_ ~~ Template::Toolkit::Internals::Conditional {
+					if $_.is-content {
+						@result.append( $element )
+					}
+					else {
+						@stack.push( $element )
+					}
+				}
+				when ( $_ ~~ Template::Toolkit::Internals::Constant ) and @stack and ( @stack[*-1] ~~ Template::Toolkit::Internals::Conditional ) {
+					@stack[*-1].is-content =
+						$element.value-to-fetch
+				}
+				when $_ ~~ Template::Toolkit::Internals::End {
+					@result.append(
+						@stack.pop
+					)
+				}
+				default {
+					@result.append( $element )
+				}
+			}
+		}
+		@result
+	}
+
 	# For example:
 	#	Text nodes return a closure that just returns the text.
 	#	INSERT tags return a closure that opens the file,
@@ -551,7 +589,8 @@ class Template::Toolkit {
 	#
 	method _process( Str $string, $stashref = { } ) {
 		my Element @element = self._split( $string );
-		my Routine @routine = self._compile( @element, $stashref );
+		my Element @precompiled = self._precompile( @element );
+		my Routine @routine = self._compile( @precompiled, $stashref );
 		my $result;
 		for @routine {
 			$result ~= $_.( $stashref ) # Yes, $stashref is mutable
