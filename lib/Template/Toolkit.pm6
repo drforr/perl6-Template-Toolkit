@@ -372,6 +372,8 @@ class Template::Toolkit {
 		has Str $.content;
 	};
 
+	# XXX They really only do one thing, maybe should be subtypes.
+	#
 	my class Element::Tag {
 		also is Element;
 	};
@@ -479,7 +481,7 @@ class Template::Toolkit {
 		}
 	}
 
-	method split( Str $string ) {
+	method _split( Str $string ) {
 		my Element @element;
 		my $inset = 0;
 		while $inset < $string.chars {
@@ -497,7 +499,7 @@ class Template::Toolkit {
 	# For example:
 	#	Text nodes return a closure that just returns the text.
 	#	INSERT tags return a closure that opens the file, slurps and returns the contents.
-	method compile( Element @element, $stashref ) {
+	method _compile( Element @element, $stashref ) {
 		my Routine @routine;
 		for @element -> $element {
 			given $element {
@@ -507,16 +509,17 @@ class Template::Toolkit {
 					)
 				}
 				when Element::Tag {
-say "*** compiling '$element.content()'";
+#say "*** compiling '$element.content()'";
 					my $g = Template::Toolkit::Grammar.new;
-					my $a = Template::Toolkit::Actions.new(
-						 :stashref( $stashref )
-					);
+#					my $a = Template::Toolkit::Actions.new(
+#						 :stashref( $stashref )
+#					);
 					my $ast = $g.parse(
-						$element.content,
-						:actions( $a )
+						$element.content
+#						$element.content,
+#						:actions( $a )
 					).ast;
-say $ast.perl;
+#say $ast.perl;
 					@routine.append(
 						sub ( $stashref ) { $stashref.<XXX>++; "DUMMY" }
 					)
@@ -532,8 +535,8 @@ say $ast.perl;
 	# Crude pipelining.
 	#
 	method _process( Str $string, $stashref = { } ) {
-		my Element @element = self.split( $string );
-		my Routine @routine = self.compile( @element, $stashref );
+		my Element @element = self._split( $string );
+		my Routine @routine = self._compile( @element, $stashref );
 		my $result;
 		for @routine {
 			$result ~= $_.( $stashref ) # Yes, $stashref is mutable

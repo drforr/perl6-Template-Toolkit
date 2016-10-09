@@ -143,10 +143,8 @@ class Template::Toolkit::Actions {
 	}
 
 	method Directive( $/ ) {
-print $/.gist;
-		if $/<GET> {
-die "YAY! FOUND A GET!"
-		}
+		make $/<Directive-Get>.ast ||
+say ~$/[0].<Directive-Get><Expression>;
 	}
 
 	method TOP( $/ ) {

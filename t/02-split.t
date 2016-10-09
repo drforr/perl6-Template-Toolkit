@@ -1,8 +1,9 @@
 use Test;
-use Template::Toolkit::Grammar;
 use Template::Toolkit;
 
 plan 1;
+
+#`(
 
 my $g = Template::Toolkit::Grammar.new;
 
@@ -244,11 +245,9 @@ __TEST__
 yes
 __EXPECTED__
 
-#`( ANY-CASE enabled
 	ok $tt._parse( q:to[__PARSED__], True ), 'any case';
 IF yes and true
 __PARSED__
-)
 
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% IF yes and true %]
@@ -288,11 +287,9 @@ __TEST__
 yes
 __EXPECTED__
 
-#`( ANY-CASE
 	ok $tt._parse( q:to[__PARSED__], True ), 'any case';
 IF yes AND ten && true and twenty && 30
 __PARSED__
-)
 
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% IF yes AND ten && true and twenty && 30 %]
@@ -396,11 +393,9 @@ __TEST__
 yes
 __EXPECTED__
 
-#`( ANY-CASE enabled
 	ok $tt._parse( q:to[__PARSED__], True ), 'any case';
 IF not false and not sad
 __PARSED__
-)
 
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
 [% IF not false and not sad %]
@@ -456,11 +451,9 @@ __TEST__
 Normality is restored.  Anything you can't cope with is your own problem.
 __EXPECTED__
 
-#`( ANY-CASE enabled
 	ok $tt._parse( q:to[__PARSED__] );
 IF ten >= twenty or false
 __PARSED__
-)
 
 # Doesn't break any previous
 # 
@@ -1044,11 +1037,9 @@ __TEST__
 alpha
 __EXPECTED__
 
-#`( ANY-CASE
 	ok $tt._parse( q:to[__PARSED__] );
 include foo bar='baz'
 __PARSED__
-)
 
 	# USE ANYCASE
 	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
@@ -1483,7 +1474,6 @@ __TEST__
 back, text
 __EXPECTED__
 
-#`(
 	ok $tt._parse( q:to[__PARSED__] );
 const.col.keys.sort.join(const.joint)
 __PARSED__
@@ -12899,5 +12889,5 @@ __TEST__
   the harmonic frequency, taking
   care to correct the phase difference.
 __EXPECTED__
-)
 }, Q{all-tests};
+)

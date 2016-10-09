@@ -97,10 +97,14 @@ grammar Template::Toolkit::Grammar
 	token Times { '*' | '/' | 'DIV' | 'div' }
 	token Modulo { '%' | 'MOD' | 'mod' }
 
-	rule Expression
+	rule Array
 		{
 		| '[' <String>+ %% ',' ']'
 		| '[' <Integer>+ %% \s+ ']'
+		}
+
+	rule Expression
+		{
 		| <Value> <Times> <Value> <Plus> <Value> <Times> <Value>
 		| <Value> <Or> <Value> <Or> <Value> <Or> <Value>
 		| <Value> <Plus> <Value> <Times> <Value>
@@ -115,6 +119,7 @@ grammar Template::Toolkit::Grammar
 		| <Value> <Modulo> <Value>
 		| <Not> <Value>
 		| <Value>
+		| <Array>
 		}
 
 	token Block-Name
@@ -128,42 +133,77 @@ grammar Template::Toolkit::Grammar
 		| <Value> '=' <Expression>
 		}
 
-	rule Directive
+	# Broken out for easier Action coding.
+	# Specifically, I don't need to create aliases and switch on
+	# whether 'BLOCK' was found as the first match.
+	#
+	rule Directive-Block
 		{
-		(
 		| 'BLOCK'
 			(
 			| <Named-Parameter>+
 			| <Block-Name> <Named-Parameter>*
 			)
-		| 'CATCH'
-		| 'FOREACH' <Value> '=' <Expression>
-		| 'GET'? <Expression>
+		}
+	rule Directive-Catch { 'CATCH' }
+	rule Directive-Get { 'GET'? <Expression> }
+	rule Directive-Foreach { 'FOREACH' <Value> '=' <Expression> }
+	rule Directive-If
+		{
 		| 'IF' <Expression>
+		| <Value> '=' 'IF' <Expression>
+		}
+	rule Directive-Include
+		{
 		| 'INCLUDE' <Path-Name> <Named-Parameter>*
-		| 'ELSE'
-		| 'ELSIF' <Expression>
-		| 'END'
-		| 'META' <Pair>+
+		| <Value> '=' 'INCLUDE' <Path-Name> <Named-Parameter>*
+		}
+	rule Directive-Else { 'ELSE' }
+	rule Directive-Elsif { 'ELSIF' <Expression> }
+	rule Directive-End { 'END' }
+	rule Directive-Meta { 'META' <Pair>+ }
+	rule Directive-Process
+		{
 		| 'PROCESS' <Path-Name>
-		| 'SET' <Value> '=' <Expression>
-		| 'TRY'
+		| <Value> '=' 'PROCESS' <Path-Name>
+		}
+	rule Directive-Set { 'SET' <Value> '=' <Expression> } # Hrm.
+	rule Directive-Try { 'TRY' }
+	rule Directive-Unless
+		{
 		| 'UNLESS' <Expression>
+		| <String> 'UNLESS' <Expression>
+		}
+	rule Directive-Use
+		{
 		| 'USE'
 			(
 			| <Plugin-Name> '=' <Function-Call>
 			| <Function-Call>
 			| <Plugin-Name>
 			)
-		| <String> 'UNLESS' <Expression>
-		| <Value> '='
+		}
+
+	rule Directive
+		{
 			(
-			| 'IF' <Expression>
-			| 'INCLUDE' <Path-Name> <Named-Parameter>*
-			| 'PROCESS' <Path-Name>
-			| <Expression>
+			| <Directive-Block>
+			| <Directive-Catch>
+			| <Directive-Foreach>
+			| <Directive-Get>
+			| <Directive-If>
+			| <Directive-Include>
+			| <Directive-Else>
+			| <Directive-Elsif>
+			| <Directive-End>
+			| <Directive-Meta>
+			| <Directive-Process>
+			| <Directive-Set>
+			| <Directive-Try>
+			| <Directive-Unless>
+			| <Directive-Use>
+			| <Value> '=' <Expression>
 			)
-		)
 		';'?
 		}
 
