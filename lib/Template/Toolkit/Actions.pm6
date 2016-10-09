@@ -100,26 +100,71 @@ class Template::Toolkit::Actions {
 	}
 )
 
-	my class Directive::Get {
+	my class Stash-Value {
+		has $.value-to-fetch;
+		method compile( $stashref ) {
+			sub ( $stashref ) { $stashref.{$.value-to-fetch} // '' }
+		}
+	}
+
+	method Function-Call( $/ ) {
+		make Stash-Value.new( :value-to-fetch( ~$/<Function-Name> ) )
+	}
+
+	my class Constant {
 		has $.value-to-fetch;
 		method compile( $stashref ) {
 			sub ( $stashref ) { $.value-to-fetch }
 		}
 	}
 
+#	method Positive-Integer( $/ ) {
+#	}
+
+	method Integer( $/ ) {
+		make Constant.new( :value-to-fetch( +$/ ) )
+	}
+
+	method String( $/ ) {
+		make Constant.new( :value-to-fetch( ~$/[0] ) )
+	}
+
+	method Value( $/ ) {
+		make
+			$/<Integer>.ast ||
+			$/<String>.ast ||
+			$/<Function-Call>[0].ast
+	}
+
+# From the output of $/.gist, it is *not* obvious that I have to use an
+# array accessor to get to the Nth value
+#
+#｢-6｣
+# Directive-Get => ｢-6｣
+#  Expression => ｢-6｣
+#   Value => ｢-6｣
+#    Integer => ｢-6｣
+#     Positive-Integer => ｢6｣
+
+	method Expression( $/ ) {
+say $/.gist;
+		make $/<Value>[0].ast
+	}
+
 	method Directive-Get( $/ ) {
-		make Directive::Get.new(
-			:value-to-fetch( ~$/<Expression> )
-		)
+say $/.gist;
+		make $/<Expression>.ast
 	}
 
 	method Directive( $/ ) {
-#say ~$/.gist;
+say $/.gist;
 		make $/<Directive-Get>.ast
 	}
 
+	# The constant chaining of 'make...' seems redundant to me.
 	method TOP( $/ ) {
-#say "Compiling with stashref of {$.stashref.perl}";
-		make $/<Directive>>>.ast
+say $/.gist;
+say $/<Directive>[0].ast.perl;
+		make $/<Directive>[0].ast
 	}
 }

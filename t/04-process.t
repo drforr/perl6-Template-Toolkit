@@ -9,7 +9,9 @@ is $tt._process( Q{6} ), Q{6};
 is $tt._process( Q{-6} ), Q{-6};
 is $tt._process( Q{Hello world!} ), Q{Hello world!};
 is $tt._process( Q{[%-6%]} ), Q{-6};
-#is $tt._process( Q{[%7%]} ), Q{7};
+is $tt._process( Q{[% "hello world" %]} ), Q{hello world};
+is $tt._process( Q{[% hello %]} ), Q{};
+is $tt._process( Q{[% hello %]}, { hello => 'world' } ), Q{world};
 
 #`(
 
@@ -12891,3 +12893,4 @@ __TEST__
 __EXPECTED__
 }, Q{all-tests};
 )
+done-testing;

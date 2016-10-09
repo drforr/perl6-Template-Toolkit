@@ -63,10 +63,11 @@ grammar Template::Toolkit::Grammar
 		{
 		| <[ a .. z ]>+
 		}
+	# The () are needed to let the actions easily capture the text.
 	token String
 		{
-		| \" [ <-[ " \\ ]> | '\\' . ]* \"
-		| \' [ <-[ ' \\ ]> | '\\' . ]* \'
+		| \" ( [ <-[ " \\ ]> | '\\' . ]* ) \"
+		| \' ( [ <-[ ' \\ ]> | '\\' . ]* ) \'
 		}
 
 	# In TT, AND and && are the same precedence and meaning.
