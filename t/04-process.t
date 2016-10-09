@@ -1,8 +1,6 @@
 use Test;
 use Template::Toolkit;
 
-plan 1;
-
 my $tt = Template::Toolkit.new;
 
 is $tt._process( Q{6} ), Q{6};
@@ -12,6 +10,11 @@ is $tt._process( Q{[%-6%]} ), Q{-6};
 is $tt._process( Q{[% "hello world" %]} ), Q{hello world};
 is $tt._process( Q{[% hello %]} ), Q{};
 is $tt._process( Q{[% hello %]}, { hello => 'world' } ), Q{world};
+is $tt._process( Q{hello [% hello %] world}, { hello => 'cruel' } ), Q{hello cruel world};
+is $tt._process(
+	Q{hello [% hello(2) %] world},
+	{ hello => sub { @_[0] == 2 and return 'gentle' } }
+), Q{hello gentle world};
 
 #`(
 

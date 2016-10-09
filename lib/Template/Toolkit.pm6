@@ -518,7 +518,6 @@ class Template::Toolkit {
 	method _compile( Element @element, $stashref ) {
 		my $g = Template::Toolkit::Grammar.new;
 		my $a = Template::Toolkit::Actions.new;
-say @element.perl;
 		my Routine @routine;
 		for @element -> $element {
 			given $element {
@@ -566,17 +565,12 @@ say @element.perl;
 		my $template = $filename.IO.slurp;
 
 		my $res = self._process( $template, $stashref );
-		$res
-#say @element.perl;
 	
-#`(
 		# If the chosen output is an IO object (the default, STDOUT)
 		# then just print to it.
 		#
 		if $!output ~~ IO {
-			$!output.print(
-				self._process( $template, $stashref )
-			)
+			$!output.print( $res )
 		}
 
 		# If it's a string, then assume it's a file that we want to
@@ -584,34 +578,27 @@ say @element.perl;
 		#
 		elsif $!output.Str {
 			my $fh = $!output.IO.open( :w );
-			$fh.print(
-				self._process( $template, $stashref )
-			)
+			$fh.print( $res )
 		}
 
 		# It *could* be a reference to a string. If so, dereference it
 		# and assign to the string.
 		#
 		elsif $!output ~~ Capture {
-			$( $!output ) = 
-				self._process( $template, $stashref )
+			$( $!output ) =  $res
 		}
 
 		# It could be a reference to an array. If so, push onto the
 		# end of the array.
 		#
 		elsif $!output ~~ Array {
-			$!output.push(
-				self._process( $template, $stashref )
-			)
+			$!output.push( $res )
 		}
 
 		# Otherwise, assume it's an object that has a .print method,
 		#
 		elsif $!output.^can( 'print' ) {
-			$!output.print(
-				self._process( $template, $stashref )
-			)
+			$!output.print( $res )
 		}
 
 		# Otherwise, no idea what to do.
@@ -619,6 +606,5 @@ say @element.perl;
 		else {
 			die Q{Couldn't identify OUTPUT};
 		}
-)
 	}
 }
