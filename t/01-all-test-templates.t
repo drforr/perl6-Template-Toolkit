@@ -1,7 +1,10 @@
 use Test;
+use Template::Toolkit::Grammar;
 use Template::Toolkit;
 
 plan 1;
+
+my $g = Template::Toolkit::Grammar.new;
 
 my $tt = Template::Toolkit.new;
 
@@ -13,8 +16,13 @@ sub is-valid( $test, $expected ) {
 	ok 1;
 }
 
+ok $g.parse( q:to[__PARSED__] ), 'single constant';
+1
+__PARSED__
+
 subtest {
-	ok $tt._parse( q:to[__PARSED__] );
+	#ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 args(a b c)
 __PARSED__
 

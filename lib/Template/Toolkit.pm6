@@ -14,9 +14,11 @@ Template::Toolkit - A drop-in replacement for Perl 5's TT library
 
     # Use the old Perl5-style hashref.
     #
-    $tt.process5( 'slurp-me.tt', { session => { name => 'Joe Bloggs' } } );
+    $tt.process( 'slurp-me.tt', { session => { name => 'Joe Bloggs' } } );
 
     # Or the modern Perl6 inline arguments.
+    #
+    $tt.process( 'slurp-me.tt', :session( :name('Joe Bloggs') ) );
 
 =end SYNOPSIS
 
@@ -139,6 +141,7 @@ Given a filename, prints out the .tt file populated with the given stash referen
 
 class Template::Toolkit {
 	use Template::Toolkit::Grammar;
+	use Template::Toolkit::Actions;
 
 	# The original Perl 5 configuration options
 	#
@@ -199,8 +202,12 @@ class Template::Toolkit {
 	has $.GRAMMAR;
 	)
 
+	constant TAG-START = '[%';
+	constant TAG-END = '%]';
+	constant TAG-OUTLINE = '%%';
+
 	my %tag-styles =
-		template => ['[%', '%]' ],	# There's also a 'template1'
+		template => [ TAG-START, TAG-END ],	# There's also a 'template1'
 					# which has [% %] and %% %%.
 		metatext => ['%%', '%%' ],
 		star => ['[*', '*]' ],
@@ -213,15 +220,16 @@ class Template::Toolkit {
 
 	has Str $!encoding = Q{utf8};	# ENCODING
 	has %!tags =
-		:start( Q{[%} ),	# START_TAG
-		:end( Q{%]} ),		# END_TAG
-		:outline( Q{%%} );	# OUTLINE_TAG
+		:start( TAG-START ),		# START_TAG
+		:end( TAG-END ),		# END_TAG
+		:outline( TAG-OUTLINE );	# OUTLINE_TAG
 	has Bool $!use-outlines = False;
+	has Bool $!use-scalar = False;	# INTERPOLATE
+
 	has %!chomp =
 		pre => none,		# PRE_CHOMP
 		post => none;		# POST_CHOMP
 	has Bool $!trim = False;	# TRIM
-	has Bool $!interpolate = False;	# INTERPOLATE
 	has Bool $!any-case = False;	# ANYCASE
 
 	has Str $!delimiter = ':';	# DELIMITER
@@ -285,16 +293,22 @@ class Template::Toolkit {
 
 	submethod BUILD( *%args ) {
 		$!encoding = %args<ENCODING> if %args<ENCODING>;
-		%!tags<start> = %args<START_TAG> if %args<START_TAG>;
-		%!tags<end> = %args<END_TAG> if %args<END_TAG>;
-		%!tags<outline> = %args<OUTLINE_TAG> if %args<OUTLINE_TAG>;
+
+		%!tags<start> = %args<START_TAG> // TAG-START;
+		%!tags<end> = %args<END_TAG> // TAG-END;
+		%!tags<outline> = %args<OUTLINE_TAG> // TAG-OUTLINE;
+
 		$!use-outlines = True if
 			%args<TAG_STYLE> and %args<TAG_STYLE> eq 'outline';
-		%!chomp<pre> = %args<PRE_CHOMP> if %args<PRE_CHOMP>;
-		%!chomp<post> = %args<POST_CHOMP> if %args<POST_CHOMP>;
-		$!trim = True if %args<TRIM> and %args<TRIM> != 0;
-		$!interpolate = True if
+
+		%!chomp<pre> = %args<PRE_CHOMP> // none;
+		%!chomp<post> = %args<POST_CHOMP> // none;
+		$!trim = True if
+			%args<TRIM> and %args<TRIM> != 0;
+
+		$!use-scalar = True if
 			%args<INTERPOLATE> and %args<INTERPOLATE> != 0;
+
 		$!any-case = True if
 			%args<ANYCASE> and %args<ANYCASE> != 0;
 		$!delimiter = %args<DELIMITER> if %args<DELIMITER>;
@@ -353,11 +367,189 @@ class Template::Toolkit {
 		my $*ANY-CASE = $any-case;
 		Template::Toolkit::Grammar.parse( $str )
 	}
+
+	my class Element {
+		has Str $.content;
+	};
+
+	my class Element::Tag {
+		also is Element;
+	};
+
+	my class Element::Text {
+		also is Element;
+	};
+
+	method next-element( Str $string ) {
+		return '' unless $string.defined;
+
+		my $tag-start = %!tags.<start>;
+		my $tag-end = %!tags.<end>;
+		my $tag-outline = %!tags.<outline>;
+
+		my regex scalar-name {
+			<[ a .. z A .. Z ]> <[ a .. z A.. Z 0 .. 9 _ ]>*
+		};
+		my regex scalar-variable {
+			\$
+			(
+			|	'{' <scalar-name>+ %% '.' '}'
+			|	<scalar-name>
+			)
+		};
+		my $loc-start = $string.index( $tag-start );
+		my $loc-outline = $string.index( $tag-outline );
+		my $loc-scalar = $string.index( '$' );
+		my $inset = $string.chars;
+
+		my @check =
+			$string.chars;
+
+		@check.append( $loc-start ) if $loc-start.defined;
+		@check.append( $loc-outline ) if
+			$!use-outlines and $loc-outline.defined;
+		@check.append( $loc-scalar ) if
+			$!use-scalar and $loc-scalar.defined;
+		$inset = min( @check );
+
+		if 0 < $inset <= $string.chars {
+			Element::Text.new(
+				:content(
+					$string.substr(
+						0, $inset
+					)
+				)
+			)
+		}
+		else {
+			# [% "tag %]" %] is illegal.
+			# [%# "tag %]" %] is a commented tag, and '" %]' is the
+			# next tag in sequence.
+			# [% # "tag %]" %] acts the same.
+			# [%] is not a valid tag.
+			if $loc-start.defined and $loc-start == 0 {
+				my $loc-end = $string.index( $tag-end );
+				if $loc-end.defined and $loc-end > $tag-start.chars {
+					my $content = 
+						$string.substr(
+							$tag-start.chars,
+							$loc-end - $tag-start.chars
+						);
+					$content ~~ s{ ^ \s+ } = '';
+					$content ~~ s{ \s+ $ } = '';
+					Element::Tag.new( :content( $content ) )
+				}
+				elsif $loc-end.defined {
+					die "Tag '$tag-start' overlaps '$tag-end'... or something"
+				}
+				else {
+					Element::Text.new( :content( $string ) )
+				}
+			}
+			elsif $!use-outlines and
+				($loc-outline.defined and $loc-outline == 0) {
+				my $loc-end = $string.index( "\n" );
+				if $loc-end.defined and $loc-end > $tag-outline.chars {
+					my $content = 
+						$string.substr(
+							$tag-outline.chars,
+							$loc-end - $tag-outline.chars
+						);
+					$content ~~ s{ ^ \s+ } = '';
+					Element::Tag.new( :content( $content ) )
+				}
+				elsif $loc-end.defined { # Can't happen?
+					die "Can't happen, tag start is '$tag-outline' and has a newline inside '$tag-outline'"
+				}
+				else {
+				}
+			}
+			elsif $!use-scalar and
+				($loc-scalar.defined and $loc-scalar == 0) {
+				$string ~~ m{ ^ <scalar-variable> };
+				Element::Tag.new(
+					:content(
+						$/<scalar-variable>.Str
+					)
+				)
+			}
+			else {
+				die "Shouldn't get here!"
+			}
+		}
+	}
+
+	method split( Str $string ) {
+		my Element @element;
+		my $inset = 0;
+		while $inset < $string.chars {
+			my $remainder = $string.substr( $inset );
+			my $next-element = self.next-element( $remainder );
+
+			$inset += $next-element.content.chars;
+			@element.append(
+				$next-element
+			)
+		}
+		@element
+	}
+
+	# For example:
+	#	Text nodes return a closure that just returns the text.
+	#	INSERT tags return a closure that opens the file, slurps and returns the contents.
+	method compile( Element @element, $stashref ) {
+		my Routine @routine;
+		for @element -> $element {
+			given $element {
+				when Element::Text {
+					@routine.append(
+						sub ( $stashref ) { $element.content }
+					)
+				}
+				when Element::Tag {
+say "*** compiling '$element.content()'";
+					my $g = Template::Toolkit::Grammar.new;
+					my $a = Template::Toolkit::Actions.new(
+						 :stashref( $stashref )
+					);
+					my $ast = $g.parse(
+						$element.content,
+						:actions( $a )
+					).ast;
+say $ast.perl;
+					@routine.append(
+						sub ( $stashref ) { $stashref.<XXX>++; "DUMMY" }
+					)
+				}
+				default {
+					die "Shouldn't happen!"
+				}
+			}
+		}
+		@routine
+	}
+
+	# Crude pipelining.
+	#
+	method _process( Str $string, $stashref = { } ) {
+		my Element @element = self.split( $string );
+		my Routine @routine = self.compile( @element, $stashref );
+		my $result;
+		for @routine {
+			$result ~= $_.( $stashref ) # Yes, $stashref is mutable
+		}
+		$result
+	}
+
 	method process( Str $filename, $stashref = { }, Str :$output-file ) {
 		$filename.IO.e or die "Filename '$filename' not found!";
 		$filename.IO.f or die "Filename '$filename' not a file!";
 		my $template = $filename.IO.slurp;
+
+		my @element = self._process( $template, $stashref );
+say @element.perl;
 	
+#`(
 		# If the chosen output is an IO object (the default, STDOUT)
 		# then just print to it.
 		#
@@ -407,223 +599,6 @@ class Template::Toolkit {
 		else {
 			die Q{Couldn't identify OUTPUT};
 		}
-	}
-
-#	multi method _process( Str $template-text, $stashref = { } ) {
-#		1;
-#	}
-
-	method first-block( Str $remainder,
-			    Str $start-tag, Str $end-tag,
-			    Str $outline-tag, Bool $outline-tags ) {
-		my $start-tag-loc = $remainder.index( $start-tag );
-		my $end-tag-loc = $remainder.index( $end-tag );
-		my $nl-outline-tag-loc = $remainder.index(
-			"\n" ~ $outline-tag
-		);
-		my $outline-tag-loc = $remainder.index( $outline-tag );
-
-		# Cases:
-		#
-		# ''                        # Return nothing.
-		#
-		# (if %% enabled)
-		# '%%...'                   # Return everything up to "\n",
-		#                           # or everything if no "\n"
-		#
-		# '[%...'                   # Return everything up to '%]',
-		#			    # or everything if no '%]'
-		#
-		# (if %% enabled)
-		# '...\n%%...'              # Return everything up to "\n"
-		#
-		# '...[%...' (no %% before) # Return everything before '[%'
-		#
-		# '...'                     # Return everything
-
-		# No characters remaining, return a sentinel.
-		#
-		if $remainder.chars == 0 {
-#			Template::Element::Text.new(
-#				:content(
-#					$remainder
-#				)
-#			),
-			$remainder.chars
-		}
-
-		# '%%' at the start of the string
-		#
-		elsif $outline-tags and
-			$outline-tag-loc.defined and
-			$outline-tag-loc == 0 {
-			my $nl = "\n";
-			my $nl-loc = $remainder.index( "\n" );
-			if $nl-loc.defined {
-				my $text = $remainder.substr(
-					$outline-tag.chars,
-					$nl-loc
-				);
-#				Template::Element::Tag.new( :content( $text ) ),
-				$nl-loc + $nl.chars
-			}
-			else {
-#				Template::Element::Tag.new(
-#					:content(
-#						$remainder
-#					)
-#				),
-				$remainder.chars
-			}
-		}
-
-		# '[%' at the start of the string
-		#
-		elsif $start-tag-loc.defined and $start-tag-loc == 0 {
-			if $end-tag-loc.defined {
-				my $text =
-					$remainder.substr(
-						$start-tag.chars,
-						$end-tag-loc - $start-tag.chars
-					);
-#				Template::Element::Tag.new( :content( $text ) ),
-				$end-tag-loc + $end-tag.chars
-			}
-			else {
-#				Template::Element::Text.new(
-#					:content(
-#						$remainder
-#					)
-#				),
-				$remainder.chars
-			}
-		}
-
-		# '%%' somewhere in the string, but before '[%'.
-		#
-		elsif $outline-tags and
-			$nl-outline-tag-loc.defined and
-			( !$start-tag-loc.defined or
-			  $start-tag-loc > $nl-outline-tag-loc ) {
-			my $nl = "\n";
-			my $nl-loc = $remainder.index( "\n" );
-			if $nl-loc.defined {
-				my $text = $remainder.substr(
-					$outline-tag.chars,
-					$nl-loc
-				);
-#				Template::Element::Tag.new( :content( $text ) ),
-				$nl-loc + $nl.chars
-			}
-			else {
-#				Template::Element::Tag.new(
-#					:content(
-#						$remainder
-#					)
-#				),
-				$remainder.chars
-			}
-		}
-
-		# '[%' somewhere in the string
-		#
-		elsif $start-tag-loc.defined {
-			if $end-tag-loc.defined {
-				my $text = $remainder.substr(
-					0,
-					$start-tag-loc
-				);
-#				Template::Element::Text.new( :content( $text) ),
-				$start-tag-loc
-			}
-			else {
-#				Template::Element::Text.new(
-#					:content(
-#						$remainder
-#					)
-#				),
-				$remainder.chars
-			}
-		}
-		else {
-#			Template::Element::Text.new( :content( $remainder ) ),
-			$remainder.chars
-		}
-	}
-
-	method _break-up( Str $buffer ) {
-		# The start and end tags we begin with may not be the ones
-		# we end with.
-		#
-		my $start-tag = %!tags.<start>;
-		my $end-tag = %!tags.<end>;
-		my $outline-tag = %!tags.<outline>;
-
-		my $use-outlines = $!use-outlines;
-
-		# Use $pos to keep track of where we are in the buffer.
-		#
-		my Int $pos = 0;
-		my @child;
-		while $pos < $buffer.chars {
-			my $remainder = $buffer.substr( $pos );
-#			my ( $next-block, $block-length ) = self.first-block(
-my $next-block = Any;
-			my ( $block-length ) = self.first-block(
-				$remainder,
-				$start-tag, $end-tag, $outline-tag, $use-outlines
-			);
-#			if $next-block ~~ Template::Element::Tag {
-#				if $next-block.content ~~
-#					m{ ^ \s* TAGS \s+ ( default ) \s* $ } {
-#					$start-tag = $.START_TAG;
-#					$end-tag = $.END_TAG;
-#					$use-outlines = True;
-#				}
-#				if $next-block.content ~~
-#					m{ ^ \s* TAGS \s+ ( outline ) \s* $ } {
-#					$use-outlines = True;
-#				}
-#				elsif $next-block.content ~~
-#					m{ ^ \s*
-#						TAGS \s+
-#						( \S+ ) \s+
-#						( \S+ ) \s+
-#						( \S+ ) \s*
-#					   $ } {
-#					$start-tag = $0.Str;
-#					$end-tag = $1.Str
-#				}
-#				elsif $next-block.content ~~
-#					m{ ^ \s*
-#						TAGS \s+
-#						( \S+ ) \s+
-#						( \S+ ) \s*
-#					   $ } {
-#					$start-tag = $0.Str;
-#					$end-tag = $1.Str
-#				}
-#			}
-			@child.append( $next-block );
-			$pos += $block-length
-		}
-		unless @child {
-#			@child = Template::Element::Text.new(
-#				:content( '' )
-#			)
-		}
-		@child
-	}
-	method _process( Str $buffer, $stash = { } ) {
-
-		my @child = self._break-up( $buffer );
-#say @child.perl;
-
-#		my $str = '';
-#		for @child {
-#			$str ~= $_.process( $stash )
-#		}
-#		$str
-'123'
+)
 	}
 }
