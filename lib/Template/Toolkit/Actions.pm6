@@ -98,53 +98,24 @@ class Template::Toolkit::Actions {
 	method Named-Parameter( $/ ) {
 		make [ $/<Value>.ast, $/<Expression>.ast ]
 	}
-
-	method Directive( $/ ) {
-		(
-		| 'BLOCK'
-			(
-			| <Named-Parameter>+
-			| <Block-Name> <Named-Parameter>*
-			)
-		| 'CATCH'
-		| 'FOREACH' <Value> '=' <Expression>
-		| 'GET'? <GET=Expression>
-		| 'IF' <Expression>
-		| 'INCLUDE' <Path-Name> <Named-Parameter>*
-		| 'ELSE'
-		| 'ELSIF' <Expression>
-		| 'END'
-		| 'META' <Pair>+
-		| 'PROCESS' <Path-Name>
-		| 'SET' <Value> '=' <Expression>
-		| 'TRY'
-		| 'UNLESS' <Expression>
-		| 'USE'
-			(
-			| <Plugin-Name> '=' <Function-Call>
-			| <Function-Call>
-			| <Plugin-Name>
-			)
-		| <String> 'UNLESS' <Expression>
-		| <Value> '='
-			(
-			| 'IF' <Expression>
-			| 'INCLUDE' <Path-Name> <Named-Parameter>*
-			| 'PROCESS' <Path-Name>
-			| <Expression>
-			)
-		)
-		';'?
-	}
 )
 
 	my class Directive::Get {
 		has $.value-to-fetch;
+		method compile( $stashref ) {
+			sub ( $stashref ) { $.value-to-fetch }
+		}
+	}
+
+	method Directive-Get( $/ ) {
+		make Directive::Get.new(
+			:value-to-fetch( ~$/<Expression> )
+		)
 	}
 
 	method Directive( $/ ) {
-		make $/<Directive-Get>.ast ||
-say ~$/[0].<Directive-Get><Expression>;
+#say ~$/.gist;
+		make $/<Directive-Get>.ast
 	}
 
 	method TOP( $/ ) {

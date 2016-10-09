@@ -186,29 +186,26 @@ grammar Template::Toolkit::Grammar
 
 	rule Directive
 		{
-			(
-			| <Directive-Block>
-			| <Directive-Catch>
-			| <Directive-Foreach>
-			| <Directive-Get>
-			| <Directive-If>
-			| <Directive-Include>
-			| <Directive-Else>
-			| <Directive-Elsif>
-			| <Directive-End>
-			| <Directive-Meta>
-			| <Directive-Process>
-			| <Directive-Set>
-			| <Directive-Try>
-			| <Directive-Unless>
-			| <Directive-Use>
-			| <Value> '=' <Expression>
-			)
-		';'?
+		| <Directive-Block>
+		| <Directive-Catch>
+		| <Directive-Foreach>
+		| <Directive-Get>
+		| <Directive-If>
+		| <Directive-Include>
+		| <Directive-Else>
+		| <Directive-Elsif>
+		| <Directive-End>
+		| <Directive-Meta>
+		| <Directive-Process>
+		| <Directive-Set>
+		| <Directive-Try>
+		| <Directive-Unless>
+		| <Directive-Use>
+		| <Value> '=' <Expression>
 		}
 
 	rule TOP
 		{
-		| <Directive>+
+		| [ <Directive> ';'? ]+
 		}
 	}

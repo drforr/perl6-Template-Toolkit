@@ -370,6 +370,7 @@ class Template::Toolkit {
 
 	my class Element {
 		has Str $.content;
+		has Int $.length;
 	};
 
 	# XXX They really only do one thing, maybe should be subtypes.
@@ -416,11 +417,8 @@ class Template::Toolkit {
 
 		if 0 < $inset <= $string.chars {
 			Element::Text.new(
-				:content(
-					$string.substr(
-						0, $inset
-					)
-				)
+				:content( $string.substr( 0, $inset ) ),
+				:length( $inset )
 			)
 		}
 		else {
@@ -439,13 +437,22 @@ class Template::Toolkit {
 						);
 					$content ~~ s{ ^ \s+ } = '';
 					$content ~~ s{ \s+ $ } = '';
-					Element::Tag.new( :content( $content ) )
+					Element::Tag.new(
+						:content( $content ),
+						:length(
+							$loc-end + $tag-end.chars
+						)
+					)
 				}
 				elsif $loc-end.defined {
 					die "Tag '$tag-start' overlaps '$tag-end'... or something"
 				}
 				else {
-					Element::Text.new( :content( $string ) )
+					$string.chars,
+					Element::Text.new(
+						:content( $string ),
+						:length( $string.chars )
+					)
 				}
 			}
 			elsif $!use-outlines and
@@ -457,10 +464,15 @@ class Template::Toolkit {
 							$tag-outline.chars,
 							$loc-end - $tag-outline.chars
 						);
+					my $length = $content.chars;
 					$content ~~ s{ ^ \s+ } = '';
-					Element::Tag.new( :content( $content ) )
+					$length,
+					Element::Tag.new(
+						:content( $content ),
+						:length( $loc-end + $tag-end.chars )
+					)
 				}
-				elsif $loc-end.defined { # Can't happen?
+				elsif $loc-end.defined {
 					die "Can't happen, tag start is '$tag-outline' and has a newline inside '$tag-outline'"
 				}
 				else {
@@ -469,10 +481,12 @@ class Template::Toolkit {
 			elsif $!use-scalar and
 				($loc-scalar.defined and $loc-scalar == 0) {
 				$string ~~ m{ ^ <scalar-variable> };
+				$/<scalar-variable>.chars,
 				Element::Tag.new(
 					:content(
 						$/<scalar-variable>.Str
-					)
+					),
+					:length( $/<scalar-variable>.chars )
 				)
 			}
 			else {
@@ -488,7 +502,7 @@ class Template::Toolkit {
 			my $remainder = $string.substr( $inset );
 			my $next-element = self.next-element( $remainder );
 
-			$inset += $next-element.content.chars;
+			$inset += $next-element.length;
 			@element.append(
 				$next-element
 			)
@@ -498,31 +512,33 @@ class Template::Toolkit {
 
 	# For example:
 	#	Text nodes return a closure that just returns the text.
-	#	INSERT tags return a closure that opens the file, slurps and returns the contents.
+	#	INSERT tags return a closure that opens the file,
+	#	slurps and returns the contents.
+	#
 	method _compile( Element @element, $stashref ) {
+		my $g = Template::Toolkit::Grammar.new;
+		my $a = Template::Toolkit::Actions.new;
+say @element.perl;
 		my Routine @routine;
 		for @element -> $element {
 			given $element {
 				when Element::Text {
 					@routine.append(
-						sub ( $stashref ) { $element.content }
+						sub ( $stashref ) {
+							$element.content
+						}
 					)
 				}
 				when Element::Tag {
-#say "*** compiling '$element.content()'";
-					my $g = Template::Toolkit::Grammar.new;
-#					my $a = Template::Toolkit::Actions.new(
-#						 :stashref( $stashref )
-#					);
-					my $ast = $g.parse(
-						$element.content
-#						$element.content,
-#						:actions( $a )
+					my @ast = $g.parse(
+						$element.content,
+						:actions( $a )
 					).ast;
-#say $ast.perl;
-					@routine.append(
-						sub ( $stashref ) { $stashref.<XXX>++; "DUMMY" }
-					)
+					for @ast {
+						@routine.append(
+							$_.compile( $stashref )
+						)
+					}
 				}
 				default {
 					die "Shouldn't happen!"
@@ -549,8 +565,9 @@ class Template::Toolkit {
 		$filename.IO.f or die "Filename '$filename' not a file!";
 		my $template = $filename.IO.slurp;
 
-		my @element = self._process( $template, $stashref );
-say @element.perl;
+		my $res = self._process( $template, $stashref );
+		$res
+#say @element.perl;
 	
 #`(
 		# If the chosen output is an IO object (the default, STDOUT)
