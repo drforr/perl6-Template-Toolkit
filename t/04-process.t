@@ -3,26 +3,74 @@ use Template::Toolkit;
 
 my $tt = Template::Toolkit.new;
 
-is $tt._process( Q{-6} ), Q{-6};
-is $tt._process( Q{Hello world!} ), Q{Hello world!};
-is $tt._process( Q{[%-6%]} ), Q{-6};
-is $tt._process( Q{[% "hello world" %]} ), Q{hello world};
-is $tt._process( Q{[% hello %]} ), Q{};
-is $tt._process( Q{[% hello %]}, { hello => 'world' } ), Q{world};
-is $tt._process( Q{hello [% hello %] world}, { hello => 'cruel' } ), Q{hello cruel world};
-is $tt._process(
-	Q{hello [% hello(2) %] world},
-	{ hello => sub { @_[0] == 2 and return 'gentle' } }
-), Q{hello gentle world};
+subtest {
+	is $tt._process( Q{-6} ),
+		Q{-6},
+		Q{integer};
+	is $tt._process( Q{Hello world!} ),
+		Q{Hello world!},
+		Q{string};
+	is $tt._process( Q{[%-6%]} ),
+		Q{-6},
+		Q{constant tag};
+	is $tt._process( Q{[% "hello world" %]} ),
+		Q{hello world},
+		Q{constant string tag};
+	is $tt._process( Q{[% hello %]} ),
+		Q{},
+		Q{tag without stash};
+	is $tt._process( Q{[% hello %]}, { hello => 'world' } ),
+		Q{world},
+		Q{tag with stash};
+	is $tt._process(
+		Q{hello [% hello %] world}, { hello => 'cruel' }
+	), Q{hello cruel world}, Q{tag and text};
+	is $tt._process(
+		Q{hello [% hello(2) %] world},
+		{ hello => sub { @_[0] == 2 and return 'gentle' } }
+	), Q{hello gentle world}, Q{tag with function call};
 #is $tt._process( Q{hello [% hello.cruel %] world}, { hello => { cruel => 'loving' } } ), Q{hello loving world};
+}, Q{constant};
 
-# Constant folding
-is $tt._process( Q{[% IF 0 %]hello[% END %]} ), Q{};
-is $tt._process( Q{[% IF 1 %]hello[% END %]} ), Q{hello};
+subtest {
+	subtest {
+		is $tt._process( Q{[% IF 0 %]hello[% END %]} ),
+			Q{},
+			Q{false constant};
+		is $tt._process( Q{[% IF 1 %]hello[% END %]} ),
+			Q{hello},
+			Q{true constant};
+	}, Q{constant}
 
-# Runtime evaluation
-is $tt._process( Q{[% IF hello %]world[% END %]}, { hello => 0 } ), Q{};
-is $tt._process( Q{[% IF hello %]world[% END %]}, { hello => 1 } ), Q{world};
+	subtest {
+		is $tt._process(
+			Q{[% IF hello %]world[% END %]},
+			{ hello => 0 }
+		), Q{}, Q{false stash value};
+
+		is $tt._process(
+			Q{[% IF hello %]world[% END %]},
+			{ hello => 1 }
+		), Q{world}, Q{true stash value};
+
+		is $tt._process(
+			Q{[% IF hello %][% hello %][% END %]},
+			{ hello => 0 }
+		), Q{}, Q{false stash with tag};
+
+		is $tt._process(
+			Q{[% IF hello %][% hello %][% END %]},
+			{ hello => 1 }
+		), Q{1}, Q{true stash with tag};
+	}, Q{stash};
+}, Q{IF};
+
+#`(
+is $tt._process(
+	Q{[% FOREACH i IN elements %]l[% END %]},
+	{ elements => [ 0, 1, 2 ] }
+), Q{lll};
+)
 
 #`(
 

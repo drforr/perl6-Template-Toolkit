@@ -80,9 +80,17 @@ die "Unknown case, shouldn't happen"
 		)
 	}
 
+	method Directive-Foreach( $/ ) {
+		make Template::Toolkit::Internal::Directive::Foreach.new(
+			:iterator( $/<Value>.ast ),
+			:data( $/<Expression> )
+		)
+	}
+
 	method Directive( $/ ) {
 		make
 			$/<Directive-Get>.ast ||
+			$/<Directive-Foreach>.ast ||
 			$/<Directive-If>.ast ||
 			$/<Directive-End>.ast
 	}
