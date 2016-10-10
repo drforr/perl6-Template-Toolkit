@@ -51,12 +51,16 @@ grammar Template::Toolkit::Grammar
 		| <Positive-Integer>
 		}
 
+	# Moved <Integer> to the top so it's not interpreted immediately as a
+	# function call in the 'foo.1.bar' sense.
+	# Really there it's an array access.
+	#
 	rule Value
 		{
+		| <Integer>
 		| <Function-Call>+ %% '.'
 		| <String>
 		| <Floating-Point>
-		| <Integer>
 		}
 
 	token Plugin-Name

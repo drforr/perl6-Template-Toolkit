@@ -3,7 +3,6 @@ use Template::Toolkit;
 
 my $tt = Template::Toolkit.new;
 
-is $tt._process( Q{6} ), Q{6};
 is $tt._process( Q{-6} ), Q{-6};
 is $tt._process( Q{Hello world!} ), Q{Hello world!};
 is $tt._process( Q{[%-6%]} ), Q{-6};
@@ -16,7 +15,14 @@ is $tt._process(
 	{ hello => sub { @_[0] == 2 and return 'gentle' } }
 ), Q{hello gentle world};
 #is $tt._process( Q{hello [% hello.cruel %] world}, { hello => { cruel => 'loving' } } ), Q{hello loving world};
+
+# Constant folding
+is $tt._process( Q{[% IF 0 %]hello[% END %]} ), Q{};
 is $tt._process( Q{[% IF 1 %]hello[% END %]} ), Q{hello};
+
+# Runtime evaluation
+is $tt._process( Q{[% IF hello %]world[% END %]}, { hello => 0 } ), Q{};
+is $tt._process( Q{[% IF hello %]world[% END %]}, { hello => 1 } ), Q{world};
 
 #`(
 

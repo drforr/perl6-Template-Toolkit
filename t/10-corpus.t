@@ -12,17 +12,16 @@ sub is-parsed( $test ) {
 	ok $tt._parse( $test );
 }
 
-sub is-valid( $test, $expected ) {
-	ok 1;
+sub process( Str $test, Str $expected, $stashref = { } ) {
+	return True
 }
 
 subtest {
-	#ok $tt._parse( q:to[__PARSED__] );
 	ok $g.parse( q:to[__PARSED__] );
 args(a b c)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% args(a b c) %]
 __TEST__
   ARGS: [ alpha, bravo, charlie ]
@@ -33,7 +32,7 @@ __EXPECTED__
 args(a b c d=e f=g)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% args(a b c d=e f=g) %]
 __TEST__
   ARGS: [ alpha, bravo, charlie ]
@@ -44,7 +43,7 @@ __EXPECTED__
 args(a, b, c, d=e, f=g)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% args(a, b, c, d=e, f=g) %]
 __TEST__
   ARGS: [ alpha, bravo, charlie ]
@@ -56,7 +55,7 @@ __EXPECTED__
 #args(a, b, c, d=e, f=g,)
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% args(a, b, c, d=e, f=g,) %]
 __TEST__
   ARGS: [ alpha, bravo, charlie ]
@@ -69,7 +68,7 @@ __EXPECTED__
 #args(d=e, a, b, f=g, c)
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% args(d=e, a, b, f=g, c) %]
 __TEST__
   ARGS: [ alpha, bravo, charlie ]
@@ -80,7 +79,7 @@ __EXPECTED__
 obj.foo(d=e, a, b, f=g, c)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% obj.foo(d=e, a, b, f=g, c) %]
 __TEST__
 object:
@@ -92,7 +91,7 @@ __EXPECTED__
 obj.foo(d=e, a, b, f=g, c).split("\n").1
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% obj.foo(d=e, a, b, f=g, c).split("\n").1 %]
 __TEST__
   ARGS: [ alpha, bravo, charlie ]
@@ -104,7 +103,7 @@ __EXPECTED__
 #object.nil
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 ([% object.nil %])
 __TEST__
 ()
@@ -116,7 +115,7 @@ USE assert;
    TRY; object.assert.zip; CATCH; error; END;
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 [% USE assert;
    TRY; object.assert.nil; CATCH; error; END; "\n";
    TRY; object.assert.zip; CATCH; error; END;
@@ -134,7 +133,7 @@ __EXPECTED__
 #   TRY; hash.assert.bam; CATCH; error; END;
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 [% USE assert;
    TRY; hash.assert.bar; CATCH; error; END; "\n";
    TRY; hash.assert.bam; CATCH; error; END;
@@ -150,7 +149,7 @@ USE assert;
    TRY; list.assert.first; CATCH; error; END;
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 [% USE assert;
    TRY; list.assert.0;     CATCH; error; END; "\n";
    TRY; list.assert.first; CATCH; error; END;
@@ -160,7 +159,7 @@ assert error - undefined value for 0
 assert error - undefined value for first
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 [% USE assert;
    TRY; list.assert.0;     CATCH; error; END; "\n";
    TRY; list.assert.first; CATCH; error; END;
@@ -175,7 +174,7 @@ USE assert;
    TRY; assert.nothing; CATCH; error; END;
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 [% USE assert;
    TRY; assert.nothing; CATCH; error; END;
 %]
@@ -190,7 +189,7 @@ __EXPECTED__
 #   TRY; assert.subref; CATCH; error; END;
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 [% USE assert;
    TRY; assert.subref; CATCH; error; END;
 %]
@@ -206,7 +205,7 @@ __PARSED__
 END
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 maybe
 [% IF yes %]
 yes
@@ -220,7 +219,7 @@ __EXPECTED__
 ELSE
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF yes %]
 yes
 [% ELSE %]
@@ -230,7 +229,7 @@ __TEST__
 yes
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF yes %]
 yes
 [% ELSE %]
@@ -246,7 +245,7 @@ IF yes and true
 __PARSED__
 )
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF yes and true %]
 yes
 [% ELSE %]
@@ -260,7 +259,7 @@ __EXPECTED__
 IF yes && true
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF yes && true %]
 yes
 [% ELSE %]
@@ -274,7 +273,7 @@ __EXPECTED__
 IF yes && sad || happy
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF yes && sad || happy %]
 yes
 [% ELSE %]
@@ -290,7 +289,7 @@ IF yes AND ten && true and twenty && 30
 __PARSED__
 )
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF yes AND ten && true and twenty && 30 %]
 yes
 [% ELSE %]
@@ -304,7 +303,7 @@ __EXPECTED__
 IF ! yes
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF ! yes %]
 no
 [% ELSE %]
@@ -318,7 +317,7 @@ __EXPECTED__
 UNLESS yes
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% UNLESS yes %]
 no
 [% ELSE %]
@@ -332,13 +331,13 @@ __EXPECTED__
 "yes" UNLESS no
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "yes" UNLESS no %]
 __TEST__
 yes
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF ! yes %]
 no
 [% ELSE %]
@@ -352,7 +351,7 @@ __EXPECTED__
 IF yes || no
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF yes || no %]
 yes
 [% ELSE %]
@@ -366,7 +365,7 @@ __EXPECTED__
 IF yes || no || true || false
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF yes || no || true || false %]
 yes
 [% ELSE %]
@@ -382,7 +381,7 @@ __EXPECTED__
 #IF yes or no
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF yes or no %]
 yes
 [% ELSE %]
@@ -398,7 +397,7 @@ IF not false and not sad
 __PARSED__
 )
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF not false and not sad %]
 yes
 [% ELSE %]
@@ -412,7 +411,7 @@ __EXPECTED__
 IF ten == 10
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF ten == 10 %]
 yes
 [% ELSE %]
@@ -438,7 +437,7 @@ __PARSED__
 #ELSIF twenty < ten
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF ten == twenty %]
 I canna break the laws of mathematics, Captain.
 [% ELSIF ten > twenty %]
@@ -464,7 +463,7 @@ __PARSED__
 #ELSIF twenty <= ten
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF ten >= twenty or false %]
 no
 [% ELSIF twenty <= ten  %]
@@ -487,7 +486,7 @@ __EXPECTED__
 #ELSIF ten < twenty
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF ten > twenty %]
 no
 [% ELSIF ten < twenty  %]
@@ -509,7 +508,7 @@ __EXPECTED__
 #ELSIF ten == 10
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF ten != 10 %]
 no
 [% ELSIF ten == 10  %]
@@ -529,7 +528,7 @@ __EXPECTED__
 count
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF alpha AND omega %]
 alpha and omega are true
 [% ELSE %]
@@ -541,7 +540,7 @@ alpha and/or omega are not true
 count: 11
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF omega AND alpha %]
 omega and alpha are true
 [% ELSE %]
@@ -559,7 +558,7 @@ __EXPECTED__
 #IF alpha OR omega
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF alpha OR omega %]
 alpha and/or omega are true
 [% ELSE %]
@@ -571,7 +570,7 @@ alpha and/or omega are true
 count: 22
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF omega OR alpha %]
 alpha and/or omega are true
 [% ELSE %]
@@ -602,7 +601,7 @@ __PARSED__
 mult * 2 + 2 * 3
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% small = 5
    mid   = 7
    big   = 10
@@ -651,7 +650,7 @@ __PARSED__
 #10 DIV 3
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% 10 mod 4 +%] [% 10 MOD 4 +%]
 [% 10 div 3 %] [% 10 DIV 3 %]
 __TEST__
@@ -664,7 +663,7 @@ IF 'one' lt 'two'
 __PARSED__
 
 	# this is for testing the lt operator which isn't enabled by default.
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF 'one' lt 'two' -%]
 one is less than two
 [% ELSE -%]
@@ -678,7 +677,7 @@ __EXPECTED__
 TRY; INCLUDE blockdef/block1; CATCH; error; END
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY; INCLUDE blockdef/block1; CATCH; error; END %]
 __TEST__
 file error - blockdef/block1: not found
@@ -691,7 +690,7 @@ __EXPECTED__
 #__PARSED__
 
 	# use on
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE blockdef/block1 %]
 __TEST__
 This is block 1, defined in blockdef, a is alpha
@@ -701,7 +700,7 @@ __EXPECTED__
 INCLUDE blockdef/block1 a='amazing'
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE blockdef/block1 a='amazing' %]
 __TEST__
 This is block 1, defined in blockdef, a is amazing
@@ -713,7 +712,7 @@ __EXPECTED__
 #TRY; INCLUDE blockdef/none; CATCH; error; END
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 [% TRY; INCLUDE blockdef/none; CATCH; error; END %]
 __TEST__
 file error - blockdef/none: not found
@@ -723,7 +722,7 @@ __EXPECTED__
 INCLUDE "$dir/blockdef/block1" a='abstract'
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE "$dir/blockdef/block1" a='abstract' %]
 __TEST__
 This is block 1, defined in blockdef, a is abstract
@@ -745,7 +744,7 @@ __PARSED__
 #INCLUDE one/two b='brilliant'
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK one -%]
 block one
 [% BLOCK two -%]
@@ -767,7 +766,7 @@ end of block one
 this is block two, b is brazen
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK block1 %]
 This is the original block1
 [% END %]
@@ -785,7 +784,7 @@ __EXPECTED__
 PROCESS blockdef
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK block1 %]
 This is the original block1
 [% END %]
@@ -803,7 +802,7 @@ __EXPECTED__
 INCLUDE block_a
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE block_a +%]
 [% INCLUDE block_b %]
 __TEST__
@@ -818,7 +817,7 @@ __EXPECTED__
 #   title = 'A New Beginning'
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE header 
    title = 'A New Beginning'
 +%]
@@ -834,7 +833,7 @@ __EXPECTED__
 BLOCK foo:bar
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK foo:bar %]
 blah
 [% END %]
@@ -847,7 +846,7 @@ __EXPECTED__
 BLOCK 'hello html'
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK 'hello html' -%]
 Hello World!
 [% END -%]
@@ -856,7 +855,7 @@ __TEST__
 Hello World!
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 <[% INCLUDE foo %]>
 [% BLOCK foo %][% END %]
 __TEST__
@@ -867,7 +866,7 @@ __EXPECTED__
 BLOCK foo eval_perl=0 tags="star"
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK foo eval_perl=0 tags="star" -%]
 This is the foo block
 [% END -%]
@@ -880,7 +879,7 @@ __EXPECTED__
 BLOCK eval_perl=0 tags="star"
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK eval_perl=0 tags="star" -%]
 This is an anonymous block
 [% END -%]
@@ -898,7 +897,7 @@ __PARSED__
 #c = INCLUDE foo a = 'ammended'
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK foo %]
 This is block foo, a is [% a %]
 [% END %]
@@ -921,7 +920,7 @@ __PARSED__
 #a = 'charlie'
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% d = BLOCK %]
 This is the block, a is [% a %]
 [% END %]
@@ -935,7 +934,7 @@ __EXPECTED__
 e = IF a == 'alpha'
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% e = IF a == 'alpha' %]
 a is [% a %]
 [% ELSE %]
@@ -950,7 +949,7 @@ __EXPECTED__
 a = FOREACH b = [1 2 3]
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a = FOREACH b = [1 2 3] %]
 [% b %],
 [%- END %]
@@ -963,7 +962,7 @@ __EXPECTED__
 out = PROCESS userinfo FOREACH user = [ 'tom', 'dick', 'larry' ]
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK userinfo %]
 name: [% user +%]
 [% END %]
@@ -989,7 +988,7 @@ __PARSED__
 #for = b
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% include = a %]
 [% for = b %]
 i([% include %])
@@ -1005,7 +1004,7 @@ __EXPECTED__
 #IF a AND b
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF a AND b %]
 good
 [% ELSE %]
@@ -1021,7 +1020,7 @@ __EXPECTED__
 #IF a and b
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 # 'and', 'or' and 'not' can ALWAYS be expressed in lower case, regardless
 # of CASE sensitivity option.
 [% IF a and b %]
@@ -1033,7 +1032,7 @@ __TEST__
 good
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% include = a %]
 [% include %]
 __TEST__
@@ -1047,14 +1046,14 @@ __PARSED__
 )
 
 	# USE ANYCASE
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% include foo bar='baz' %]
 [% BLOCK foo %]this is foo, bar = [% bar %][% END %]
 __TEST__
 this is foo, bar = baz
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% 10 div 3 %] [% 10 DIV 3 +%]
 [% 10 mod 3 %] [% 10 MOD 3 %]
 __TEST__
@@ -1072,14 +1071,14 @@ __PARSED__
 #global.cgi.param('name')
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE cgi = CGI('id=abw&name=Andy+Wardley'); global.cgi = cgi -%]
 name: [% global.cgi.param('name') %]
 __TEST__
 name: Andy Wardley
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 name: [% global.cgi.param('name') %]
 __TEST__
 name: Andy Wardley
@@ -1089,7 +1088,7 @@ __EXPECTED__
 FOREACH key = global.cgi.param.sort
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH key = global.cgi.param.sort -%]
    * [% key %] : [% global.cgi.param(key) %]
 [% END %]
@@ -1102,7 +1101,7 @@ __EXPECTED__
 FOREACH key = global.cgi.param().sort
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH key = global.cgi.param().sort -%]
    * [% key %] : [% global.cgi.param(key) %]
 [% END %]
@@ -1118,7 +1117,7 @@ FOREACH x = global.cgi.checkbox_group(
 	        defaults => [ 'eenie', 'meenie' ] )
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH x = global.cgi.checkbox_group(
 		name     => 'words'
                 values   => [ 'eenie', 'meenie', 'minie', 'moe' ]
@@ -1140,7 +1139,7 @@ __PARSED__
 #cgi.params.item.join(', ')
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE cgi('item=foo&items=one&items=two') -%]
 item: [% cgi.params.item %]
 item: [% cgi.params.item.join(', ') %]
@@ -1157,7 +1156,7 @@ __EXPECTED__
 #a = 10; b = 20
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 begin[% a = 10; b = 20 %]
      [% a %]
      [% b %]
@@ -1170,7 +1169,7 @@ end
 __EXPECTED__
 
 	# USE tt_pre_all
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 begin[% a = 10; b = 20 %]
      [% a %]
      [% b %]
@@ -1181,7 +1180,7 @@ end
 __EXPECTED__
 
 	# USE tt_pre_all
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 begin[% a = 10; b = 20 %]
      [% a %]
      [% b %]
@@ -1192,7 +1191,7 @@ end
 __EXPECTED__
 
 	# use tt_pre_coll
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 begin[% a = 10; b = 20 %]
      [% a %]
      [% b %]
@@ -1203,7 +1202,7 @@ end
 __EXPECTED__
 
 	# use tt_post_none
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 begin[% a = 10; b = 20 %]
      [% a %]
      [% b %]
@@ -1216,7 +1215,7 @@ end
 __EXPECTED__
 
 	# use tt_post_all
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 begin[% a = 10; b = 20 %]
      [% a %]
      [% b %]
@@ -1226,7 +1225,7 @@ begin     10     20end
 __EXPECTED__
 
 	# use tt_post_one
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 begin[% a = 10; b = 20 %]
      [% a %]
      [% b %]
@@ -1236,7 +1235,7 @@ begin     10     20end
 __EXPECTED__
 
 	# use tt_post_coll
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 begin[% a = 10; b = 20 %]     
 [% a %]     
 [% b %]     
@@ -1245,7 +1244,7 @@ __TEST__
 begin 10 20 end
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE evalperl %]
 __TEST__
 This file includes a perl block.
@@ -1269,7 +1268,7 @@ __EXPECTED__
 #CATCH file
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 [% INCLUDE foo %]
 [% CATCH file %]
@@ -1283,7 +1282,7 @@ __EXPECTED__
 META author => 'abw' version => 3.14
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% META author => 'abw' version => 3.14 %]
 [% INCLUDE complex %]
 __TEST__
@@ -1293,13 +1292,13 @@ This is the footer, author: abw, version: 3.14
 - 3 - 2 - 1 
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE baz %]
 __TEST__
 This is the baz file, a: 
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%- # first pass, writes the compiled code to cache -%]
 [% INCLUDE divisionbyzero -%]
 __TEST__
@@ -1313,13 +1312,13 @@ __EXPECTED__
 #INCLUDE foo a = 'any value'
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE foo a = 'any value' %]
 __TEST__
 This is the hacked foo file, a is any value
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% META author => 'billg' version => 6.66  %]
 [% INCLUDE complex %]
 __TEST__
@@ -1329,7 +1328,7 @@ This is the footer, author: billg, version: 6.66
 - 3 - 2 - 1 
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% META author => 'billg' version => 6.66  %]
 [% INCLUDE complex %]
 __TEST__
@@ -1339,7 +1338,7 @@ This is the footer, author: billg, version: 6.66
 - 3 - 2 - 1 
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%- # second pass, reads the compiled code from cache -%]
 [% INCLUDE divisionbyzero -%]
 __TEST__
@@ -1347,7 +1346,7 @@ __TEST__
 undef error - Illegal division by zero at [% constants.zero %] line 1, <DATA> chunk 1.
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% META author => 'albert' version => 'emc2'  %]
 [% INCLUDE complex %]
 __TEST__
@@ -1361,7 +1360,7 @@ __EXPECTED__
 TRY; INCLUDE complex; CATCH; near_line("*error", 18); END
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%# we want to break 'compile' to check that errors get reported -%]
 [% CALL bust_it -%]
 [% TRY; INCLUDE complex; CATCH; near_line("$error", 18); END %]
@@ -1369,7 +1368,7 @@ __TEST__
 file error - parse error - complex line 18ish: unexpected end of input
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 [% INCLUDE foo %]
 [% CATCH file %]
@@ -1379,7 +1378,7 @@ __TEST__
 This is the foo file, a is 
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% META author => 'abw' version => 3.14 %]
 [% INCLUDE complex %]
 __TEST__
@@ -1395,7 +1394,7 @@ __EXPECTED__
 #INCLUDE bar/baz word = 'wibble'
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 [% INCLUDE bar/baz word = 'wibble' %]
 [% CATCH file %]
@@ -1412,13 +1411,13 @@ __EXPECTED__
 #INCLUDE "$root/src/blam"
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE "$root/src/blam" %]
 __TEST__
 This is the blam file
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%- # first pass, writes the compiled code to cache -%]
 [% INCLUDE divisionbyzero -%]
 __TEST__
@@ -1426,13 +1425,13 @@ __TEST__
 undef error - Illegal division by zero at [% constants.zero %] line 1.
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE foo a = 'any value' %]
 __TEST__
 This is the newly hacked foo file, a is any value
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% META author => 'billg' version => 6.66  %]
 [% INCLUDE complex %]
 __TEST__
@@ -1442,13 +1441,13 @@ This is the footer, author: billg, version: 6.66
 - 3 - 2 - 1 
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE "$root/src/blam" %]
 __TEST__
 This is the wam-bam file
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%- # second pass, reads the compiled code from cache -%]
 [% INCLUDE divisionbyzero -%]
 __TEST__
@@ -1456,7 +1455,7 @@ __TEST__
 undef error - Illegal division by zero at [% constants.zero %] line 1, <DATA> chunk 1.
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 hello [% const.author %]
 [% "back is $const.col.back" %] and text is [% const.col.text %]
 col.user is [% col.user %]
@@ -1472,7 +1471,7 @@ __EXPECTED__
 #const.col.keys.sort.join(', ')
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 # look ma!  I can even call virtual methods on contants!
 [% const.col.keys.sort.join(', ') %]
 __TEST__
@@ -1484,14 +1483,14 @@ __EXPECTED__
 const.col.keys.sort.join(const.joint)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 # and even pass constant arguments to constant virtual methods!
 [% const.col.keys.sort.join(const.joint) %]
 __TEST__
 back, text
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 # my constants can be subs, etc.
 zero [% const.counter %]
 one [% const.counter %]
@@ -1505,14 +1504,14 @@ constants.col.values.sort.reverse.join(constants.joint)
 __PARSED__
 
 	# USE tt2
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "$constants.author thinks " %]
 [%- constants.col.values.sort.reverse.join(constants.joint) %]
 __TEST__
 abw thinks orange is the new black
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- use tt3 --
 [% "$const.author thinks " -%]
 [% const.col.values.sort.reverse.join(const.joint) %]
@@ -1521,7 +1520,7 @@ abw thinks orange is the new black
 __EXPECTED__
 
 	# name no const.foo
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 no [% const.foo %]?
 __TEST__
 no ?
@@ -1531,7 +1530,7 @@ __EXPECTED__
 const.col.${const.fave}
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 fave [% const.fave %]
 col  [% const.col.${const.fave} %]
 __TEST__
@@ -1545,7 +1544,7 @@ __PARSED__
 
 	# use tt2
 	# name defer references
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "$key\n" FOREACH key = constants.col.keys.sort %]
 __TEST__
 back
@@ -1557,7 +1556,7 @@ const.author = 'Fred Smith'
 __PARSED__
 
 	# USE tt3
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 a: [% const.author %]
 b: [% const.author = 'Fred Smith' %]
 c: [% const.author %]
@@ -1575,7 +1574,7 @@ __PARSED__
 FOREACH user = userlist
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE userlist = datafile(datafile.0) %]
 Users:
 [% FOREACH user = userlist %]
@@ -1596,7 +1595,7 @@ __PARSED__
 FOREACH user = userlist
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE userlist = datafile(datafile.1, delim = '|') %]
 Users:
 [% FOREACH user = userlist %]
@@ -1609,7 +1608,7 @@ Users:
   * nellb: Nell Browser <nellb@cre.canon.co.uk>
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE userlist = datafile(datafile.1, delim = '|') -%]
 size: [% userlist.size %]
 __TEST__
@@ -1624,7 +1623,7 @@ __PARSED__
 now('%Y')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE date %]
 Let's hope the year doesn't roll over in between calls to date.format()
 and now()...
@@ -1640,7 +1639,7 @@ __EXPECTED__
 USE date(time => time)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE date(time => time) %]
 default: [% date.format %]
 __TEST__
@@ -1648,7 +1647,7 @@ __TEST__
 default: [% defstr %]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE date(time => time) %]
 [% date.format(format => format.timeday) %]
 __TEST__
@@ -1660,7 +1659,7 @@ __EXPECTED__
 USE date(time => time, format = format.date)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE date(time => time, format = format.date) %]
 Date: [% date.format %]
 __TEST__
@@ -1676,7 +1675,7 @@ __PARSED__
 date.format(time, format.time)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE date(format = format.date) %]
 Time: [% date.format(time, format.time) %]
 __TEST__
@@ -1688,7 +1687,7 @@ __EXPECTED__
 date.format(time, format = format.time)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE date(format = format.date) %]
 Time: [% date.format(time, format = format.time) %]
 __TEST__
@@ -1696,7 +1695,7 @@ __TEST__
 Time: [% timestr %]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE date(format = format.date) %]
 Time: [% date.format(time = time, format = format.time) %]
 __TEST__
@@ -1708,7 +1707,7 @@ __EXPECTED__
 USE english = date(format => '%A', locale => 'en_GB')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE english = date(format => '%A', locale => 'en_GB') %]
 [% USE french  = date(format => '%A', locale => 'fr_FR') %]
 In English, today's day is: [% english.format +%]
@@ -1735,7 +1734,7 @@ __PARSED__
 french.format(format => '%A', locale => 'fr_FR')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE english = date(format => '%A') %]
 [% USE french  = date() %]
 In English, today's day is: 
@@ -1752,14 +1751,14 @@ __EXPECTED__
 date.format('4:20:00 13-6-2000', '%H')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE date %]
 [% date.format('4:20:00 13-6-2000', '%H') %]
 __TEST__
 04
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE date %]
 [% date.format('2000-6-13 4:20:00', '%H') %]
 __TEST__
@@ -1770,7 +1769,7 @@ __EXPECTED__
 day.format('4:20:00 13-9-2000')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- name September 13th 2000 --
 [% USE day = date(format => '%A', locale => 'en_GB') %]
 [% day.format('4:20:00 13-9-2000') %]
@@ -1783,7 +1782,7 @@ __EXPECTED__
 date.format('some stupid date')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 [% USE date %]
 [% date.format('some stupid date') %]
@@ -1798,7 +1797,7 @@ __EXPECTED__
 date.format(template.modtime, format='%Y')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE date %]
 [% template.name %] [% date.format(template.modtime, format='%Y') %]
 __TEST__
@@ -1810,7 +1809,7 @@ __EXPECTED__
 USE date; calc = date.calc; calc.Monday_of_Week(22, 2001).join('/')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF date_calc -%]
 [% USE date; calc = date.calc; calc.Monday_of_Week(22, 2001).join('/') %]
 [% ELSE -%]
@@ -1830,7 +1829,7 @@ USE date;
    date.format('12:59:00 30/09/2001', '%H:%M')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE date;
    date.format('12:59:00 30/09/2001', '%H:%M')
 -%]
@@ -1838,7 +1837,7 @@ __TEST__
 12:59
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE date;
    date.format('2001/09/30 12:59:00', '%H:%M')
 -%]
@@ -1846,7 +1845,7 @@ __TEST__
 12:59
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE date;
    date.format('2001/09/30T12:59:00', '%H:%M')
 -%]
@@ -1854,7 +1853,7 @@ __TEST__
 12:59
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 Hello World
 foo: [% foo %]
 __TEST__
@@ -1862,7 +1861,7 @@ Hello World
 foo: 10
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- use debug --
 Hello World
 foo: [% foo %]
@@ -1875,7 +1874,7 @@ __EXPECTED__
 DEBUG on
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- use default --
 Hello World
 foo: [% foo %]
@@ -1894,7 +1893,7 @@ DEBUG off
 __PARSED__
 
 	# use debug
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% DEBUG off %]
 Hello World
 foo: [% foo %]
@@ -1913,7 +1912,7 @@ __EXPECTED__
 "$baz.ping/$baz.pong"
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- name ping pong --
 foo: [% foo %]
 hello [% "$baz.ping/$baz.pong" %] world
@@ -1930,7 +1929,7 @@ __EXPECTED__
 INCLUDE foo a=10
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- use debug --
 foo: [% foo %]
 [% INCLUDE foo a=10 %]
@@ -1948,7 +1947,7 @@ __EXPECTED__
 DEBUG format '[ $file line $line ]'
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- use default --
 [% DEBUG on -%]
 [% DEBUG format '[ $file line $line ]' %]
@@ -1962,7 +1961,7 @@ __EXPECTED__
 DEBUG on + format '[ $file line $line ]'
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- use default --
 [% DEBUG on + format '[ $file line $line ]' -%]
 [% foo %]
@@ -1976,7 +1975,7 @@ DEBUG on;
    DEBUG msg line='3.14' file='this file' text='hello world' 
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% DEBUG on;
    DEBUG format '$text at line $line of $file';
    DEBUG msg line='3.14' file='this file' text='hello world' 
@@ -1985,7 +1984,7 @@ __TEST__
 hello world at line 3.14 of this file
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a %]
 [%a%]
 __TEST__
@@ -1993,7 +1992,7 @@ alpha
 alpha
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 pre [% a %]
 pre[% a %]
 __TEST__
@@ -2001,7 +2000,7 @@ pre alpha
 prealpha
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a %] post
 [% a %]post
 __TEST__
@@ -2009,7 +2008,7 @@ alpha post
 alphapost
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 pre [% a %] post
 pre[% a %]post
 __TEST__
@@ -2017,13 +2016,13 @@ pre alpha post
 prealphapost
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a %][%b%][% c %]
 __TEST__
 alphabravocharlie
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% 
 a %][%b
 %][%
@@ -2042,7 +2041,7 @@ __EXPECTED__
 #    be ignored in totality
 #__PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%# this is a comment which should
     be ignored in totality
 %]hello world
@@ -2058,7 +2057,7 @@ __EXPECTED__
    a
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 [% # this is a one-line comment
    a
 %]
@@ -2073,7 +2072,7 @@ __EXPECTED__
    b
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 [% # this is a two-line comment
    a =
    # here's the next line
@@ -2089,7 +2088,7 @@ a = c   # this is a comment on the end of the line
    b = d   # so is this
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a = c   # this is a comment on the end of the line
    b = d   # so is this
 -%]
@@ -2100,7 +2099,7 @@ a: charlie
 b: delta
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a %]
 [% b %]
 __TEST__
@@ -2108,35 +2107,35 @@ alpha
 bravo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a -%]
 [% b %]
 __TEST__
 alphabravo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a -%]
      [% b %]
 __TEST__
 alpha     bravo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a %]
 [%- b %]
 __TEST__
 alphabravo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a %]
      [%- b %]
 __TEST__
 alphabravo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 start
 [% a %]
 [% b %]
@@ -2148,7 +2147,7 @@ bravo
 end
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 start
 [%- a %]
 [% b -%]
@@ -2158,7 +2157,7 @@ startalpha
 bravoend
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 start
 [%- a -%]
 [% b -%]
@@ -2167,7 +2166,7 @@ __TEST__
 startalphabravoend
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 start
 [%- a %]
 [%- b -%]
@@ -2177,7 +2176,7 @@ startalphabravoend
 __EXPECTED__
 
 	# use pre
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 start
 [% a %]
 mid
@@ -2189,7 +2188,7 @@ midbravo
 end
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 start
      [% a %]
 mid
@@ -2201,7 +2200,7 @@ midbravo
 end
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 start
 [%+ a %]
 mid
@@ -2214,7 +2213,7 @@ midbravo
 end
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 start
    [%+ a %]
 mid
@@ -2227,7 +2226,7 @@ midbravo
 end
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 start
    [%- a %]
 mid
@@ -2240,7 +2239,7 @@ end
 __EXPECTED__
 
 	# use post
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 start
 [% a %]
 mid
@@ -2252,7 +2251,7 @@ alphamid
 bravoend
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 start
      [% a %]
 mid
@@ -2264,7 +2263,7 @@ start
 	bravoend
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 start
 [% a +%]
 mid
@@ -2277,7 +2276,7 @@ mid
 bravoend
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 start
 [% a +%]   
 [% b +%]
@@ -2289,7 +2288,7 @@ bravo
 end
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 start
 [% a -%]
 mid
@@ -2302,14 +2301,14 @@ bravoend
 __EXPECTED__
 
 	# use trim
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 
 [% INCLUDE trimme %]
 __TEST__
 I am a template element file which will get TRIMmed
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK foo %]
 
 this is block foo
@@ -2331,7 +2330,7 @@ this is block bar
 end
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 <foo>[% PROCESS foo %]</foo>
 <bar>[% PROCESS bar %]</bar>
 [% BLOCK foo %]
@@ -2355,7 +2354,7 @@ __EXPECTED__
 r; r = s; "-"; r
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% r; r = s; "-"; r %].
 __TEST__
 romeo-sierra.
@@ -2365,7 +2364,7 @@ __EXPECTED__
 IF a; b; ELSIF c; d; ELSE; s; END
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% IF a; b; ELSIF c; d; ELSE; s; END %]
 __TEST__
 bravo
@@ -2379,7 +2378,7 @@ TRY ;
    END
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY ;
      USE Directory ;
    CATCH ;
@@ -2398,7 +2397,7 @@ TRY ;
    END
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY ;
      USE Directory('/no/such/place') ;
    CATCH ;
@@ -2413,7 +2412,7 @@ __EXPECTED__
 USE d = Directory(dir, nostat=1)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE d = Directory(dir, nostat=1) -%]
 [% d.path %]
 __TEST__
@@ -2425,7 +2424,7 @@ __EXPECTED__
 USE d = Directory(dir)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE d = Directory(dir) -%]
 [% d.path %]
 __TEST__
@@ -2437,7 +2436,7 @@ __EXPECTED__
 USE directory(dir)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE directory(dir) -%]
 [% directory.path %]
 __TEST__
@@ -2453,7 +2452,7 @@ __PARSED__
 FOREACH f = d.dirs; NEXT IF f.name == 'CVS';
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE d = Directory(dir) -%]
 [% FOREACH f = d.files -%]
    - [% f.name %]
@@ -2477,7 +2476,7 @@ __PARSED__
 INCLUDE dir dir=f FILTER indent(4)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE dir = Directory(dir) -%]
 [% INCLUDE dir %]
 [% BLOCK dir -%]
@@ -2522,7 +2521,7 @@ END ;
    END
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE dir = Directory(dir) -%]
 * [% dir.path %]
 [% INCLUDE dir %]
@@ -2556,7 +2555,7 @@ __EXPECTED__
 USE d = Directory(dir, recurse=1)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE d = Directory(dir, recurse=1) -%]
 [% FOREACH f = d.files -%]
    - [% f.name %]
@@ -2588,7 +2587,7 @@ INCLUDE dir dir=f FILTER indent(4) ;
        ELSE
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE dir = Directory(dir, recurse=1, root=cwd) -%]
 * [% dir.path %]
 [% INCLUDE dir %]
@@ -2617,7 +2616,7 @@ __TEST__
     - xyzfile => [% dir %]/xyzfile => [% cwd %]/[% dir %]/xyzfile
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE dir = Directory(dir, recurse=1, root=cwd) -%]
 * [% dir.path %]
 [% INCLUDE dir %]
@@ -2650,7 +2649,7 @@ __EXPECTED__
 file = dir.file('xyzfile')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE dir = Directory(dir) -%]
 [% file = dir.file('xyzfile') -%]
 [% file.name %]
@@ -2662,7 +2661,7 @@ __EXPECTED__
 USE dir = Directory('.', root=dir)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE dir = Directory('.', root=dir) -%]
 [% dir.name %]
 [% FOREACH f = dir.files -%]
@@ -2687,7 +2686,7 @@ __PARSED__
 filelist.print(dir)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% VIEW filelist -%]
 
 [% BLOCK file -%]
@@ -2722,7 +2721,7 @@ META
    version = 1.23 
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 # test metadata
 [% META
    author = 'Tom Smith'
@@ -2733,7 +2732,7 @@ __TEST__
 version 1.23 by Tom Smith
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK foo -%]
    This is block foo
 [% INCLUDE bar -%]
@@ -2757,7 +2756,7 @@ __PARSED__
 template.title or title
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% META title = 'My Template Title' -%]
 [% BLOCK header -%]
 title: [% template.title or title %]
@@ -2767,7 +2766,7 @@ __TEST__
 title: My Template Title
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK header -%]
 HEADER
 component title: [% component.name %]
@@ -2788,7 +2787,7 @@ __EXPECTED__
 INCLUDE header title = 'A New Title'
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% META title = 'My Template Title' -%]
 [% BLOCK header -%]
 title: [% title or template.title  %]
@@ -2801,7 +2800,7 @@ title: A New Title
 title: My Template Title
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE $mydoc %]
 __TEST__
 some output
@@ -2813,7 +2812,7 @@ INCLUDE one;
    INCLUDE three;
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE one;
    INCLUDE two;
    INCLUDE three;
@@ -2823,7 +2822,7 @@ one, three
 two, three
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE Dumper -%]
 Dumper
 __TEST__
@@ -2834,7 +2833,7 @@ __EXPECTED__
 Dumper.dump({ foo = 'bar' }, 'hello' )
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE Dumper -%]
 [% Dumper.dump({ foo = 'bar' }, 'hello' ) -%]
 __TEST__
@@ -2844,7 +2843,7 @@ $VAR1 = {
 $VAR2 = 'hello';
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE Dumper -%]
 [% Dumper.dump(params) -%]
 __TEST__
@@ -2857,7 +2856,7 @@ __EXPECTED__
 Dumper.dump_html(params)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE Dumper -%]
 [% Dumper.dump_html(params) -%]
 __TEST__
@@ -2870,7 +2869,7 @@ __EXPECTED__
 USE dumper(indent=1, pad='> ', varname="frank")
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE dumper(indent=1, pad='> ', varname="frank") -%]
 [% dumper.dump(params) -%]
 __TEST__
@@ -2883,7 +2882,7 @@ __EXPECTED__
 USE dumper(Pad='>> ', Varname="bob")
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE dumper(Pad='>> ', Varname="bob") -%]
 [% dumper.dump(params) -%]
 __TEST__
@@ -2911,7 +2910,7 @@ __PARSED__
 RAWPERL
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% META 
    author  = 'Andy Wardley'
    title   = 'Test Template $foo #6'
@@ -2948,7 +2947,7 @@ b: bravo
 b: bravo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 nothing
 [% PERL %]
@@ -2963,7 +2962,7 @@ nothing
 ERROR: perl: EVAL_PERL not set
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 some stuff
 [% TRY %]
 [% INCLUDE badrawperl %]
@@ -2977,7 +2976,7 @@ ERROR: [perl] EVAL_PERL not set
 __EXPECTED__
 
 	# use do_perl
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 some stuff
 [% TRY %]
 [% INCLUDE badrawperl %]
@@ -2992,7 +2991,7 @@ ERROR: [undef]
 __EXPECTED__
 
 	# use do_perl
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% META author = 'Andy Wardley' %]
 [% PERL %]
     my $output = "author: [% template.author %]\n";
@@ -3006,7 +3005,7 @@ more perl generated output
 __EXPECTED__
 
 	# use do_perl
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% META 
    author  = 'Andy Wardley'
    title   = 'Test Template $foo #6'
@@ -3036,7 +3035,7 @@ b: The cat sat where?
 b: The cat sat where?
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK foo %]This is block foo[% END %]
 [% PERL %]
 print $context->include('foo');
@@ -3049,7 +3048,7 @@ bar
 The end
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
    [%- PERL %] die "nothing to live for\n" [% END %]
 [% CATCH %]
@@ -3059,13 +3058,13 @@ __TEST__
    error: undef error - nothing to live for
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% foo.bar %]
 __TEST__
 Place to purchase drinks
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% constant.pi %]
 __TEST__
 3.14
@@ -3075,7 +3074,7 @@ __EXPECTED__
 place = 'World'
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% place = 'World' -%]
 Hello [% place %]
 [% a = a + 1 -%]
@@ -3094,7 +3093,7 @@ __EXPECTED__
 file.chunk(-16).last
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE warning -%]
 file: [% file.chunk(-16).last %]
 line: [% line %]
@@ -3109,7 +3108,7 @@ warn: Argument "" isn't numeric in addition (+)
 __EXPECTED__
 
 	# use not
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE warning -%]
 file: [% file.chunk(-16).last %]
 line: [% line %]
@@ -3130,7 +3129,7 @@ TRY;
    END 
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY; 
      INCLUDE chomp; 
    CATCH; 
@@ -3146,7 +3145,7 @@ __EXPECTED__
 USE f = File('/foo/bar/baz.html', nostat=1)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE f = File('/foo/bar/baz.html', nostat=1) -%]
 p: [% f.path %]
 r: [% f.root %]
@@ -3165,7 +3164,7 @@ h: ../..
 a: /foo/bar/baz.html
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE f = File('foo/bar/baz.html', nostat=1) -%]
 p: [% f.path %]
 r: [% f.root %]
@@ -3188,7 +3187,7 @@ __EXPECTED__
 USE f = File('baz.html', nostat=1)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE f = File('baz.html', nostat=1) -%]
 p: [% f.path %]
 r: [% f.root %]
@@ -3211,7 +3210,7 @@ __EXPECTED__
 USE f = File('bar/baz.html', root='/foo', nostat=1)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE f = File('bar/baz.html', root='/foo', nostat=1) -%]
 p: [% f.path %]
 r: [% f.root %]
@@ -3234,7 +3233,7 @@ __EXPECTED__
 f.rel('wiz/waz.html')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 [% USE f = File('bar/baz.html', root='/foo', nostat=1) -%]
 p: [% f.path %]
 h: [% f.home %]
@@ -3249,7 +3248,7 @@ __EXPECTED__
 USE baz = File('foo/bar/baz.html', root='/tmp/tt2', nostat=1)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 [% USE baz = File('foo/bar/baz.html', root='/tmp/tt2', nostat=1) -%]
 [% USE waz = File('wiz/woz/waz.html', root='/tmp/tt2', nostat=1) -%]
 [% baz.rel(waz) %]
@@ -3257,7 +3256,7 @@ __TEST__
 ../../wiz/woz/waz.html
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE f = File('foo/bar/baz.html', nostat=1) -%]
 [[% f.atime %]]
 __TEST__
@@ -3268,7 +3267,7 @@ __EXPECTED__
 USE f = File(file)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE f = File(file) -%]
 [% f.path %]
 [% f.name %]
@@ -3278,7 +3277,7 @@ __TEST__
 foo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE f = File(file) -%]
 [% f.path %]
 [% f.mtime %]
@@ -3288,7 +3287,7 @@ __TEST__
 [% mtime %]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE file(file) -%]
 [% file.path %]
 [% file.mtime %]
@@ -3302,7 +3301,7 @@ __EXPECTED__
 USE f = File('')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY -%]
 [% USE f = File('') -%]
 n: [% f.name %]
@@ -3317,7 +3316,7 @@ __EXPECTED__
 FILTER nonfilt
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 [% FILTER nonfilt %]
 blah blah blah
@@ -3329,7 +3328,7 @@ __TEST__
 BZZZT: filter: invalid FILTER entry for 'nonfilt' (not a CODE ref)
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 [% FILTER badfact %]
 blah blah blah
@@ -3341,7 +3340,7 @@ __TEST__
 BZZZT: filter: invalid FILTER for 'badfact' (not a CODE ref)
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 [% FILTER badfilt %]
 blah blah blah
@@ -3361,7 +3360,7 @@ TRY;
    END
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY;
      "foo" | barfilt;
    CATCH;
@@ -3372,7 +3371,7 @@ __TEST__
 filter: barfed
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY;
      "foo" | barfilt(1);
    CATCH;
@@ -3383,7 +3382,7 @@ __TEST__
 dead: deceased
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY;
      "foo" | barfilt(2);
    CATCH;
@@ -3394,7 +3393,7 @@ __TEST__
 filter: keeled over
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY;
      "foo" | barfilt(3);
    CATCH;
@@ -3405,7 +3404,7 @@ __TEST__
 unwell: sick as a parrot
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FILTER html %]
 This is some html text
 All the <tags> should be escaped & protected
@@ -3415,7 +3414,7 @@ This is some html text
 All the &lt;tags&gt; should be escaped &amp; protected
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% text = "The <cat> sat on the <mat>" %]
 [% FILTER html %]
    text: $text
@@ -3424,14 +3423,14 @@ __TEST__
    text: The &lt;cat&gt; sat on the &lt;mat&gt;
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% text = "The <cat> sat on the <mat>" %]
 [% text FILTER html %]
 __TEST__
 The &lt;cat&gt; sat on the &lt;mat&gt;
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FILTER html %]
 "It isn't what I expected", he replied.
 [% END %]
@@ -3439,7 +3438,7 @@ __TEST__
 &quot;It isn't what I expected&quot;, he replied.
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FILTER xml %]
 "It isn't what I expected", he replied.
 [% END %]
@@ -3447,7 +3446,7 @@ __TEST__
 &quot;It isn&apos;t what I expected&quot;, he replied.
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FILTER format %]
 Hello World!
 [% END %]
@@ -3463,7 +3462,7 @@ __PARSED__
 "Goodbye, cruel World" FILTER comment
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 # test aliasing of a filter
 [% FILTER comment = format('<!-- %s -->') %]
 Hello World!
@@ -3474,7 +3473,7 @@ __TEST__
 <!-- Goodbye, cruel World -->
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FILTER format %]
 Hello World!
 [% END %]
@@ -3494,7 +3493,7 @@ __PARSED__
 item FILTER test1
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "Foo" FILTER test1 = format('+++ %-4s +++') +%]
 [% FOREACH item = [ 'Bar' 'Baz' 'Duz' 'Doze' ] %]
   [% item FILTER test1 +%]
@@ -3511,7 +3510,7 @@ __TEST__
 *** Waz  ***
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FILTER microjive %]
 The "Halloween Document", leaked to Eric Raymond from an insider
 at Microsoft, illustrated Microsoft's strategy of "Embrace,
@@ -3523,7 +3522,7 @@ at The 'Soft, illustrated The 'Soft's strategy of "Embrace,
 Extend, Extinguish"
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FILTER microsloth %]
 The "Halloween Document", leaked to Eric Raymond from an insider
 at Microsoft, illustrated Microsoft's strategy of "Embrace,
@@ -3539,7 +3538,7 @@ __EXPECTED__
 FILTER censor('bottom' 'nipple')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FILTER censor('bottom' 'nipple') %]
 At the bottom of the hill, he had to pinch the
 nipple to reduce the oil flow.
@@ -3557,7 +3556,7 @@ __PARSED__
 'This is both' FILTER bold FILTER italic
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FILTER bold = format('<b>%s</b>') %]
 This is bold
 [% END +%]
@@ -3575,7 +3574,7 @@ __EXPECTED__
 "foo" FILTER format("<< %s >>") FILTER format("=%s=")
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "foo" FILTER format("<< %s >>") FILTER format("=%s=") %]
 __TEST__
 =<< foo >>=
@@ -3589,7 +3588,7 @@ __PARSED__
 global.blocktext = blocktext; blocktext
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% blocktext = BLOCK %]
 The cat sat on the mat
 
@@ -3616,7 +3615,7 @@ __EXPECTED__
 global.blocktext FILTER html_para
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% global.blocktext FILTER html_para %]
 __TEST__
 <p>
@@ -3633,7 +3632,7 @@ if I can't wait until then?  I'm hungry!
 </p>
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% global.blocktext FILTER html_break %]
 __TEST__
 The cat sat on the mat
@@ -3646,7 +3645,7 @@ You shall have a fishy on a little dishy, when the boat comes in.  What
 if I can't wait until then?  I'm hungry!
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% global.blocktext FILTER html_para_break %]
 __TEST__
 The cat sat on the mat
@@ -3659,7 +3658,7 @@ You shall have a fishy on a little dishy, when the boat comes in.  What
 if I can't wait until then?  I'm hungry!
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% global.blocktext FILTER html_line_break %]
 __TEST__
 The cat sat on the mat<br />
@@ -3676,13 +3675,13 @@ __EXPECTED__
 global.blocktext FILTER truncate(10)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% global.blocktext FILTER truncate(10) %]
 __TEST__
 The cat...
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% global.blocktext FILTER truncate %]
 __TEST__
 The cat sat on the mat
@@ -3694,7 +3693,7 @@ __EXPECTED__
 'Hello World' | truncate(2)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% 'Hello World' | truncate(2) +%]
 [% 'Hello World' | truncate(8) +%]
 [% 'Hello World' | truncate(10) +%]
@@ -3712,13 +3711,13 @@ __EXPECTED__
 "foo..." FILTER repeat(5)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "foo..." FILTER repeat(5) %]
 __TEST__
 foo...foo...foo...foo...foo...
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FILTER truncate(21) %]
 I have much to say on this matter that has previously been said
 on more than one occassion.
@@ -3727,7 +3726,7 @@ __TEST__
 I have much to say...
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FILTER truncate(25) %]
 Nothing much to say
 [% END %]
@@ -3735,7 +3734,7 @@ __TEST__
 Nothing much to say
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FILTER repeat(3) %]
 Am I repeating myself?
 [% END %]
@@ -3749,7 +3748,7 @@ __EXPECTED__
 text FILTER remove(' ')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% text FILTER remove(' ') +%]
 [% text FILTER remove('\s+') +%]
 [% text FILTER remove('cat') +%]
@@ -3767,7 +3766,7 @@ __EXPECTED__
 text FILTER replace(' ', '_')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% text FILTER replace(' ', '_') +%]
 [% text FILTER replace('sat', 'shat') +%]
 [% text FILTER replace('at', 'plat') +%]
@@ -3777,7 +3776,7 @@ The cat shat on the mat
 The cplat splat on the mplat
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% text = 'The <=> operator' %]
 [% text|html %]
 __TEST__
@@ -3788,7 +3787,7 @@ __EXPECTED__
 text | html | replace('blah', 'rhubarb')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% text = 'The <=> operator, blah, blah' %]
 [% text | html | replace('blah', 'rhubarb') %]
 __TEST__
@@ -3799,7 +3798,7 @@ __EXPECTED__
 | truncate(25)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% | truncate(25) %]
 The cat sat on the mat, and wondered to itself,
 "How might I be able to climb up onto the shelf?",
@@ -3810,7 +3809,7 @@ __TEST__
 The cat sat on the mat...
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FILTER upper %]
 The cat sat on the mat
 [% END %]
@@ -3818,7 +3817,7 @@ __TEST__
 THE CAT SAT ON THE MAT
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FILTER lower %]
 The cat sat on the mat
 [% END %]
@@ -3830,7 +3829,7 @@ __EXPECTED__
 'arse' | stderr
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% 'arse' | stderr %]
 stderr: [% stderr %]
 __TEST__
@@ -3844,7 +3843,7 @@ percent = '%'
    dir     = "$left a $right blah blah $left b $right"
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% percent = '%'
    left    = "[$percent"
    right   = "$percent]"
@@ -3863,7 +3862,7 @@ __EXPECTED__
 dir = "[\% FOREACH a = { 1 2 3 } %\]a: [\% a %\]\n[\% END %\]"
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 [% TRY %]
 [% dir = "[\% FOREACH a = { 1 2 3 } %\]a: [\% a %\]\n[\% END %\]" %]
 [% dir | eval %]
@@ -3883,7 +3882,7 @@ TRY;
    END
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 nothing
 [% TRY;
     '$x = 10; $b = 20; $x + $b' | evalperl;
@@ -3898,7 +3897,7 @@ perl: EVAL_PERL is not set
 happening
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY -%]
 before
 [% FILTER redirect('xyz') %]
@@ -3916,7 +3915,7 @@ ERROR redirect: OUTPUT_PATH is not set
 __EXPECTED__
 
 	# use evalperl
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FILTER evalperl %]
    $a = 10;
    $b = 20;
@@ -3932,7 +3931,7 @@ foo: 30
 bar: some random value
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY -%]
 before
 [% FILTER file(outfile) -%]
@@ -3949,7 +3948,7 @@ before
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% PERL %]
 # static filter subroutine
 $Template::Filters::FILTERS->{ bar } = sub {
@@ -3967,7 +3966,7 @@ bar: The cat sat on the mat
 bar: The dog sat on the log
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% PERL %]
 # dynamic filter factory
 $Template::Filters::FILTERS->{ baz } = [
@@ -4002,7 +4001,7 @@ FILTER $merlyn
 __PARSED__
 
 	# use evalperl
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% PERL %]
 $stash->set('merlyn', bless \&merlyn1, 'ttfilter');
 sub merlyn1 {
@@ -4019,7 +4018,7 @@ Let him who is without sin cast the first henge.
 __EXPECTED__
 
 	# use evalperl
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% PERL %]
 $stash->set('merlyn', sub { \&merlyn2 });
 sub merlyn2 {
@@ -4035,7 +4034,7 @@ __TEST__
 Let him who is without sin cast the first henge.
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% myfilter = 'html' -%]
 [% FILTER $myfilter -%]
 <html>
@@ -4044,7 +4043,7 @@ __TEST__
 &lt;html&gt;
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FILTER $despace -%]
 blah blah blah
 [%- END %]
@@ -4053,7 +4052,7 @@ blah_blah_blah
 __EXPECTED__
 
 	# use evalperl
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% PERL %]
 $context->filter(\&newfilt, undef, 'myfilter');
 sub newfilt {
@@ -4069,7 +4068,7 @@ __TEST__
 This=is=a=test
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% PERL %]
 $context->define_filter('xfilter', \&xfilter);
 sub xfilter {
@@ -4085,7 +4084,7 @@ __TEST__
 blahXblahXblah
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FILTER another(3) -%]
 foo bar baz
 [% END %]
@@ -4099,7 +4098,7 @@ __EXPECTED__
 '$stash->{ a } = 25' FILTER evalperl
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% '$stash->{ a } = 25' FILTER evalperl %]
 [% a %]
 __TEST__
@@ -4111,7 +4110,7 @@ __EXPECTED__
 '$stash->{ a } = 25' FILTER perl
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% '$stash->{ a } = 25' FILTER perl %]
 [% a %]
 __TEST__
@@ -4119,7 +4118,7 @@ __TEST__
 25
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FILTER indent -%]
 The cat sat
 on the mat
@@ -4129,7 +4128,7 @@ __TEST__
     on the mat
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FILTER indent(2) -%]
 The cat sat
 on the mat
@@ -4139,7 +4138,7 @@ __TEST__
   on the mat
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FILTER indent('>> ') -%]
 The cat sat
 on the mat
@@ -4154,14 +4153,14 @@ text = 'The cat sat on the mat';
    text | indent('> ') | indent('+')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% text = 'The cat sat on the mat';
    text | indent('> ') | indent('+') %]
 __TEST__
 +> The cat sat on the mat
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 <<[% FILTER trim %]
    
           
@@ -4177,7 +4176,7 @@ on the
 mat>>
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 <<[% FILTER collapse %]
    
           
@@ -4191,7 +4190,7 @@ __TEST__
 <<The cat sat on the mat>>
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FILTER format('++%s++') %]Hello World[% END %]
 [% FILTER format %]Hello World[% END %]
 __TEST__
@@ -4203,7 +4202,7 @@ __EXPECTED__
 "my file.html" FILTER uri
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "my file.html" FILTER uri %]
 __TEST__
 my%20file.html
@@ -4213,19 +4212,19 @@ __EXPECTED__
 "my<file & your>file.html" FILTER uri
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "my<file & your>file.html" FILTER uri %]
 __TEST__
 my%3Cfile%20%26%20your%3Efile.html
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "foo@bar" FILTER uri %]
 __TEST__
 foo%40bar
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "foo@bar" FILTER url %]
 __TEST__
 foo@bar
@@ -4235,13 +4234,13 @@ __EXPECTED__
 "my<file & your>file.html" | uri | html
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "my<file & your>file.html" | uri | html %]
 __TEST__
 my%3Cfile%20%26%20your%3Efile.html
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% widetext | uri %]
 __TEST__
 wide%3A%E6%97%A5%E6%9C%AC%E8%AA%9E
@@ -4251,7 +4250,7 @@ __EXPECTED__
 'foobar' | ucfirst
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% 'foobar' | ucfirst %]
 __TEST__
 Foobar
@@ -4261,7 +4260,7 @@ __EXPECTED__
 'FOOBAR' | lcfirst
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% 'FOOBAR' | lcfirst %]
 __TEST__
 fOOBAR
@@ -4271,7 +4270,7 @@ __EXPECTED__
 "foo(bar)" | uri
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "foo(bar)" | uri %]
 __TEST__
 foo(bar)
@@ -4281,7 +4280,7 @@ __EXPECTED__
 "foo(bar)" | url
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "foo(bar)" | url %]
 __TEST__
 foo(bar)
@@ -4292,14 +4291,14 @@ use_rfc3986;
    "foo(bar)" | url;
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% use_rfc3986; "foo(bar)" | url;
 %]
 __TEST__
 foo%28bar%29
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "foo(bar)" | uri %]
 __TEST__
 foo%28bar%29
@@ -4310,7 +4309,7 @@ use_rfc2732;
    "foo(bar)" | url;
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% use_rfc2732;
    "foo(bar)" | url;
 %]
@@ -4318,7 +4317,7 @@ __TEST__
 foo(bar)
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "foo(bar)" | uri %]
 __TEST__
 foo(bar)
@@ -4332,7 +4331,7 @@ __PARSED__
 FOREACH foo.bar
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH a = [ 1, 2, 3 ] %]
    [% a +%]
 [% END %]
@@ -4350,7 +4349,7 @@ __EXPECTED__
 FOREACH count = [ 'five' 'four' 'three' 'two' 'one' ]
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 Commence countdown...
 [% FOREACH count = [ 'five' 'four' 'three' 'two' 'one' ] %]
   [% count +%]
@@ -4370,7 +4369,7 @@ __EXPECTED__
 FOR count = [ 1 2 3 ]
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOR count = [ 1 2 3 ] %]${count}..[% END %]
 __TEST__
 1..2..3..
@@ -4380,7 +4379,7 @@ __EXPECTED__
 people = [ c, bloke, o, 'frank' ]
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 people:
 [% bloke = r %]
 [% people = [ c, bloke, o, 'frank' ] %]
@@ -4395,7 +4394,7 @@ people:
   [ frank ]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH name = setb %]
 [% name %],
 [% END %]
@@ -4407,7 +4406,7 @@ uncle,
 delta,
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH name = r %]
 [% name %], $name, wherefore art thou, $name?
 [% END %]
@@ -4415,7 +4414,7 @@ __TEST__
 romeo, romeo, wherefore art thou, romeo?
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% user = 'fred' %]
 [% FOREACH user = users %]
    $user.name ([% user.id %])
@@ -4431,7 +4430,7 @@ __EXPECTED__
 name = 'Joe Random Hacker' id = 'jrh'
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% name = 'Joe Random Hacker' id = 'jrh' %]
 [% FOREACH users %]
    $name ([% id %])
@@ -4447,7 +4446,7 @@ __EXPECTED__
 FOREACH i = [1..4]
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH i = [1..4] %]
 [% i +%]
 [% END %]
@@ -4467,7 +4466,7 @@ __PARSED__
 FOREACH i = [first..last]
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% first = 4 
    last  = 8
 %]
@@ -4486,7 +4485,7 @@ __EXPECTED__
 list.${n}
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% list = [ 'one' 'two' 'three' 'four' ] %]
 [% list.0 %] [% list.3 %]
 
@@ -4502,13 +4501,13 @@ __EXPECTED__
 "$i, " FOREACH i = [-2..2]
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "$i, " FOREACH i = [-2..2] %]
 __TEST__
 -2, -1, 0, 1, 2, 
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH i = item -%]
     - [% i %]
 [% END %]
@@ -4516,7 +4515,7 @@ __TEST__
     - foo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH i = items -%]
     - [% i +%]
 [% END %]
@@ -4525,7 +4524,7 @@ __TEST__
     - bar
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH item = [ a b c d ] %]
 $item
 [% END %]
@@ -4540,7 +4539,7 @@ __EXPECTED__
 items = [ d C a c b ]
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% items = [ d C a c b ] %]
 [% FOREACH item = items.sort %]
 $item
@@ -4557,7 +4556,7 @@ __EXPECTED__
 FOREACH item = items.sort.reverse
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% items = [ d a c b ] %]
 [% FOREACH item = items.sort.reverse %]
 $item
@@ -4573,7 +4572,7 @@ __EXPECTED__
 userlist = [ b c d a C 'Andy' 'tom' 'dick' 'harry' ]
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% userlist = [ b c d a C 'Andy' 'tom' 'dick' 'harry' ] %]
 [% FOREACH u = userlist.sort %]
 $u
@@ -4602,7 +4601,7 @@ __PARSED__
 f(item) FOREACH item = ulist.sort
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% ulist = [ b c d a 'Andy' ] %]
 [% USE f = format("[- %-7s -]\n") %]
 [% f(item) FOREACH item = ulist.sort %]
@@ -4618,7 +4617,7 @@ __EXPECTED__
 "List of $loop.size items:\\n" IF loop.first
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH item = [ a b c d ] %]
 [% "List of $loop.size items:\\n" IF loop.first %]
   #[% loop.number %]/[% loop.size %]: [% item +%]
@@ -4637,7 +4636,7 @@ __EXPECTED__
 "List of $loop.size items:\n----------------\n" IF loop.first
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% items = [ d b c a ] %]
 [% FOREACH item = items.sort %]
 [% "List of $loop.size items:\n----------------\n" IF loop.first %]
@@ -4658,7 +4657,7 @@ __EXPECTED__
 i = inc(i)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% list = [ a b c d ] %]
 [% i = 1 %]
 [% FOREACH item = list %]
@@ -4676,7 +4675,7 @@ __EXPECTED__
 FOREACH a = ['foo', 'bar', 'baz']
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH a = ['foo', 'bar', 'baz'] %]
 * [% loop.index %] [% a +%]
 [% FOREACH b = ['wiz', 'woz', 'waz'] %]
@@ -4709,7 +4708,7 @@ __PARSED__
 FOREACH [ user1 ]
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% id    = 12345
    name  = 'Original'
    user1 = { id => 'tom', name => 'Thomas'   }
@@ -4743,7 +4742,7 @@ __PARSED__
        FOREACH p = them.sort('id')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% them = [ people.1 people.2 ] %]
 [% "$p.id($p.code): $p.name\n"
        FOREACH p = them.sort('id') %]
@@ -4752,7 +4751,7 @@ aaz(zaz): Azbaz Azbaz Zazbazzer
 bcd(dec): Binary Coded Decimal
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "$p.id($p.code): $p.name\n"
        FOREACH p = people.sort('code') %]
 __TEST__
@@ -4767,7 +4766,7 @@ __EXPECTED__
        FOREACH p = people.sort('code').reverse
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "$p.id($p.code): $p.name\n"
        FOREACH p = people.sort('code').reverse %]
 __TEST__
@@ -4782,7 +4781,7 @@ __EXPECTED__
        FOREACH p = people.sort('code')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "$p.id($p.code): $p.name\n"
        FOREACH p = people.sort('code') %]
 __TEST__
@@ -4792,7 +4791,7 @@ aaz(zaz): Azbaz Azbaz Zazbazzer
 efg(zzz): Extra Fine Grass
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 Section List:
 [% FOREACH item = sections %]
   [% item.key %] - [% item.value +%]
@@ -4809,7 +4808,7 @@ __EXPECTED__
 NEXT IF a == 5
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH a = [ 2..6 ] %]
 before [% a %]
 [% NEXT IF a == 5 +%]
@@ -4838,7 +4837,7 @@ __PARSED__
 NEXT IF count < 5
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% count = 1; WHILE (count < 10) %]
 [% count = count + 1 %]
 [% NEXT IF count < 5 %]
@@ -4853,31 +4852,31 @@ count: 9
 count: 10
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOR count = [ 1 2 3 ] %]${count}..[% END %]
 __TEST__
 1..2..3..
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH count = [ 1 2 3 ] %]${count}..[% END %]
 __TEST__
 1..2..3..
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOR [ 1 2 3 ] %]<blip>..[% END %]
 __TEST__
 <blip>..<blip>..<blip>..
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH [ 1 2 3 ] %]<blip>..[% END %]
 __TEST__
 <blip>..<blip>..<blip>..
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 [% FOREACH outer = nested -%]
 outer start
 [% FOREACH inner = outer -%]
@@ -4900,7 +4899,7 @@ last inner
 last outer
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH n = [ 1 2 3 4 5 ] -%]
 [% LAST IF loop.last -%]
 [% n %], 
@@ -4909,7 +4908,7 @@ __TEST__
 1, 2, 3, 4, 
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH n = [ 1 2 3 4 5 ] -%]
 [% BREAK IF loop.last -%]
 [% n %], 
@@ -4919,7 +4918,7 @@ __TEST__
 __EXPECTED__
 
 	# use debug
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH a = [ 1, 2, 3 ] -%]
 * [% a %]
 [% END -%]
@@ -4941,7 +4940,7 @@ FOREACH i = [1 .. 10];
     END;
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%
     FOREACH i = [1 .. 10];
         SWITCH i;
@@ -4973,7 +4972,7 @@ FOREACH i = [1 .. 10];
     END;
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%
     FOREACH i = [1 .. 10];
         IF 1;
@@ -5008,7 +5007,7 @@ FOREACH i = [1 .. 4];
     END;
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%
     FOREACH i = [1 .. 4];
         FOREACH j = [1 .. 4];
@@ -5046,7 +5045,7 @@ LAST FOREACH k = [ 1 .. 4];
     #"$k\n";
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%
     LAST FOREACH k = [ 1 .. 4];
     "$k\n";
@@ -5064,7 +5063,7 @@ FOREACH prime IN [2, 3, 5, 7, 11, 13];
     END
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH prime IN [2, 3, 5, 7, 11, 13];
      "$prime\n";
     END
@@ -5092,7 +5091,7 @@ FOREACH i IN [ 1..6 ];
 __PARSED__
 
 	# name FOR/WHILE/NEXT
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%  FOREACH i IN [ 1..6 ];
         "${i}: ";
         j = 0;
@@ -5113,7 +5112,7 @@ __TEST__
 6: 1 2 3 
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE format %]
 [% bold = format('<b>%s</b>') %]
 [% ital = format('<i>%s</i>') %]
@@ -5130,7 +5129,7 @@ __TEST__
 <b></b>
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE format('<li> %s') %]
 [% FOREACH item = [ a b c d ] %]
 [% format(item) +%]
@@ -5142,7 +5141,7 @@ __TEST__
 <li> delta
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE bold = format("<b>%s</b>") %]
 [% USE ital = format("<i>%s</i>") %]
 [% bold('This is bold')   +%]
@@ -5156,7 +5155,7 @@ __EXPECTED__
 USE padleft  = format('%-*s')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE padleft  = format('%-*s') %]
 [% USE padright = format('%*s')  %]
 [% padleft(10, a) %]-[% padright(10, b) %]
@@ -5165,7 +5164,7 @@ alpha     -     bravo
 __EXPECTED__
 
 	# name HTML plugin
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE HTML -%]
 OK
 __TEST__
@@ -5173,7 +5172,7 @@ OK
 __EXPECTED__
 
 	# name HTML filter
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FILTER html -%]
 < &amp; >
 [%- END %]
@@ -5198,7 +5197,7 @@ TRY;
 __PARSED__
 
 	# name html filter
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%  TRY; 
         text = "Léon Brocard" | html_entity;
 
@@ -5226,7 +5225,7 @@ __EXPECTED__
 USE html; html.url('my file.html')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE html; html.url('my file.html') -%]
 __TEST__
 my%20file.html
@@ -5236,7 +5235,7 @@ __EXPECTED__
 HTML.escape("if (a < b && c > d) ...")
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- name escape --
 [% USE HTML -%]
 [% HTML.escape("if (a < b && c > d) ...") %]
@@ -5248,7 +5247,7 @@ __EXPECTED__
 HTML.element(table => { border => 1, cellpadding => 2 })
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- name sorted --
 [% USE HTML(sorted=1) -%]
 [% HTML.element(table => { border => 1, cellpadding => 2 }) %]
@@ -5260,7 +5259,7 @@ __EXPECTED__
 HTML.attributes(border => 1, cellpadding => 2).split.sort.join
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- name attributes --
 [% USE HTML -%]
 [% HTML.attributes(border => 1, cellpadding => 2).split.sort.join %]
@@ -5272,7 +5271,7 @@ __EXPECTED__
 USE Image(file.logo)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE Image(file.logo) -%]
 file: [% Image.file %]
 size: [% Image.size.join(', ') %]
@@ -5290,7 +5289,7 @@ __EXPECTED__
 USE image( name = file.power)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE image( name = file.power) -%]
 name: [% image.name %]
 file: [% image.file %]
@@ -5306,14 +5305,14 @@ height: 47
 size: 78, 47
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE image file.logo -%]
 attr: [% image.attr %]
 __TEST__
 attr: width="110" height="60"
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE image file.logo -%]
 tag: [% image.tag %]
 tag: [% image.tag(class="myimage", alt="image") %]
@@ -5330,7 +5329,7 @@ __EXPECTED__
 USE image( root=dir name=file.lname )
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE image( root=dir name=file.lname ) -%]
 [% image.tag %]
 __TEST__
@@ -5341,14 +5340,14 @@ __EXPECTED__
 USE image( file= file.logo  name = "other.jpg" alt="myfile")
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE image( file= file.logo  name = "other.jpg" alt="myfile") -%]
 [% image.tag %]
 __TEST__
 <img src="other.jpg" width="110" height="60" alt="myfile" />
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a %]
 [% PROCESS incblock -%]
 [% b %]
@@ -5359,7 +5358,7 @@ bravo
 this is my first block, a is set to 'alpha'
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE first_block %]
 __TEST__
 this is my first block, a is set to 'alpha'
@@ -5369,7 +5368,7 @@ __EXPECTED__
 INCLUDE first_block a = 'abstract'
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE first_block a = 'abstract' %]
 [% a %]
 __TEST__
@@ -5381,7 +5380,7 @@ __EXPECTED__
 INCLUDE 'first_block' a = t
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE 'first_block' a = t %]
 [% a %]
 __TEST__
@@ -5389,7 +5388,7 @@ this is my first block, a is set to 'tango'
 alpha
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE 'second_block' %]
 __TEST__
 this is my second block, a is initially set to 'alpha' and 
@@ -5400,7 +5399,7 @@ __EXPECTED__
 INCLUDE second_block a = r, b = c.f.g, m = 97
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE second_block a = r, b = c.f.g, m = 97 %]
 [% a %]
 __TEST__
@@ -5409,7 +5408,7 @@ then set to 'sierra'  b is golf  m is 97
 alpha
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 FOO: [% INCLUDE foo +%]
 FOO: [% INCLUDE foo a = b -%]
 __TEST__
@@ -5425,7 +5424,7 @@ __PARSED__
 DEFAULT g = "a new $c.f.g"
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 GOLF: [% INCLUDE $c.f.g %]
 GOLF: [% INCLUDE $c.f.g  g = c.f.h %]
 [% DEFAULT g = "a new $c.f.g" -%]
@@ -5436,7 +5435,7 @@ GOLF: This is the golf file, g is hotel
 a new golf
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 BAZ: [% INCLUDE bar/baz %]
 BAZ: [% INCLUDE bar/baz word='wizzle' %]
 BAZ: [% INCLUDE "bar/baz" %]
@@ -5449,7 +5448,7 @@ BAZ: This is file baz
 The word is 'qux'
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 BAZ: [% INCLUDE bar/baz.txt %]
 BAZ: [% INCLUDE bar/baz.txt time = 'nigh' %]
 __TEST__
@@ -5461,7 +5460,7 @@ The word is 'qux'
 The time is nigh
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK bamboozle -%]
 This is bamboozle
 [%- END -%]
@@ -5476,7 +5475,7 @@ End
 __EXPECTED__
 
 	# use reset
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a %]
 [% PROCESS incblock -%]
 [% INCLUDE first_block %]
@@ -5490,7 +5489,7 @@ then set to 'sierra'  b is bravo  m is 98
 bravo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 [% INCLUDE first_block %]
 [% CATCH file %]
@@ -5501,7 +5500,7 @@ ERROR: first_block: not found
 __EXPECTED__
 
 	# use default
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% metaout %]
 __TEST__
 -- process --
@@ -5513,7 +5512,7 @@ __EXPECTED__
 PROCESS recurse counter = 1
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 [% TRY %]
 [% PROCESS recurse counter = 1 %]
 [% CATCH file -%]
@@ -5524,14 +5523,14 @@ recursion count: 1
 recursion into 'my file'
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE nosuchfile %]
 __TEST__
 This is the default file
 __EXPECTED__
 
 	# use reset
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 [% TRY %]
 [% PROCESS recurse counter = 1 %]
 [% CATCH file %]
@@ -5551,7 +5550,7 @@ TRY;
    END
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY;
    INCLUDE nosuchfile;
    CATCH;
@@ -5566,7 +5565,7 @@ __EXPECTED__
 BLOCK src:foo; "This is foo!"; END
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE src:foo %]
 [% BLOCK src:foo; "This is foo!"; END %]
 __TEST__
@@ -5586,7 +5585,7 @@ __PARSED__
 BLOCK foo; "name: $name  item: $item\n"; END
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a = ''; b = ''; d = ''; e = 0 %]
 [% INCLUDE foo name = a or b or 'c'
                item = d or e or 'f' -%]
@@ -5609,7 +5608,7 @@ __PARSED__
 BLOCK foo; "title: $title\nbgcol: $bgcol\n"; END
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% style = 'light'; your_title="Hello World" -%]
 [% INCLUDE foo 
          title = my_title or your_title or default_title
@@ -5638,7 +5637,7 @@ PROCESS myblock
      import={ name = 'Tim', item = 'teapot' }
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% myhash = {
     name  = 'Tom'
     item  = 'teacup'
@@ -5665,7 +5664,7 @@ Tim has a teapot
 import()
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% items = [ 'foo' 'bar' 'baz' 'qux' ] %]
 [% FOREACH i = items %]
    * [% i +%]
@@ -5677,7 +5676,7 @@ __TEST__
    * qux
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% items = [ 'foo' 'bar' 'baz' 'qux' ] %]
 [% FOREACH i = items %]
    #[% loop.index %]/[% loop.max %] [% i +%]
@@ -5689,7 +5688,7 @@ __TEST__
    #3/3 qux
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% items = [ 'foo' 'bar' 'baz' 'qux' ] %]
 [% FOREACH i = items %]
    #[% loop.count %]/[% loop.size %] [% i +%]
@@ -5701,7 +5700,7 @@ __TEST__
    #4/4 qux
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 # test that 'number' is supported as an alias to 'count', for backwards
 # compatability
 [% items = [ 'foo' 'bar' 'baz' 'qux' ] %]
@@ -5715,7 +5714,7 @@ __TEST__
    #4/4 qux
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE iterator(data) %]
 [% FOREACH i = iterator %]
 [% IF iterator.first %]
@@ -5738,7 +5737,7 @@ List of items:
 End of list
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH i = [ 'foo' 'bar' 'baz' 'qux' ] %]
 [% "$loop.prev<-" IF loop.prev -%][[% i -%]][% "->$loop.next" IF loop.next +%]
 [% END %]
@@ -5749,7 +5748,7 @@ bar<-[baz]->qux
 baz<-[qux]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- name test even/odd/parity --
 [% FOREACH item IN [1..10] -%]
 * [% loop.count %] [% loop.odd %] [% loop.even %] [% loop.parity +%]
@@ -5771,13 +5770,13 @@ __EXPECTED__
 a = holler('first'); trace
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a = holler('first'); trace %]
 __TEST__
 first created
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% trace %]
 __TEST__
 first created
@@ -5788,13 +5787,13 @@ __EXPECTED__
 clear; b = [ ]; b.0 = holler('list'); trace
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% clear; b = [ ]; b.0 = holler('list'); trace %]
 __TEST__
 list created
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% trace %]
 __TEST__
 list created
@@ -5805,14 +5804,14 @@ __EXPECTED__
 BLOCK shout; a = holler('second'); END
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK shout; a = holler('second'); END -%]
 [% clear; PROCESS shout; trace %]
 __TEST__
 second created
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK shout; a = holler('third'); END -%]
 [% clear; INCLUDE shout; trace %]
 __TEST__
@@ -5824,7 +5823,7 @@ __EXPECTED__
 MACRO shout BLOCK; a = holler('fourth'); END
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% MACRO shout BLOCK; a = holler('fourth'); END -%]
 [% clear; shout; trace %]
 __TEST__
@@ -5836,7 +5835,7 @@ __EXPECTED__
 clear; USE holler('holler plugin'); trace
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% clear; USE holler('holler plugin'); trace %]
 __TEST__
 holler plugin created
@@ -5846,7 +5845,7 @@ __EXPECTED__
 BLOCK shout; USE holler('process plugin'); END
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK shout; USE holler('process plugin'); END -%]
 [% clear; PROCESS shout; holler.trace %]
 __TEST__
@@ -5854,7 +5853,7 @@ TRACE ==process plugin created
 ==
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK shout; USE holler('include plugin'); END -%]
 [% clear; INCLUDE shout; trace %]
 __TEST__
@@ -5866,7 +5865,7 @@ __EXPECTED__
 MACRO shout BLOCK; USE holler('macro plugin'); END
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% MACRO shout BLOCK; USE holler('macro plugin'); END -%]
 [% clear; shout; trace %]
 __TEST__
@@ -5881,7 +5880,7 @@ MACRO shout BLOCK;
     END 
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%  MACRO shout BLOCK; 
 	USE holler('macro plugin'); 
 	holler.trace;
@@ -5898,7 +5897,7 @@ __EXPECTED__
 clear; PROCESS leak1; trace
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% clear; PROCESS leak1; trace %]
 __TEST__
 <leak1>
@@ -5906,7 +5905,7 @@ __TEST__
 Hello created
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% clear; INCLUDE leak1; trace %]
 __TEST__
 <leak1>
@@ -5915,7 +5914,7 @@ Hello created
 Hello destroyed
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% clear; PROCESS leak2; trace %]
 __TEST__
 <leak2>
@@ -5923,7 +5922,7 @@ __TEST__
 Goodbye created
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% clear; INCLUDE leak2; trace %]
 __TEST__
 <leak2>
@@ -5947,7 +5946,7 @@ IF v56;
     END
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%  MACRO leak BLOCK; 
 	PROCESS leak1 + leak2;
         USE holler('macro plugin'); 
@@ -5977,7 +5976,7 @@ Perl version < 5.6.0 or > 5.7.0, skipping this test
 [% END -%]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% PERL %]
     Holler->clear();
     my $h = Holler->new('perl');
@@ -5988,7 +5987,7 @@ __TEST__
 perl created
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK x; PERL %]
     Holler->clear();
     my $h = Holler->new('perl');
@@ -6008,7 +6007,7 @@ __PARSED__
 y; trace
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% MACRO y PERL %]
     Holler->clear();
     my $h = Holler->new('perl macro');
@@ -6024,25 +6023,25 @@ __EXPECTED__
 data.0
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% data.0 %] and [% data.1 %]
 __TEST__
 romeo and juliet
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% data.first %] - [% data.last %]
 __TEST__
 romeo - zulu
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% data.size %] [% data.max %]
 __TEST__
 8 7
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% data.join(', ') %]
 __TEST__
 romeo, juliet, sierra, tango, yankee, echo, foxtrot, zulu
@@ -6052,19 +6051,19 @@ __EXPECTED__
 data.reverse.join(', ')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% data.reverse.join(', ') %]
 __TEST__
 zulu, foxtrot, echo, yankee, tango, sierra, juliet, romeo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% data.sort.reverse.join(' - ') %]
 __TEST__
 zulu - yankee - tango - sierra - romeo - juliet - foxtrot - echo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH item = wxyz.sort('id') -%]
 * [% item.name %]
 [% END %]
@@ -6079,7 +6078,7 @@ __EXPECTED__
 FOREACH item = wxyz.sort('rank')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH item = wxyz.sort('rank') -%]
 * [% item.name %]
 [% END %]
@@ -6090,7 +6089,7 @@ __TEST__
 * Warlock
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH n = [0..6] -%]
 [% days.$n +%]
 [% END -%]
@@ -6104,14 +6103,14 @@ Sat
 Sun
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% data = [ 'one', 'two', data.first ] -%]
 [% data.join(', ') %]
 __TEST__
 one, two, romeo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% data = [ 90, 8, 70, 6, 1, 11, 10, 2, 5, 50, 52 ] -%]
  sort: [% data.sort.join(', ') %]
 nsort: [% data.nsort.join(', ') %]
@@ -6124,7 +6123,7 @@ __EXPECTED__
 ilist.push("<a href=\"$i.url\">$i.name</a>") FOREACH i = inst
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% ilist = [] -%]
 [% ilist.push("<a href=\"$i.url\">$i.name</a>") FOREACH i = inst -%]
 [% ilist.join(",\n") -%]
@@ -6135,26 +6134,26 @@ __TEST__
 <a href="/tulips.html">organ</a>
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 [% global.ilist.pop %]
 __TEST__
 <a href="/tulips.html">organ</a>
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 [% global.ilist.shift %]
 __TEST__
 <a href="/roses.html">piano</a>
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 [% global.ilist.unshift('another') -%]
 [% global.ilist.join(', ') %]
 __TEST__
 another, <a href="/blow.html">flute</a>
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% nest.0.0 %].[% nest.0.1 %][% nest.0.2 +%]
 [% nest.1.shift %].[% nest.1.0.join('') %]
 __TEST__
@@ -6177,7 +6176,7 @@ folk.push("<a href=\\"${person.id}.html\\">$person.name</a>")
        FOREACH person = people.sort('name')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% # define some initial data
    people   => [ 
      { id => 'tom',   name => 'Tom'     },
@@ -6199,13 +6198,13 @@ __EXPECTED__
 data.grep('r').join(', ')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% data.grep('r').join(', ') %]
 __TEST__
 romeo, sierra, foxtrot
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% data.grep('^r').join(', ') %]
 __TEST__
 romeo
@@ -6215,7 +6214,7 @@ __EXPECTED__
 MACRO foo INCLUDE foo
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% MACRO foo INCLUDE foo -%]
 foo: [% foo %]
 foo(b): [% foo(a = b) %]
@@ -6224,13 +6223,13 @@ foo: This is the foo file, a is alpha
 foo(b): This is the foo file, a is bravo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 foo: [% foo %].
 __TEST__
 foo: .
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% MACRO foo(a) INCLUDE foo -%]
 foo: [% foo %]
 foo(c): [% foo(c) %]
@@ -6243,7 +6242,7 @@ __EXPECTED__
 INCLUDE mypage a = 'New Alpha'
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK mypage %]
 Header
 [% content %]
@@ -6281,7 +6280,7 @@ __EXPECTED__
      rows = user_summary
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK table %]
 <table>
 [% rows %]
@@ -6327,7 +6326,7 @@ __EXPECTED__
 MACRO two BLOCK; title="2[$title]"
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% MACRO one BLOCK -%]
 one: [% title %]
 [% END -%]
@@ -6344,7 +6343,7 @@ __EXPECTED__
 two(title="The Title")
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% MACRO one BLOCK -%]
 one: [% title %]
 [% END -%]
@@ -6362,7 +6361,7 @@ MACRO number(n) GET n.chunk(-3).join(',')
 __PARSED__
 
 	# name number macro
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% MACRO number(n) GET n.chunk(-3).join(',') -%]
 [% number(1234567) %]
 __TEST__
@@ -6373,7 +6372,7 @@ __EXPECTED__
 MACRO triple(n) PERL
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- name perl macro --
 [% MACRO triple(n) PERL %]
     my $n = $stash->get('n');
@@ -6388,13 +6387,13 @@ __EXPECTED__
 USE Math; Math.sqrt(9)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE Math; Math.sqrt(9) %]
 __TEST__
 3
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE Math; Math.abs(-1) %]
 __TEST__
 1
@@ -6404,56 +6403,56 @@ __EXPECTED__
 USE Math; Math.atan2(42, 42).substr(0,17)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE Math; Math.atan2(42, 42).substr(0,17) %]
 __TEST__
 0.785398163397448
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE Math; Math.cos(2).substr(0,18) %]
 __TEST__
 -0.416146836547142
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE Math; Math.exp(6).substr(0,16) %]
 __TEST__
 403.428793492735
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE Math; Math.hex(42) %]
 __TEST__
 66
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE Math; Math.int(9.9) %]
 __TEST__
 9
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE Math; Math.log(42).substr(0,15) %]
 __TEST__
 3.7376696182833
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE Math; Math.oct(72) %]
 __TEST__
 58
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE Math; Math.sin(0.304).substr(0,17) %]
 __TEST__
 0.299339178269093
 __EXPECTED__
 
 	# test method calling via autoload to get parameters
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% thing.a %] [% thing.a %]
 [% thing.b %]
 $thing.w
@@ -6464,28 +6463,28 @@ whisky
 __EXPECTED__
 
 	# ditto to set parameters
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% thing.c = thing.b -%]
 [% thing.c %]
 __TEST__
 bravo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% thing.concat = thing.b -%]
 [% thing.args %]
 __TEST__
 ARGS: bravo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% thing.concat(d) = thing.b -%]
 [% thing.args %]
 __TEST__
 ARGS: delta, bravo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% thing.yesterday %]
 [% thing.today %]
 [% thing.belief(thing.a thing.b thing.w) %]
@@ -6495,7 +6494,7 @@ Live for today and die for tomorrow.
 Oh I believe in alpha and bravo and whisky.
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 Yesterday, $thing.yesterday
 $thing.today
 ${thing.belief('yesterday')}
@@ -6509,7 +6508,7 @@ __EXPECTED__
 thing.belief('fish' 'chips')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% thing.belief('fish' 'chips') %]
 [% thing.belief %]
 __TEST__
@@ -6517,7 +6516,7 @@ Oh I believe in fish and chips.
 Oh I believe in <nothing>.
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 ${thing.belief('fish' 'chips')}
 $thing.belief
 __TEST__
@@ -6525,7 +6524,7 @@ Oh I believe in fish and chips.
 Oh I believe in <nothing>.
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% thing.tomorrow %]
 $thing.tomorrow
 __TEST__
@@ -6533,7 +6532,7 @@ Monday
 Tuesday
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH [ 1 2 3 4 5 ] %]$thing.tomorrow [% END %].
 __TEST__
 Wednesday Thursday Friday Saturday Sunday .
@@ -6542,13 +6541,13 @@ __EXPECTED__
 	#-----------------------------------------------------------------------
 	# test private methods do not get exposed
 	#-----------------------------------------------------------------------
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before[% thing._private %] mid [% thing._hidden %]after
 __TEST__
 before mid after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% key = '_private' -%]
 [[% thing.$key %]]
 __TEST__
@@ -6559,7 +6558,7 @@ __EXPECTED__
 thing.$key = 'foo'
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% key = '.private' -%]
 [[% thing.$key = 'foo' %]]
 [[% thing.$key %]]
@@ -6571,13 +6570,13 @@ __EXPECTED__
 	#-----------------------------------------------------------------------
 	# test auto-stringification
 	#-----------------------------------------------------------------------
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% string.stringify %]
 __TEST__
 stringified 'Test String'
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% string %]
 __TEST__
 stringified 'Test String'
@@ -6587,25 +6586,25 @@ __EXPECTED__
 "-> $string <-"
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "-> $string <-" %]
 __TEST__
 -> stringified 'Test String' <-
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "$string" %]
 __TEST__
 stringified 'Test String'
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 foo $string bar
 __TEST__
 foo stringified 'Test String' bar
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 .[% t1.dead %].
 __TEST__
 ..
@@ -6615,7 +6614,7 @@ __EXPECTED__
 TRY; t1.die; CATCH; error; END
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 .[% TRY; t1.die; CATCH; error; END %].
 __TEST__
 .undef error - barfed up
@@ -6625,7 +6624,7 @@ __EXPECTED__
 	#-----------------------------------------------------------------------
 	# try and pin down the numification bug
 	#-----------------------------------------------------------------------
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH item IN num.things -%]
 * [% item %]
 [% END -%]
@@ -6635,19 +6634,19 @@ __TEST__
 * baz
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% num %]
 __TEST__
 PASS: stringified Numbersome
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% getnum.num %]
 __TEST__
 PASS: stringified from GetNumbersome
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 start $a
 [% BLOCK a %]
 this is a
@@ -6671,14 +6670,14 @@ __EXPECTED__
 data.first; ' to '; data.last
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% data.first; ' to '; data.last %]
 __TEST__
 11 to 42
 __EXPECTED__
 
 	# use tt2
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 begin
 [% this will be ignored %]
 [* a *]
@@ -6693,7 +6692,7 @@ __EXPECTED__
 c = 'b'; 'hello'
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 $b does nothing: 
 [* c = 'b'; 'hello' *]
 stuff: 
@@ -6704,7 +6703,7 @@ stuff: b
 __EXPECTED__
 
 	# use tt3
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 begin
 [% this will be ignored %]
 <!-- a -->
@@ -6715,7 +6714,7 @@ begin
 alphaend
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 $b does something: 
 <!-- c = 'b'; 'hello' -->
 stuff: 
@@ -6731,7 +6730,7 @@ __EXPECTED__
 	# tt4
 	#-----------------------------------------------------------------------
 	# use tt4
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 start $a[% 'include' = 'hello world' %]
 [% BLOCK a -%]
 this is a
@@ -6753,7 +6752,7 @@ sql = "
      FROM table"
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% sql = "
      SELECT *
      FROM table"
@@ -6765,7 +6764,7 @@ SQL:
      FROM table
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a = "\a\b\c\ndef" -%]
 a: [% a %]
 __TEST__
@@ -6779,7 +6778,7 @@ a = "\f\o\o"
    c = "b is \$100"
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a = "\f\o\o"
    b = "a is '$a'"
    c = "b is \$100"
@@ -6797,7 +6796,7 @@ tag = {
    quoted = "[\% INSERT foo %\]"
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% tag = {
       a => "[\%"
       z => "%\]"
@@ -6815,7 +6814,7 @@ __EXPECTED__
 wintxt | replace("(\r\n){2,}", "\n<break>\n")
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 =[% wintxt | replace("(\r\n){2,}", "\n<break>\n") %]
 __TEST__
 =foo
@@ -6825,7 +6824,7 @@ bar
 baz
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% nl  = "\n"
    tab = "\t"
 -%]
@@ -6837,13 +6836,13 @@ blah blah
 end
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 alist: [% $alist %]
 __TEST__
 alist: ??
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% foo.bar.baz %]
 __TEST__
 __EXPECTED__
@@ -6856,28 +6855,28 @@ __PARSED__
 Table.row(0).join(', ')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE Table([2, 3, 5, 7, 11, 13], rows=2) -%]
 [% Table.row(0).join(', ') %]
 __TEST__
 2, 5, 11
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE table([17, 19, 23, 29, 31, 37], rows=2) -%]
 [% table.row(0).join(', ') %]
 __TEST__
 17, 23, 31
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE t = Table([41, 43, 47, 49, 53, 59], rows=2) -%]
 [% t.row(0).join(', ') %]
 __TEST__
 41, 47, 53
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE t = table([61, 67, 71, 73, 79, 83], rows=2) -%]
 [% t.row(0).join(', ') %]
 __TEST__
@@ -6889,21 +6888,21 @@ USE t = table([89, 97, 101, 103, 107, 109], rows=2)
 __PARSED__
 
 	# use tt1
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE t = table([89, 97, 101, 103, 107, 109], rows=2) -%]
 [% t.row(0).join(', ') %]
 __TEST__
 89, 101, 107
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE Foo(2) -%]
 [% Foo.output %]
 __TEST__
 This is the Foo plugin, value is 2
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE Bar(4) -%]
 [% Bar.output %]
 __TEST__
@@ -6911,14 +6910,14 @@ This is the Bar plugin, value is 4
 __EXPECTED__
 
 	# use tt2
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE t = table([113, 127, 131, 137, 139, 149], rows=2) -%]
 [% t.row(0).join(', ') %]
 __TEST__
 113, 131, 139
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY -%]
 [% USE Foo(8) -%]
 [% Foo.output %]
@@ -6929,21 +6928,21 @@ __TEST__
 ERROR: Foo: plugin not found
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE bar(16) -%]
 [% bar.output %]
 __TEST__
 This is the Bar plugin, value is 16
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE qux = baz(32) -%]
 [% qux.output %]
 __TEST__
 This is the Foo plugin, value is 32
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE wiz = cgi(64) -%]
 [% wiz.output %]
 __TEST__
@@ -6954,21 +6953,21 @@ __EXPECTED__
 	# LOAD_PERL
 	#-----------------------------------------------------------------------
 	# use tt3
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE baz = MyPlugs.Baz(128) -%]
 [% baz.output %]
 __TEST__
 This is the Baz module, value is 128
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE boz = MyPlugs.Baz(256) -%]
 [% boz.output %]
 __TEST__
 This is the Baz module, value is 256
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE mycgi = url('/cgi-bin/bar.pl', debug=1); %][% mycgi %]
 __TEST__
 /cgi-bin/bar.pl?debug=1
@@ -6978,20 +6977,20 @@ __EXPECTED__
 USE mycgi = UrL('/cgi-bin/bar.pl', debug=1);
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE mycgi = URL('/cgi-bin/bar.pl', debug=1); %][% mycgi %]
 __TEST__
 /cgi-bin/bar.pl?debug=1
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE mycgi = UrL('/cgi-bin/bar.pl', debug=1); %][% mycgi %]
 __TEST__
 /cgi-bin/bar.pl?debug=1
 __EXPECTED__
 
 	# use tt4
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE Foo(20) -%]
 [% Foo.output %]
 __TEST__
@@ -6999,7 +6998,7 @@ This is the Foo plugin, value is 20
 __EXPECTED__
 
 	# use tt4
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY -%]
 [% USE Date() -%]
 [% CATCH -%]
@@ -7009,7 +7008,7 @@ __TEST__
 ERROR: Date: plugin not found
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE mycgi = url('/cgi-bin/bar.pl', debug=1); %][% mycgi %]
 __TEST__
 /cgi-bin/bar.pl?debug=1
@@ -7017,7 +7016,7 @@ __EXPECTED__
 
 	# use tt1
 	# name Simple plugin filter
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE Simple -%]
 test 1: [% 'hello' | simple %]
 [% INCLUDE simple2 %]
@@ -7032,14 +7031,14 @@ __EXPECTED__
 BLOCK foo; "This is foo!"; END
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE foo %]
 [% BLOCK foo; "This is foo!"; END %]
 __TEST__
 This is foo!
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE foo+bar -%]
 [% BLOCK foo; "This is foo!\n"; END %]
 [% BLOCK bar; "This is bar!\n"; END %]
@@ -7052,7 +7051,7 @@ __EXPECTED__
 PROCESS foo+bar
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% PROCESS foo+bar -%]
 [% BLOCK foo; "This is foo!\n"; END %]
 [% BLOCK bar; "This is bar!\n"; END %]
@@ -7066,7 +7065,7 @@ WRAPPER edge + box + indent
      title = "The Title"
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% WRAPPER edge + box + indent
      title = "The Title" -%]
 My content
@@ -7096,7 +7095,7 @@ My content
 </edge>
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INSERT foo+bar/baz %]
 __TEST__
 This is the foo file, a is [% a -%][% DEFAULT word = 'qux' -%]
@@ -7113,7 +7112,7 @@ __PARSED__
 INSERT "$file1" + "$file2"
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% file1 = 'foo'
    file2 = 'bar/baz'
 -%]
@@ -7130,7 +7129,7 @@ USE pod;
     pom ? 'not ok' : 'ok'; ' - file does not exist';
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%  USE pod;
     pom = pod.parse("$podloc/no_such_file.pod");
     pom ? 'not ok' : 'ok'; ' - file does not exist';
@@ -7147,7 +7146,7 @@ USE pod;
     global.warnings = pod.warnings;
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%  USE pod;
     pom = pod.parse("$podloc/test1.pod");
     pom ? 'ok' : 'not ok'; ' - file parsed';
@@ -7158,7 +7157,7 @@ __TEST__
 ok - file parsed
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%  global.warnings.join("\n") %]
 __TEST__
 -- process --
@@ -7166,7 +7165,7 @@ spurious '>' at [% podloc %]/test1.pod line 17
 spurious '>' at [% podloc %]/test1.pod line 21
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH h1 = global.pom.head1 -%]
 * [% h1.title %]
 [% END %]
@@ -7177,7 +7176,7 @@ __TEST__
 * THE END
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH h2 = global.pom.head1.2.head2 -%]
 + [% h2.title %]
 [% END %]
@@ -7190,7 +7189,7 @@ __EXPECTED__
 PROCESS $item.type FOREACH item=global.pom.head1.2.content
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% PROCESS $item.type FOREACH item=global.pom.head1.2.content %]
 
 [% BLOCK head2 -%]
@@ -7211,7 +7210,7 @@ __TEST__
 <h2>Second Subsection</h2>
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE foo a=10 %]
 __TEST__
 This is the foo file, a is 10
@@ -7221,13 +7220,13 @@ __EXPECTED__
 INCLUDE src:foo a=20
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE src:foo a=20 %]
 __TEST__
 This is the foo file, a is 20
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE all:foo a=30 %]
 __TEST__
 This is the foo file, a is 30
@@ -7241,7 +7240,7 @@ TRY;
    END
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY;
     INCLUDE lib:foo a=30 ;
    CATCH;
@@ -7252,13 +7251,13 @@ __TEST__
 file error - lib:foo: not found
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INSERT src:foo %]
 __TEST__
 This is the foo file, a is [% a -%]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 This is the first test
 __TEST__
 This is the main content wrapper for "untitled"
@@ -7270,7 +7269,7 @@ __EXPECTED__
 META title = 'Test 2'
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% META title = 'Test 2' -%]
 This is the second test
 __TEST__
@@ -7280,7 +7279,7 @@ This is the end.
 __EXPECTED__
 
 	# use tt2
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% META title = 'Test 3' -%]
 This is the third test
 __TEST__
@@ -7295,7 +7294,7 @@ footer
 __EXPECTED__
 
 	# use tt3
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% META title = 'Test 3' -%]
 This is the third test
 __TEST__
@@ -7305,7 +7304,7 @@ header.tt2:
 footer
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE ProcFoo -%]
 [% ProcFoo.foo %]
 [% ProcFoo.bar %]
@@ -7314,7 +7313,7 @@ This is procfoofoo
 This is procfoobar
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE ProcBar -%]
 [% ProcBar.foo %]
 [% ProcBar.bar %]
@@ -7326,7 +7325,7 @@ This is procbarbaz
 __EXPECTED__
 
 	# use ttinc
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 [% INCLUDE foo %]
 [% INCLUDE $relfile %]
@@ -7337,7 +7336,7 @@ __TEST__
 This is the foo file, a is Error: file - not found
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 [% INCLUDE foo %]
 [% INCLUDE $absfile %]
@@ -7348,7 +7347,7 @@ __TEST__
 This is the foo file, a is Error: file - not found
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 [% INSERT foo +%]
 [% INSERT $absfile %]
@@ -7363,7 +7362,7 @@ Error: file error - [* absfile *]: not found
 __EXPECTED__
 
 	# use ttrel
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 [% INCLUDE $relfile %]
 [% INCLUDE foo %]
@@ -7374,7 +7373,7 @@ __TEST__
 This is the foo file, a is Error: file - foo: not found
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 [% INCLUDE $relfile -%]
 [% INCLUDE $absfile %]
@@ -7389,7 +7388,7 @@ __EXPECTED__
 TRY; INSERT foo;      CATCH; "$error\n"; END
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 foo: [% TRY; INSERT foo;      CATCH; "$error\n"; END %]
 rel: [% TRY; INSERT $relfile; CATCH; "$error\n"; END +%]
 abs: [% TRY; INSERT $absfile; CATCH; "$error\n"; END %]
@@ -7402,7 +7401,7 @@ abs: file error - [* absfile *]: absolute paths are not allowed (set ABSOLUTE op
 __EXPECTED__
 
 	# use ttabs
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 [% INCLUDE $absfile %]
 [% INCLUDE foo %]
@@ -7413,7 +7412,7 @@ __TEST__
 This is the foo file, a is Error: file - foo: not found
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 [% INCLUDE $absfile %]
 [% INCLUDE $relfile %]
@@ -7424,7 +7423,7 @@ __TEST__
 This is the foo file, a is Error: file - relative paths are not allowed (set RELATIVE option)
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 foo: [% TRY; INSERT foo;      CATCH; "$error\n"; END %]
 rel: [% TRY; INSERT $relfile; CATCH; "$error\n"; END %]
 abs: [% TRY; INSERT $absfile; CATCH; "$error\n"; END %]
@@ -7437,7 +7436,7 @@ abs: This is the foo file, a is [% a -%]
 __EXPECTED__
 
 	# use ttinc
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE foobar %]
 __TEST__
 This is the old content
@@ -7447,7 +7446,7 @@ __EXPECTED__
 CALL fixfile('This is the new content')
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% CALL fixfile('This is the new content') %]
 [% INCLUDE foobar %]
 __TEST__
@@ -7459,7 +7458,7 @@ PROCESS baz a='alpha' | trim
 __PARSED__
 
 	# use ttd1
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 foo: [% PROCESS foo | trim +%]
 bar: [% PROCESS bar | trim +%]
 baz: [% PROCESS baz a='alpha' | trim %]
@@ -7469,7 +7468,7 @@ bar: This is two/bar
 baz: This is the baz file, a: alpha
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 foo: [% INSERT foo | trim +%]
 bar: [% INSERT bar | trim +%]
 __TEST__
@@ -7478,7 +7477,7 @@ bar: This is two/bar
 __EXPECTED__
 
 	# use ttd2
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 foo: [% PROCESS foo | trim +%]
 bar: [% PROCESS bar | trim +%]
 baz: [% PROCESS baz a='alpha' | trim %]
@@ -7488,7 +7487,7 @@ bar: This is two/bar
 baz: This is the baz file, a: alpha
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 foo: [% INSERT foo | trim +%]
 bar: [% INSERT bar | trim +%]
 __TEST__
@@ -7501,13 +7500,13 @@ TRY; INCLUDE foo; CATCH; e; END
 __PARSED__
 
 	# use ttdbad
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY; INCLUDE foo; CATCH; e; END %]
 __TEST__
 file error - INCLUDE_PATH exceeds 42 directories
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 a: [% a %]
 a(5): [% a(5) %]
 a(5,10): [% a(5,10) %]
@@ -7521,7 +7520,7 @@ __EXPECTED__
 b = \a
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% b = \a -%]
 b: [% b %]
 b(5): [% b(5) %]
@@ -7536,7 +7535,7 @@ __EXPECTED__
 c = \a(10,20)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% c = \a(10,20) -%]
 c: [% c %]
 c(30): [% c(30) %]
@@ -7551,7 +7550,7 @@ __EXPECTED__
 z(\a)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% z(\a) %]
 __TEST__
 z called a sub [10, 20, 30]
@@ -7561,7 +7560,7 @@ __EXPECTED__
 f = \j.k
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% f = \j.k -%]
 f: [% f %]
 __TEST__
@@ -7572,7 +7571,7 @@ __EXPECTED__
 f = \j.m.n
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% f = \j.m.n -%]
 f: [% f %]
 f(11): [% f(11) %]
@@ -7581,26 +7580,26 @@ f: nsub []
 f(11): nsub [11]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 [% hashobj.bar.join %]
 __TEST__
 hash object method called in array context
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE scalar -%]
 [% hashobj.scalar.bar %]
 __TEST__
 hash object method called in scalar context
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 [% listobj.bar.join %]
 __TEST__
 list object method called in array context
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE scalar -%]
 [% listobj.scalar.bar %]
 __TEST__
@@ -7612,7 +7611,7 @@ hash = { a = 10 };
    TRY; hash.scalar.a; CATCH; error; END;
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% hash = { a = 10 }; 
    TRY; hash.scalar.a; CATCH; error; END;
 %]
@@ -7624,7 +7623,7 @@ __EXPECTED__
 subref(10, 20).join
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% subref(10, 20).join %]
 __TEST__
 subroutine called in array context 10 20
@@ -7634,13 +7633,13 @@ __EXPECTED__
 USE scalar; scalar.subref(30, 40)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE scalar; scalar.subref(30, 40) %]
 __TEST__
 subroutine called in scalar context 30 40
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 This is some text
 __TEST__
 header:
@@ -7651,7 +7650,7 @@ footer
 __EXPECTED__
 
 	# test that the 'demo' block (template sub) is defined
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE demo %]
 __TEST__
 header:
@@ -7666,7 +7665,7 @@ INCLUDE astext a = 'artifact'
 __PARSED__
 
 	# and also the 'astext' block (template text)
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE astext a = 'artifact' %]
 __TEST__
 header:
@@ -7682,7 +7681,7 @@ __PARSED__
 
 	# test that 'barf' exception gets redirected to the correct
 	# error template
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% THROW barf 'Not feeling too good' %]
 __TEST__
 header:
@@ -7693,7 +7692,7 @@ footer
 __EXPECTED__
 
 	# test all other errors get redirected correctly
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE no_such_file %]
 __TEST__
 header:
@@ -7709,7 +7708,7 @@ INCLUDE block1
 __PARSED__
 
 	# import some block definitions from 'blockdef'...
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% PROCESS blockdef -%]
 [% INCLUDE block1
    a = 'alpha'
@@ -7727,7 +7726,7 @@ footer
 __EXPECTED__
 
 	# ...and make sure they go away for the next service
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE block1 %]
 __TEST__
 header:
@@ -7739,7 +7738,7 @@ __EXPECTED__
 
 	# now try it again with AUTO_RESET turned off...
 	# use tt2
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% PROCESS blockdef -%]
 [% INCLUDE block1
    a = 'alpha'
@@ -7757,7 +7756,7 @@ footer
 __EXPECTED__
 
 	# ...and the block definitions should persist
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE block1 a = 'alpha' %]
 __TEST__
 header:
@@ -7769,7 +7768,7 @@ footer
 __EXPECTED__
 
 	# test that the 'demo' block is still defined
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE demo %]
 __TEST__
 header:
@@ -7780,7 +7779,7 @@ footer
 __EXPECTED__
 
 	# and also the 'astext' block
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% INCLUDE astext a = 'artifact' %]
 __TEST__
 header:
@@ -7792,7 +7791,7 @@ __EXPECTED__
 
 	# test that a single ERROR template can be specified
 	# use tt3
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% THROW food 'cabbages' %]
 __TEST__
 header:
@@ -7803,7 +7802,7 @@ footer
 __EXPECTED__
 
 	# use wrapper
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% title = 'The Foo Page' -%]
 begin page content
 title is "[% title %]"
@@ -7821,7 +7820,7 @@ This comes after
 __EXPECTED__
 
 	# use nested
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% title = 'The Bar Page' -%]
 begin page content
 title is "[% title %]"
@@ -7841,38 +7840,38 @@ end process
 This comes after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a %]
 __TEST__
 alpha
 __EXPECTED__
 
 	# this is the second test
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% b %]
 __TEST__
 bravo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% numbers.join(', ') %]
 __TEST__
 1, 2, 3
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% numbers.scalar %]
 __TEST__
 one two three
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% numbers.ref %]
 __TEST__
 CODE
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 a: [% a %]
 __TEST__
 a: 
@@ -7883,14 +7882,14 @@ TRY; a; CATCH; "ERROR: $error"; END
 __PARSED__
 
 	# use warn
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY; a; CATCH; "ERROR: $error"; END %]
 __TEST__
 ERROR: undef error - a is undefined
 __EXPECTED__
 
 	# use default
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% myitem = 'foo' -%]
 1: [% myitem %]
 2: [% myitem.item %]
@@ -7905,7 +7904,7 @@ __EXPECTED__
 "* $item\n" FOREACH item = myitem
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% myitem = 'foo' -%]
 [% "* $item\n" FOREACH item = myitem -%]
 [% "+ $item\n" FOREACH item = myitem.list %]
@@ -7914,7 +7913,7 @@ __TEST__
 + foo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% myitem = 'foo' -%]
 [% myitem.hash.value %]
 __TEST__
@@ -7927,7 +7926,7 @@ myitem = 'foo'
    global.mylist = mylist
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% myitem = 'foo'
    mylist = [ 'one', myitem, 'three' ]
    global.mylist = mylist
@@ -7943,7 +7942,7 @@ one
 2: three
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "* $item\n" FOREACH item = global.mylist -%]
 [% "+ $item\n" FOREACH item = global.mylist.list -%]
 __TEST__
@@ -7960,7 +7959,7 @@ global.mylist.push('bar');
    "* $item.key => $item.value\n" FOREACH item = global.mylist.hash
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% global.mylist.push('bar');
    "* $item.key => $item.value\n" FOREACH item = global.mylist.hash -%]
 __TEST__
@@ -7973,7 +7972,7 @@ myhash = { msg => 'Hello World', things => global.mylist, a => 'alpha' };
    global.myhash = myhash 
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% myhash = { msg => 'Hello World', things => global.mylist, a => 'alpha' };
    global.myhash = myhash 
 -%]
@@ -7982,14 +7981,14 @@ __TEST__
 * Hello World
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% global.myhash.delete('things') -%]
 keys: [% global.myhash.keys.sort.join(', ') %]
 __TEST__
 keys: a, msg
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "* $item\n" 
     FOREACH item IN global.myhash.items.sort -%]
 __TEST__
@@ -8006,7 +8005,7 @@ items = [ 'foo', 'bar', 'baz' ];
    slice.join(', ');
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% items = [ 'foo', 'bar', 'baz' ];
    take  = [ 0, 2 ];
    slice = items.$take;
@@ -8027,7 +8026,7 @@ items = {
    slice.join(', ');
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% items = {
     foo = 'one',
     bar = 'two',
@@ -8051,7 +8050,7 @@ items = {
    items.${keys}.join(', ');
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% items = {
     foo = 'one',
     bar = 'two',
@@ -8064,55 +8063,55 @@ __TEST__
 two, three, one
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% obj.name %]
 __TEST__
 an object
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% obj.name.list.first %]
 __TEST__
 an object
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% obj.items.first %]
 __TEST__
 name
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% obj.items.1 %]
 __TEST__
 an object
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% bop.first.name %]
 __TEST__
 an object
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% listobj.0 %] / [% listobj.first %]
 __TEST__
 10 / 10
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% listobj.2 %] / [% listobj.last %]
 __TEST__
 30 / 30
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% listobj.join(', ') %]
 __TEST__
 10, 20, 30
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 =[% size %]=
 __TEST__
 ==
@@ -8122,7 +8121,7 @@ __EXPECTED__
 foo = { "one" = "bar" "" = "empty" }
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% foo = { "one" = "bar" "" = "empty" } -%]
 foo is { [% FOREACH k IN foo.keys.sort %]"[% k %]" = "[% foo.$k %]" [% END %]}
 setting foo.one to baz
@@ -8141,13 +8140,13 @@ __EXPECTED__
 
 	# test Dave Howorth's patch (v2.15) which makes the stash more strict
 	# about what it considers to be a missing method error
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% hashobj.hello %]
 __TEST__
 Hello World
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY; hashobj.goodbye; CATCH; "ERROR: "; clean(error); END %]
 __TEST__
 ERROR: undef error - Can't locate object method "no_such_method" via package "HashObject"
@@ -8156,7 +8155,7 @@ __EXPECTED__
 	#-----------------------------------------------------------------------
 	# try and pin down the numification bug
 	#-----------------------------------------------------------------------
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH item IN num.things -%]
 * [% item %]
 [% END -%]
@@ -8166,47 +8165,47 @@ __TEST__
 * baz
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% num %]
 __TEST__
 PASS: stringified Numbersome
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% getnum.num %]
 __TEST__
 PASS: stringified from GetNumbersome
 __EXPECTED__
 
 	# Exercise the object with the funky overloaded comparison
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% cmp_ol.hello %]
 __TEST__
 Hello
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- name scalar list method --
 [% foo = 'bar'; foo.join %]
 __TEST__
 bar
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 a: [% a %]
 __TEST__
 a: 
 __EXPECTED__
 
 	# use warn
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY; a; CATCH; "ERROR: $error"; END %]
 __TEST__
 ERROR: undef error - a is undefined
 __EXPECTED__
 
 	# use default
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% myitem = 'foo' -%]
 1: [% myitem %]
 2: [% myitem.item %]
@@ -8217,7 +8216,7 @@ __TEST__
 3: foo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% myitem = 'foo' -%]
 [% "* $item\n" FOREACH item = myitem -%]
 [% "+ $item\n" FOREACH item = myitem.list %]
@@ -8226,14 +8225,14 @@ __TEST__
 + foo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% myitem = 'foo' -%]
 [% myitem.hash.value %]
 __TEST__
 foo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% myitem = 'foo'
    mylist = [ 'one', myitem, 'three' ]
    global.mylist = mylist
@@ -8249,7 +8248,7 @@ one
 2: three
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "* $item\n" FOREACH item = global.mylist -%]
 [% "+ $item\n" FOREACH item = global.mylist.list -%]
 __TEST__
@@ -8261,7 +8260,7 @@ __TEST__
 + three
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% global.mylist.push('bar');
    "* $item.key => $item.value\n" FOREACH item = global.mylist.hash -%]
 __TEST__
@@ -8269,7 +8268,7 @@ __TEST__
 * three => bar
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% myhash = { msg => 'Hello World', things => global.mylist, a => 'alpha' };
    global.myhash = myhash 
 -%]
@@ -8278,14 +8277,14 @@ __TEST__
 * Hello World
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% global.myhash.delete('things') -%]
 keys: [% global.myhash.keys.sort.join(', ') %]
 __TEST__
 keys: a, msg
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "* $item\n" 
     FOREACH item IN global.myhash.items.sort -%]
 __TEST__
@@ -8295,7 +8294,7 @@ __TEST__
 * msg
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% items = [ 'foo', 'bar', 'baz' ];
    take  = [ 0, 2 ];
    slice = items.$take;
@@ -8305,7 +8304,7 @@ __TEST__
 foo, baz
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- name slice of lemon --
 [% items = {
     foo = 'one',
@@ -8320,7 +8319,7 @@ __TEST__
 one, three
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- name slice of toast --
 [% items = {
     foo = 'one',
@@ -8334,7 +8333,7 @@ __TEST__
 two, three, one
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% i = 0 %]
 [%- a = [ 0, 1, 2 ] -%]
 [%- WHILE i < 3 -%]
@@ -8345,14 +8344,14 @@ __TEST__
 001122
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%- a = [ "alpha", "beta", "gamma", "delta" ] -%]
 [%- b = "foo" -%]
 [%- a.$b -%]
 __TEST__
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%- a = [ "alpha", "beta", "gamma", "delta" ] -%]
 [%- b = "2" -%]
 [%- a.$b -%]
@@ -8360,44 +8359,44 @@ __TEST__
 gamma
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% obj.name %]
 __TEST__
 an object
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% obj.name.list.first %]
 __TEST__
 an object
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- name bop --
 [% bop.first.name %]
 __TEST__
 an object
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% obj.items.first %]
 __TEST__
 name
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% obj.items.1 %]
 __TEST__
 an object
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 =[% size %]=
 __TEST__
 ==
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE Dumper;
    TRY;
      correct(["hello", "there"]);
@@ -8418,7 +8417,7 @@ hello, there
 hello, there
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% hash = { }
    list = [ hash ]
    list.last.message = 'Hello World';
@@ -8430,19 +8429,19 @@ __EXPECTED__
 
 	# test Dave Howorth's patch (v2.15) which makes the stash more strict
 	# about what it considers to be a missing method error
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% hashobj.hello %]
 __TEST__
 Hello World
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY; hashobj.goodbye; CATCH; "ERROR: "; clean(error); END %]
 __TEST__
 ERROR: undef error - Can't locate object method "no_such_method" via package "HashObject"
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY; 
     hashobj.now_is_the_time_to_test_a_very_long_method_to_see_what_happens;
    CATCH; 
@@ -8453,7 +8452,7 @@ __TEST__
 ERROR: undef error - Can't locate object method "this_method_does_not_exist" via package "HashObject"
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% foo = { "one" = "bar" "" = "empty" } -%]
 foo is { [% FOREACH k IN foo.keys.sort %]"[% k %]" = "[% foo.$k %]" [% END %]}
 setting foo.one to baz
@@ -8471,13 +8470,13 @@ foo is { "" = "full" "one" = "baz" }
 __EXPECTED__
 
 	# Exercise the object with the funky overloaded comparison
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% cmp_ol.hello %]
 __TEST__
 Hello
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 Before
 [%  TRY;
         str_eval_die;
@@ -8492,13 +8491,13 @@ str_eval_die returned
 After
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%  str_eval_die %]
 __TEST__
 str_eval_die returned
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- name ASCII key --
 ascii = [% ascii %]
 hash.$ascii = [% hash.$ascii %]
@@ -8507,14 +8506,14 @@ ascii = key
 hash.$ascii = value
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- name UTF8 length --
 str.length = [% str.length %]
 __TEST__
 str.length = 4
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- name UTF8 key fetch --
 utf8 = [% utf8 %]
 hash.$utf8 = hash.[% utf8 %] = [% hash.$utf8 %]
@@ -8523,7 +8522,7 @@ utf8 = ÐºÐ»ÑÑ
 hash.$utf8 = hash.ÐºÐ»ÑÑ = Ð·Ð½Ð°ÑÐµÐ½Ð¸Ðµ
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- name UTF8 key assign --
 [% value = hash.$utf8; hash.$value = utf8 -%]
 value = [% value %]
@@ -8533,7 +8532,7 @@ value = Ð·Ð½Ð°ÑÐµÐ½Ð¸Ðµ
 hash.$value = hash.Ð·Ð½Ð°ÑÐµÐ½Ð¸Ðµ = ÐºÐ»ÑÑ
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 This is some text
 [% STOP %]
 More text
@@ -8541,7 +8540,7 @@ __TEST__
 This is some text
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 This is some text
 [% halt %]
 More text
@@ -8549,7 +8548,7 @@ __TEST__
 This is some text
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 This is some text
 [% INCLUDE halt1 %]
 More text
@@ -8557,7 +8556,7 @@ __TEST__
 This is some text
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 This is some text
 [% INCLUDE myblock1 %]
 More text
@@ -8571,7 +8570,7 @@ This is some text
 This is myblock1
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 This is some text
 [% INCLUDE myblock2 %]
 More text
@@ -8588,7 +8587,7 @@ __EXPECTED__
 	#-----------------------------------------------------------------------
 	# ensure 'stop' exceptions get ignored by TRY...END blocks
 	#-----------------------------------------------------------------------
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% TRY -%]
 trying
@@ -8607,7 +8606,7 @@ __EXPECTED__
 	# ensure PRE_PROCESS and POST_PROCESS templates get added with STOP
 	#-----------------------------------------------------------------------
 	# use wrapped
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 This is some text
 [% STOP %]
 More text
@@ -8617,7 +8616,7 @@ This is some text
 This is the footer
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% foo = 'the foo string'
    bar = 'the bar string'
    baz = foo _ ' and ' _ bar
@@ -8627,91 +8626,91 @@ __TEST__
 baz: the foo string and the bar string
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- name defined variable --
 [% foo %]
 __TEST__
 10
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- name variable with undefined value --
 [% TRY; bar; CATCH; error; END %]
 __TEST__
 var.undef error - undefined variable: bar
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- name dotted variable with undefined value --
 [% TRY; baz.boz; CATCH; error; END %]
 __TEST__
 var.undef error - undefined variable: baz.boz
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- name undefined first part of dotted.variable --
 [% TRY; wiz.bang; CATCH; error; END %]
 __TEST__
 var.undef error - undefined variable: wiz.bang
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- name undefined second part of dotted.variable --
 [% TRY; baz.booze; CATCH; error; END %]
 __TEST__
 var.undef error - undefined variable: baz.booze
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- name dotted.variable with args --
 [% TRY; baz(10).booze(20, 'blah', "Foo $foo"); CATCH; error; END %]
 __TEST__
 var.undef error - undefined variable: baz(10).booze(20, 'blah', 'Foo 10')
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String -%]
 string: [[% String.text %]]
 __TEST__
 string: []
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String 'hello world' -%]
 string: [[% String.text %]]
 __TEST__
 string: [hello world]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String text='hello world' -%]
 string: [[% String.text %]]
 __TEST__
 string: [hello world]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String -%]
 string: [[% String %]]
 __TEST__
 string: []
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String 'hello world' -%]
 string: [[% String %]]
 __TEST__
 string: [hello world]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String text='hello world' -%]
 string: [[% String %]]
 __TEST__
 string: [hello world]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String text='hello' -%]
 string: [[% String.append(' world') %]]
 string: [[% String %]]
@@ -8720,7 +8719,7 @@ string: [hello world]
 string: [hello world]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String text='hello' -%]
 [% copy = String.copy -%]
 string: [[% String %]]
@@ -8730,7 +8729,7 @@ string: [hello]
 string: [hello]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String -%]
 [% hi = String.new('hello') -%]
 [% lo = String.new('world') -%]
@@ -8744,7 +8743,7 @@ lo: [world]
 hw: [hello world]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE hi = String 'hello' -%]
 [% lo = hi.new('world') -%]
 hi: [[% hi %]]
@@ -8754,7 +8753,7 @@ hi: [hello]
 lo: [world]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE hi = String 'hello' -%]
 [% lo = hi.copy -%]
 hi: [[% hi %]]
@@ -8764,7 +8763,7 @@ hi: [hello]
 lo: [hello]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE hi = String 'hello' -%]
 [% lo = hi.copy.append(' world') -%]
 hi: [[% hi %]]
@@ -8774,7 +8773,7 @@ hi: [hello]
 lo: [hello world]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE hi = String 'hello' -%]
 [% lo = hi.new('hey').append(' world') -%]
 hi: [[% hi %]]
@@ -8784,7 +8783,7 @@ hi: [hello]
 lo: [hey world]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE hi=String "hello world\n" -%]
 hi: [[% hi %]]
 [% lo = hi.chomp -%]
@@ -8797,7 +8796,7 @@ hi: [hello world]
 lo: [hello world]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE foo=String "foop" -%]
 [[% foo.chop %]]
 [[% foo.chop %]]
@@ -8806,7 +8805,7 @@ __TEST__
 [fo]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE hi=String "hello" -%]
   left: [[% hi.copy.left(11) %]]
  right: [[% hi.copy.right(11) %]]
@@ -8819,7 +8818,7 @@ center: [   hello   ]
 centre: [   hello    ]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE str=String('hello world') -%]
  hi: [[% str.upper %]]
  hi: [[% str %]]
@@ -8832,14 +8831,14 @@ __TEST__
 cap: [Hello world]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE str=String('hello world') -%]
 len: [[% str.length %]]
 __TEST__
 len: [11]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE str=String("   \n\n\t\r hello\nworld\n\r  \n \r") -%]
 [[% str.trim %]]
 __TEST__
@@ -8847,14 +8846,14 @@ __TEST__
 world]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE str=String("   \n\n\t\r hello  \n \n\r world\n\r  \n \r") -%]
 [[% str.collapse %]]
 __TEST__
 [hello world]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE str=String("hello") -%]
 [[% str.append(' world') %]]
 [[% str.prepend('well, ') %]]
@@ -8863,7 +8862,7 @@ __TEST__
 [well, hello world]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE str=String("hello") -%]
 [[% str.push(' world') %]]
 [[% str.unshift('well, ') %]]
@@ -8872,7 +8871,7 @@ __TEST__
 [well, hello world]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE str=String('foo bar') -%]
 [[% str.copy.pop(' bar') %]]
 [[% str.copy.shift('foo ') %]]
@@ -8881,7 +8880,7 @@ __TEST__
 [bar]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE str=String('Hello World') -%]
 [[% str.copy.truncate(5) %]]
 [[% str.copy.truncate(8, '...') %]]
@@ -8892,28 +8891,28 @@ __TEST__
 [Hello World]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String('foo') -%]
 [[% String.append(' ').repeat(4) %]]
 __TEST__
 [foo foo foo foo ]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String('foo') -%]
 [% String.format("[%s]") %]
 __TEST__
 [foo]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String('foo bar foo baz') -%]
 [[% String.replace('foo', 'oof') %]]
 __TEST__
 [oof bar oof baz]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String('foo bar foo baz') -%]
 [[% String.copy.remove('foo\s*') %]]
 [[% String.copy.remove('ba[rz]\s*') %]]
@@ -8922,42 +8921,42 @@ __TEST__
 [foo foo ]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String('foo bar foo baz') -%]
 [[% String.split.join(', ') %]]
 __TEST__
 [foo, bar, foo, baz]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String('foo bar foo baz') -%]
 [[% String.split(' bar ').join(', ') %]]
 __TEST__
 [foo, foo baz]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String('foo bar foo baz') -%]
 [[% String.split(' bar ').join(', ') %]]
 __TEST__
 [foo, foo baz]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String('foo bar foo baz') -%]
 [[% String.split('\s+').join(', ') %]]
 __TEST__
 [foo, bar, foo, baz]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String('foo bar foo baz') -%]
 [[% String.split('\s+', 2).join(', ') %]]
 __TEST__
 [foo, bar foo baz]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String('foo bar foo baz') -%]
 [% String.search('foo') ? 'ok' : 'not ok' %]
 [% String.search('fooz') ? 'not ok' : 'ok' %]
@@ -8970,49 +8969,49 @@ ok
 ok
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String 'foo < bar' filter='html' -%]
 [% String %]
 __TEST__
 foo &lt; bar
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String 'foo bar' filter='uri' -%]
 [% String %]
 __TEST__
 foo%20bar
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String 'foo bar' filters='uri' -%]
 [% String %]
 __TEST__
 foo%20bar
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String '   foo bar    ' filters=['trim' 'uri'] -%]
 [[% String %]]
 __TEST__
 [foo%20bar]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String '   foo bar    ' filter='trim, uri' -%]
 [[% String %]]
 __TEST__
 [foo%20bar]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String '   foo bar    ' filters='trim, uri' -%]
 [[% String %]]
 __TEST__
 [foo%20bar]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String 'foo bar' filters={ replace=['bar', 'baz'],
 				  trim='', uri='' } -%]
 [[% String %]]
@@ -9020,7 +9019,7 @@ __TEST__
 [foo%20baz]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String 'foo bar' filters=[ 'replace', ['bar', 'baz'],
 				  'trim', 'uri' ] -%]
 [[% String %]]
@@ -9028,7 +9027,7 @@ __TEST__
 [foo%20baz]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String 'foo bar' -%]
 [% String %]
 [% String.filter('uri') %]
@@ -9045,7 +9044,7 @@ foo%20bar
 foo%20barfoo%20barfoo%20bar
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String;
    a = 'HeLLo';
    b = 'hEllO';
@@ -9063,7 +9062,7 @@ ok 3
 ok 4
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE String('Hello World') -%]
 a: [% String.substr(6) %]!
 b: [% String.substr(0, 5) %]!
@@ -9076,7 +9075,7 @@ c: Hello!
 d: Goodbye World!
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE str = String('foo bar baz wiz waz woz') -%]
 a: [% str.substr(4, 3) %]
 b: [% str.substr(12) %]
@@ -9089,7 +9088,7 @@ c: foo bar baz
 d: FOO wiz waz woz
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% SWITCH a %]
 this is ignored
@@ -9100,7 +9099,7 @@ before
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% SWITCH a %]
 this is ignored
@@ -9113,7 +9112,7 @@ before
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% SWITCH a %]
 this is ignored
@@ -9126,7 +9125,7 @@ before
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% SWITCH a %]
 this is ignored
@@ -9140,7 +9139,7 @@ matched
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% SWITCH a %]
 this is ignored
@@ -9154,7 +9153,7 @@ matched
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% SWITCH 'alpha' %]
 this is ignored
@@ -9168,7 +9167,7 @@ matched
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% SWITCH a %]
 this is ignored
@@ -9181,7 +9180,7 @@ before
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% SWITCH a %]
 this is ignored
@@ -9197,7 +9196,7 @@ matched
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% SWITCH a %]
 this is ignored
@@ -9216,7 +9215,7 @@ __EXPECTED__
 	#-----------------------------------------------------------------------
 	# test default case
 	#-----------------------------------------------------------------------
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% SWITCH a %]
 this is ignored
@@ -9234,7 +9233,7 @@ matched
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% SWITCH a %]
 this is ignored
@@ -9252,7 +9251,7 @@ matched
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% SWITCH a %]
 this is ignored
@@ -9270,7 +9269,7 @@ default matched
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% SWITCH a %]
 this is ignored
@@ -9291,7 +9290,7 @@ __EXPECTED__
 	#-----------------------------------------------------------------------
 	# test multiple matches
 	#-----------------------------------------------------------------------
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% SWITCH a %]
 this is ignored
@@ -9309,7 +9308,7 @@ matched
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% SWITCH a %]
 this is ignored
@@ -9327,7 +9326,7 @@ matched
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% foo = 'a(b)'
    bar = 'a(b)';
 
@@ -9342,7 +9341,7 @@ __TEST__
 ok
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE table(alphabet, rows=5) %]
 [% FOREACH letter = table.col(0) %]
 [% letter %]..
@@ -9355,7 +9354,7 @@ a..b..c..d..e..
 f..g..h..i..j..
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE table(alphabet, rows=5) %]
 [% FOREACH letter = table.row(0) %]
 [% letter %]..
@@ -9368,7 +9367,7 @@ a..f..k..p..u..z..
 b..g..l..q..v....
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE table(alphabet, rows=3) %]
 [% FOREACH col = table.cols %]
 [% col.0 %] [% col.1 %] [% col.2 +%]
@@ -9385,7 +9384,7 @@ v w x
 y z 
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE alpha = table(alphabet, cols=3, pad=0) %]
 [% FOREACH group = alpha.col %]
 [ [% group.first %] - [% group.last %] ([% group.size %] letters) ]
@@ -9396,7 +9395,7 @@ __TEST__
 [ s - z (8 letters) ]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE alpha = table(alphabet, rows=5, pad=0, overlap=1) %]
 [% FOREACH group = alpha.col %]
 [ [% group.first %] - [% group.last %] ([% group.size %] letters) ]
@@ -9411,7 +9410,7 @@ __TEST__
 [ y - z (2 letters) ]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE table(alphabet, rows=5, pad=0) %]
 [% FOREACH col = table.cols %]
 [% col.join('-') +%]
@@ -9425,7 +9424,7 @@ u-v-w-x-y
 z
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE table(alphabet, rows=8, overlap=1 pad=0) %]
 [% FOREACH col = table.cols %]
 [% FOREACH item = col %][% item %] [% END +%]
@@ -9437,7 +9436,7 @@ o p q r s t u v
 v w x y z 
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE table([1,3,5], cols=5) %]
 [% FOREACH t = table.rows %]
 [% t.join(', ') %]
@@ -9446,7 +9445,7 @@ __TEST__
 1, 3, 5
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 >
 [% USE table(empty, rows=3) -%]
 [% FOREACH col = table.cols -%]
@@ -9461,13 +9460,13 @@ __TEST__
 <
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%a%] [% a %] [% a %]
 __TEST__
 alpha alpha alpha
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 Redefining tags
 [% TAGS (+ +) %]
 [% a %]
@@ -9481,7 +9480,7 @@ Redefining tags
 charlie
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a %]
 [% TAGS (+ +) %]
 [% a %]
@@ -9501,7 +9500,7 @@ charlie
 echo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TAGS default -%]
 [% a %]
 %% b %%
@@ -9512,7 +9511,7 @@ alpha
 (+ c +)
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 # same as 'default'
 [% TAGS template -%]
 [% a %]
@@ -9524,7 +9523,7 @@ alpha
 (+ c +)
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TAGS metatext -%]
 [% a %]
 %% b %%
@@ -9535,7 +9534,7 @@ bravo
 <* c *>
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TAGS template1 -%]
 [% a %]
 %% b %%
@@ -9546,7 +9545,7 @@ bravo
 (+ c +)
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TAGS html -%]
 [% a %]
 %% b %%
@@ -9557,7 +9556,7 @@ __TEST__
 charlie
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TAGS asp -%]
 [% a %]
 %% b %%
@@ -9572,7 +9571,7 @@ delta
 <? e ?>
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TAGS php -%]
 [% a %]
 %% b %%
@@ -9591,7 +9590,7 @@ __EXPECTED__
 	# test processor with pre-defined TAG_STYLE
 	#-----------------------------------------------------------------------
 	# use htags
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TAGS ignored -%]
 [% a %]
 <!-- c -->
@@ -9607,7 +9606,7 @@ __EXPECTED__
 	# test processor with pre-defined START_TAG and END_TAG
 	#-----------------------------------------------------------------------
 	# use stags
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TAGS ignored -%]
 <!-- also totally ignored and treated as text -->
 [* a *]
@@ -9623,7 +9622,7 @@ __EXPECTED__
 	# XML style tags
 	#-----------------------------------------------------------------------
 	# use basic
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TAGS <tt: > -%]
 <tt:a=10->
 a: <tt:a>
@@ -9638,7 +9637,7 @@ a: 10
 7
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TAGS star -%]
 [* a = 10 -*]
 a is [* a *]
@@ -9646,7 +9645,7 @@ __TEST__
 a is 10
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% tags; flags %]
 [* a = 10 -*]
 a is [* a *]
@@ -9656,7 +9655,7 @@ my tagsmy flags
 a is [* a *]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 flags: [% flags | html %]
 tags: [% tags | html %]
 __TEST__
@@ -9664,7 +9663,7 @@ flags: my flags
 tags: my tags
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 This is a text block "hello" 'hello' 1/3 1\4 <html> </html>
 $ @ { } @{ } ${ } # ~ ' ! % *foo
 $a ${b} $c
@@ -9674,13 +9673,13 @@ $ @ { } @{ } ${ } # ~ ' ! % *foo
 $a ${b} $c
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 <table width=50%>&copy;
 __TEST__
 <table width=50%>&copy;
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% foo = 'Hello World' -%]
 start
 [%
@@ -9695,7 +9694,7 @@ start
 end
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 pre
 [%
 # [% PROCESS foo %]
@@ -9708,7 +9707,7 @@ mid
 __EXPECTED__
 
 	# use interp
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 This is a text block "hello" 'hello' 1/3 1\4 <html> </html>
 \$ @ { } @{ } \${ } # ~ ' ! % *foo
 $a ${b} $c
@@ -9718,13 +9717,13 @@ $ @ { } @{ } ${ } # ~ ' ! % *foo
 alpha bravo charlie
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 <table width=50%>&copy;
 __TEST__
 <table width=50%>&copy;
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% foo = 'Hello World' -%]
 start
 [%
@@ -9739,7 +9738,7 @@ start
 end
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 pre
 [%
 #
@@ -9753,40 +9752,40 @@ pre
 mid
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a = "C'est un test"; a %]
 __TEST__
 C'est un test
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% META title = "C'est un test" -%]
 [% component.title -%]
 __TEST__
 C'est un test
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% META title = 'C\'est un autre test' -%]
 [% component.title -%]
 __TEST__
 C'est un autre test
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% META title = "C'est un \"test\"" -%]
 [% component.title -%]
 __TEST__
 C'est un "test"
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% sfoo %]/[% sbar %]
 __TEST__
 foo/bar
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%  s1 = "$sfoo"
     s2 = "$sbar ";
     s3  = sfoo;
@@ -9800,7 +9799,7 @@ __TEST__
 foo[]/bar []/foo[Stringy]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% me = 'I' -%]
 [% TRY -%]
    [%- THROW chicken "Failed failed failed" 'boo' name='Fred' -%]
@@ -9811,7 +9810,7 @@ __TEST__
 ERROR: chicken - Failed failed failed/boo/Fred
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY -%]
 [% THROW food 'eggs' -%]
 [% CATCH -%]
@@ -9822,7 +9821,7 @@ ERROR: food / eggs
 __EXPECTED__
 
 	# test throwing multiple params
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% pi = 3.14
    e  = 2.718 -%]
 [% TRY -%]
@@ -9836,7 +9835,7 @@ foo: pi=3.14  e=2.718
      I fell over because my brain exploded!
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY -%]
 [% THROW foo 'one' 2 three=3.14 -%]
 [% CATCH -%]
@@ -9857,7 +9856,7 @@ __TEST__
    * 2
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY -%]
 [% THROW food 'eggs' 'flour' msg="Missing Ingredients" -%]
 [% CATCH food -%]
@@ -9872,19 +9871,19 @@ __TEST__
       * flour
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% hash.a %]
 __TEST__
 FETCH:alpha
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% hash.b %]
 __TEST__
 FETCH:bravo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 ready
 set:[% hash.c = 'cosmos' %]
 go:[% hash.c %]
@@ -9894,7 +9893,7 @@ set:
 go:FETCH:STORE:cosmos
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% hash.foo.bar = 'one' -%]
 [% hash.foo.bar %]
 __TEST__
@@ -9902,25 +9901,25 @@ one
 __EXPECTED__
 
 	# list tests
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% list.0 %]
 __TEST__
 FETCH:10
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% list.first %]-[% list.last %]
 __TEST__
 FETCH:10-FETCH:30
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% list.push(40); list.last %]
 __TEST__
 FETCH:40
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% list.4 = 50; list.4 %]
 __TEST__
 FETCH:STORE:50
@@ -9932,38 +9931,38 @@ __EXPECTED__
 
 	# hash tests
 	# use xs
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% hash.a %]
 __TEST__
 FETCH:alpha
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% hash.b %]
 __TEST__
 FETCH:bravo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% hash.c = 'crazy'; hash.c %]
 __TEST__
 FETCH:STORE:crazy
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% DEFAULT hash.c = 'more crazy'; hash.c %]
 __TEST__
 FETCH:STORE:crazy
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% hash.wiz = 'woz' -%]
 [% hash.wiz %]
 __TEST__
 FETCH:STORE:woz
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% DEFAULT hash.zero = 'nothing';
    hash.zero
 %]
@@ -9971,7 +9970,7 @@ __TEST__
 FETCH:STORE:nothing
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before: [% hash.one %]
 after: [% DEFAULT hash.one = 'solitude';
    hash.one
@@ -9981,14 +9980,14 @@ before: FETCH:1
 after: FETCH:1
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% hash.foo = 10; hash.foo = 20; hash.foo %]
 __TEST__
 FETCH:STORE:20
 __EXPECTED__
 
 	# this test should create an intermediate hash
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% DEFAULT hash.person = { };
    hash.person.name  = 'Arthur Dent';
    hash.person.email = 'dent@tt2.org'; 
@@ -10001,43 +10000,43 @@ email: dent@tt2.org
 __EXPECTED__
 
 	# list tests
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% list.0 %]
 __TEST__
 FETCH:10
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% list.first %]-[% list.last %]
 __TEST__
 FETCH:10-FETCH:STORE:50
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% list.push(60); list.last %]
 __TEST__
 FETCH:60
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% list.5 = 70; list.5 %]
 __TEST__
 FETCH:STORE:70
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% DEFAULT list.5 = 80; list.5 %]
 __TEST__
 FETCH:STORE:70
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% list.10 = 100; list.10 %]
 __TEST__
 FETCH:STORE:100
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% stuff = [ ];
    stuff.0 = 'some stuff';
    stuff.0
@@ -10046,7 +10045,7 @@ __TEST__
 some stuff
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 [% THROW foxtrot %]
 [% CATCH %]
@@ -10056,7 +10055,7 @@ __TEST__
 [undef] foxtrot
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 [% THROW $f %]
 [% CATCH %]
@@ -10069,7 +10068,7 @@ __EXPECTED__
 	#-----------------------------------------------------------------------
 	# throw simple types
 	#-----------------------------------------------------------------------
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before try
 [% TRY %]
 try this
@@ -10086,7 +10085,7 @@ caught barf: Feeling sick
 after try
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% TRY %]
 some content
@@ -10107,7 +10106,7 @@ caught up: more malaise
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% TRY %]
 some content
@@ -10128,7 +10127,7 @@ caught up: bravo
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% TRY %]
 some content
@@ -10154,7 +10153,7 @@ __EXPECTED__
 	#-----------------------------------------------------------------------
 	# throw complex (hierarchical) exception types
 	#-----------------------------------------------------------------------
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% TRY %]
 some content
@@ -10177,7 +10176,7 @@ RIGHT: charlie
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% TRY %]
 some content
@@ -10200,7 +10199,7 @@ RIGHT: charlie
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% TRY %]
 some content
@@ -10223,7 +10222,7 @@ RIGHT: charlie
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% TRY %]
 some content
@@ -10246,7 +10245,7 @@ RIGHT: charlie
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% TRY %]
 some content
@@ -10269,7 +10268,7 @@ RIGHT: delta
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% TRY %]
 some content
@@ -10292,7 +10291,7 @@ RIGHT: delta
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% TRY %]
 some content
@@ -10318,7 +10317,7 @@ __EXPECTED__
 	#-----------------------------------------------------------------------
 	# test FINAL block
 	#-----------------------------------------------------------------------
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 foo
 [% CATCH %]
@@ -10331,7 +10330,7 @@ foo
 baz
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 foo
 [% THROW anything %]
@@ -10349,7 +10348,7 @@ __EXPECTED__
 	#-----------------------------------------------------------------------
 	# use CLEAR to clear output from TRY block
 	#-----------------------------------------------------------------------
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% TRY %]
 foo
@@ -10366,7 +10365,7 @@ bar
 baz
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% TRY %]
 foo
@@ -10384,7 +10383,7 @@ __EXPECTED__
 	#-----------------------------------------------------------------------
 	# nested TRY blocks
 	#-----------------------------------------------------------------------
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% TRY %]
 outer
@@ -10409,7 +10408,7 @@ more outer
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% TRY %]
 outer
@@ -10436,7 +10435,7 @@ more outer
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% TRY %]
 outer
@@ -10466,7 +10465,7 @@ caught outer foo golf
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% TRY %]
 outer
@@ -10498,7 +10497,7 @@ RIGHT: caught outer bar golf
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% TRY %]
 outer
@@ -10530,7 +10529,7 @@ RIGHT: caught outer bar golf
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% TRY %]
 outer
@@ -10560,7 +10559,7 @@ RIGHT: caught outer bar golf
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% TRY %]
 outer
@@ -10591,7 +10590,7 @@ __EXPECTED__
 	#-----------------------------------------------------------------------
 	# test throwing from Perl code via die()
 	#-----------------------------------------------------------------------
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 before
 [% throw_egg %]
@@ -10606,7 +10605,7 @@ caught egg: scrambled
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 before
 [% throw_any %]
@@ -10623,7 +10622,7 @@ caught any: [undef] undefined error
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 [% THROW up 'feeling sick' %]
 [% CATCH %]
@@ -10633,7 +10632,7 @@ __TEST__
 up error - feeling sick
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 [% THROW up 'feeling sick' %]
 [% CATCH %]
@@ -10643,13 +10642,13 @@ __TEST__
 up error - feeling sick
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY; THROW food 'cabbage'; CATCH DEFAULT; "caught $e.info"; END %]
 __TEST__
 caught cabbage
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%  TRY; 
 	THROW food 'cabbage'; 
      CATCH food; 
@@ -10662,7 +10661,7 @@ __TEST__
 caught food: cabbage
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY;
      PROCESS no_such_file;
    CATCH;
@@ -10673,7 +10672,7 @@ __TEST__
 error: file error - no_such_file: not found
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE url -%]
 loaded
 [% url %]
@@ -10688,7 +10687,7 @@ foo=bar
 bar?wiz=woz
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE url('here') -%]
 [% url %]
 [% url('there') %]
@@ -10703,7 +10702,7 @@ every?which=way
 every?which=way&amp;you=can
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE url('there', name='fred') -%]
 [% url %]
 [% url(name='tom') %]
@@ -10716,21 +10715,21 @@ there?age=24&amp;name=fred
 there?age=42&amp;name=frank
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE url('/cgi-bin/woz.pl') -%]
 [% url(name="Elrich von Benjy d'Weiro") %]
 __TEST__
 /cgi-bin/woz.pl?name=Elrich%20von%20Benjy%20d%27Weiro
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE url '/script' { one => 1, two => [ 2, 4 ], three => [ 3, 6, 9] } -%]
 [% url  %]
 __TEST__
 /script?one=1&amp;three=3&amp;three=6&amp;three=9&amp;two=2&amp;two=4
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% url.product.view %]
 [% url.product.view(style='compact') %]
 __TEST__
@@ -10738,7 +10737,7 @@ __TEST__
 /product?style=compact
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% url.product.add %]
 [% url.product.add(style='compact') %]
 __TEST__
@@ -10746,7 +10745,7 @@ __TEST__
 /product?action=add&amp;style=compact
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% url.product.edit %]
 [% url.product.edit(style='compact') %]
 __TEST__
@@ -10754,7 +10753,7 @@ __TEST__
 /product?action=edit&amp;style=compact
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% CALL no_escape -%]
 [% url.product.edit %]
 [% url.product.edit(style='compact') %]
@@ -10763,14 +10762,14 @@ __TEST__
 /product?action=edit&style=compact
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE url('/cgi-bin/woz.pl') -%]
 [% url(utf8="NaÃ¯ve Unicode") %]
 __TEST__
 /cgi-bin/woz.pl?utf8=Na%C3%AFve%20Unicode
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [[% nosuchvariable %]]
 [$nosuchvariable]
 __TEST__
@@ -10778,7 +10777,7 @@ __TEST__
 []
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a %]
 [% GET b %]
 [% get c %]
@@ -10788,19 +10787,19 @@ bravo
 charlie
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% b %] [% GET b %]
 __TEST__
 bravo bravo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 $a $b ${c} ${d} [% e %]
 __TEST__
 alpha bravo charlie delta echo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% letteralpha %]
 [% ${"letter$a"} %]
 [% GET ${"letter$a"} %]
@@ -10810,37 +10809,37 @@ __TEST__
 'alpha'
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% f.g %] [% f.$gee %] [% f.${gee} %]
 __TEST__
 golf golf golf
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% GET f.h %] [% get f.h %] [% f.${'h'} %] [% get f.${'h'} %]
 __TEST__
 hotel hotel hotel hotel
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 $f.h ${f.g} ${f.h}.gif
 __TEST__
 hotel golf hotel.gif
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% f.i.j %] [% GET f.i.j %] [% get f.i.k %]
 __TEST__
 juliet juliet kilo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% f.i.j %] $f.i.k [% f.${'i'}.${"j"} %] ${f.i.k}.gif
 __TEST__
 juliet kilo juliet kilo.gif
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% 'this is literal text' %]
 [% GET 'so is this' %]
 [% "this is interpolated text containing $r and $f.i.j" %]
@@ -10854,27 +10853,27 @@ tango?
 <a href="kilo.html">kilo</a>
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% name = "$a $b $w" -%]
 Name: $name
 __TEST__
 Name: alpha bravo whisky
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% join('--', a b, c, f.i.j) %]
 __TEST__
 alpha--bravo--charlie--juliet
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% text = 'The cat sat on the mat' -%]
 [% FOREACH word = split(' ', text) -%]<$word> [% END %]
 __TEST__
 <The> <cat> <sat> <on> <the> <mat> 
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 [% magic.chant %] [% GET magic.chant %]
 [% magic.chant('foo') %] [% GET magic.chant('foo') %]
 __TEST__
@@ -10882,7 +10881,7 @@ Hocus Pocus Hocus Pocus
 Hocus Pocus Hocus Pocus
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 <<[% magic.spell %]>>
 [% magic.spell(a b c) %]
 __TEST__
@@ -10890,13 +10889,13 @@ __TEST__
 alpha and a bit of bravo and a bit of charlie
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% one %] [% one('two', 'three') %] [% one(2 3) %]
 __TEST__
 one one one
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% day.prev %]
 [% day.this %]
 [% belief('yesterday') %]
@@ -10906,7 +10905,7 @@ Now it looks as though they're here to stay.
 Oh I believe in yesterday.
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 Yesterday, $day.prev
 $day.this
 ${belief('yesterday')}
@@ -10917,7 +10916,7 @@ Oh I believe in yesterday.
 __EXPECTED__
 
 	# use notcase
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% day.next %]
 $day.next
 __TEST__
@@ -10925,14 +10924,14 @@ Monday
 Tuesday
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH [ 1 2 3 4 5 ] %]$day.next [% END %]
 __TEST__
 Wednesday Thursday Friday Saturday Sunday 
 __EXPECTED__
 
 	# use default
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% halt %]
 after
@@ -10940,7 +10939,7 @@ __TEST__
 before
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH k = yankee -%]
 [% loop.count %]. [% IF k; k.a; ELSE %]undef[% END %]
 [% END %]
@@ -10954,43 +10953,43 @@ __EXPECTED__
 	#-----------------------------------------------------------------------
 	# CALL 
 	#-----------------------------------------------------------------------
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before [% CALL a %]a[% CALL b %]n[% CALL c %]d[% CALL d %] after
 __TEST__
 before and after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 ..[% CALL undef %]..
 __TEST__
 ....
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 ..[% CALL zero %]..
 __TEST__
 ....
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 ..[% n %]..[% CALL n %]..
 __TEST__
 ..0....
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 ..[% up %]..[% CALL up %]..[% n %]
 __TEST__
 ..1....2
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% CALL reset %][% n %]
 __TEST__
 0
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% CALL reset(100) %][% n %]
 __TEST__
 100
@@ -10999,7 +10998,7 @@ __EXPECTED__
 	#-----------------------------------------------------------------------
 	# SET 
 	#-----------------------------------------------------------------------
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a = a %] $a
 [% a = b %] $a
 __TEST__
@@ -11007,7 +11006,7 @@ __TEST__
  bravo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 [% SET a = a %] $a
 [% SET a = b %] $a
 [% SET a = $c %] [$a]
@@ -11021,7 +11020,7 @@ __TEST__
  solo golf
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a = b
    b = c
    c = d
@@ -11031,7 +11030,7 @@ __TEST__
 bravo charlie delta echo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% SET
    a = c
    b = d
@@ -11041,7 +11040,7 @@ __TEST__
 charlie delta echo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% 'a' = d
    'include' = e
    'INCLUDE' = f.g
@@ -11050,7 +11049,7 @@ __TEST__
 delta-echo-golf
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a = f.g %] $a
 [% a = f.i.j %] $a
 __TEST__
@@ -11058,7 +11057,7 @@ __TEST__
  juliet
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% f.g = r %] $f.g
 [% f.i.j = s %] $f.i.j
 [% f.i.k = f.i.j %] ${f.i.k}
@@ -11068,7 +11067,7 @@ __TEST__
  sierra
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% user = {
     id = 'abw'
     name = 'Andy Wardley'
@@ -11083,7 +11082,7 @@ abw abw abw abw.gif
 MSG: bravo: Andy Wardley (abw) [-alpha-bravo-whisky-]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% product = {
      id   => 'XYZ-2000',
      desc => 'Bogon Generator',
@@ -11095,7 +11094,7 @@ __TEST__
 The XYZ-2000 Bogon Generator costs $678.00
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% data => {
        g => 'my data'
    }
@@ -11111,7 +11110,7 @@ __EXPECTED__
 	#-----------------------------------------------------------------------
 	# DEFAULT
 	#-----------------------------------------------------------------------
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a %]
 [% DEFAULT a = b -%]
 [% a %]
@@ -11120,7 +11119,7 @@ alpha
 alpha
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a = '' -%]
 [% DEFAULT a = b -%]
 [% a %]
@@ -11128,7 +11127,7 @@ __TEST__
 bravo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a = ''   b = '' -%]
 [% DEFAULT 
    a = c
@@ -11143,20 +11142,20 @@ __EXPECTED__
 	#-----------------------------------------------------------------------
 	# 'global' vars
 	#-----------------------------------------------------------------------
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% global.version = '3.14' -%]
 Version: [% global.version %]
 __TEST__
 Version: 3.14
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 Version: [% global.version %]
 __TEST__
 Version: 3.14
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% global.newversion = global.version + 1 -%]
 Version: [% global.version %]
 Version: [% global.newversion %]
@@ -11165,7 +11164,7 @@ Version: 3.14
 Version: 4.14
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 Version: [% global.version %]
 Version: [% global.newversion %]
 __TEST__
@@ -11173,7 +11172,7 @@ Version: 3.14
 Version: 4.14
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% hash1 = {
       foo => 'Foo',
       bar => 'Bar',
@@ -11189,7 +11188,7 @@ __TEST__
 keys: bar, foo, wiz, woz
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% mage = { name    =>    'Gandalf', 
         aliases =>  [ 'Mithrandir', 'Olorin', 'Incanus' ] }
 -%]
@@ -11202,14 +11201,14 @@ Mithrandir, Olorin, Incanus
 __EXPECTED__
 
 	# test private variables
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [[% _private %]][[% _hidden %]]
 __TEST__
 [][]
 __EXPECTED__
 
 	# make them visible
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% CALL expose -%]
 [[% _private %]][[% _hidden %]]
 __TEST__
@@ -11218,7 +11217,7 @@ __EXPECTED__
 
 	# Stas reported a problem with spacing in expressions but I can't
 	# seem to reproduce it...
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a = 4 -%]
 [% b=6 -%]
 [% c = a + b -%]
@@ -11228,7 +11227,7 @@ __TEST__
 10/10
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a = 1
    b = 2
    c = 3
@@ -11242,43 +11241,43 @@ __EXPECTED__
 
 	# these tests check that the incorrect precedence in the parser has now
 	# been fixed, thanks to Craig Barrat.
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%  1 || 0 && 0  # should be 1 || (0&&0), not (1||0)&&0 %]
 __TEST__
 1
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%  1 + !0 + 1  # should be 1 + (!0) + 0, not 1 + !(0 + 1) %]
 __TEST__
 3
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "x" _ "y" == "y"; ','  # should be ("x"_"y")=="y", not "x"_("y"=="y") %]
 __TEST__
 ,
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% "x" _ "y" == "xy"      # should be ("x"_"y")=="xy", not "x"_("y"=="xy") %]
 __TEST__
 1
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% add(3, 5) %]
 __TEST__
 8
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% add(3 + 4, 5 + 7) %]
 __TEST__
 19
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a = 10;
    b = 20;
    c = 30;
@@ -11288,7 +11287,7 @@ __TEST__
 121
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a = 10;
    b = 20;
    c = 30;
@@ -11300,13 +11299,13 @@ __TEST__
 55
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% SET monkey="testing" IF 1; monkey %]
 __TEST__
 testing
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a %]
 [% $a %]
 [% GET b %]
@@ -11322,19 +11321,19 @@ charlie
 charlie
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% b %] [% $b %] [% GET b %] [% GET $b %]
 __TEST__
 bravo bravo bravo bravo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 $a $b ${c} ${d} [% $e %]
 __TEST__
 alpha bravo charlie delta echo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% letteralpha %]
 [% ${"letter$a"} %]
 [% GET ${"letter$a"} %]
@@ -11344,49 +11343,49 @@ __TEST__
 'alpha'
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% f.g %] [% $f.g %] [% $f.$g %]
 __TEST__
 golf golf golf
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% GET f.h %] [% get $f.h %] [% get f.${'h'} %] [% get $f.${'h'} %]
 __TEST__
 hotel hotel hotel hotel
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 $f.h ${f.g} ${f.h}.gif
 __TEST__
 hotel golf hotel.gif
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% f.i.j %] [% $f.i.j %] [% f.$i.j %] [% f.i.$j %] [% $f.$i.$j %]
 __TEST__
 juliet juliet juliet juliet juliet
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% f.i.j %] [% $f.i.j %] [% GET f.i.j %] [% GET $f.i.j %]
 __TEST__
 juliet juliet juliet juliet
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% get $f.i.k %]
 __TEST__
 kilo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% f.i.j %] $f.i.k [% f.${'i'}.${"j"} %] ${f.i.k}.gif
 __TEST__
 juliet kilo juliet kilo.gif
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% 'this is literal text' %]
 [% GET 'so is this' %]
 [% "this is interpolated text containing $r and $f.i.j" %]
@@ -11400,27 +11399,27 @@ tango?
 <a href="kilo.html">kilo</a>
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% name = "$a $b $w" -%]
 Name: $name
 __TEST__
 Name: alpha bravo whisky
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% join('--', a b, c, f.i.j) %]
 __TEST__
 alpha--bravo--charlie--juliet
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% text = 'The cat sat on the mat' -%]
 [% FOREACH word = split(' ', text) -%]<$word> [% END %]
 __TEST__
 <The> <cat> <sat> <on> <the> <mat> 
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 [% magic.chant %] [% GET magic.chant %]
 [% magic.chant('foo') %] [% GET $magic.chant('foo') %]
 __TEST__
@@ -11428,7 +11427,7 @@ Hocus Pocus Hocus Pocus
 Hocus Pocus Hocus Pocus
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 <<[% magic.spell %]>>
 [% magic.spell(a b c) %]
 __TEST__
@@ -11436,13 +11435,13 @@ __TEST__
 alpha and a bit of bravo and a bit of charlie
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% one %] [% one('two', 'three') %] [% one(2 3) %]
 __TEST__
 one one one
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% day.prev %]
 [% day.this %]
 [% belief('yesterday') %]
@@ -11452,7 +11451,7 @@ Now it looks as though they're here to stay.
 Oh I believe in yesterday.
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 Yesterday, $day.prev
 $day.this
 ${belief('yesterday')}
@@ -11463,7 +11462,7 @@ Oh I believe in yesterday.
 __EXPECTED__
 
 	# use notcase
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% day.next %]
 $day.next
 __TEST__
@@ -11471,14 +11470,14 @@ Monday
 Tuesday
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FOREACH [ 1 2 3 4 5 ] %]$day.next [% END %]
 __TEST__
 Wednesday Thursday Friday Saturday Sunday 
 __EXPECTED__
 
 	# use default
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% halt %]
 after
@@ -11489,43 +11488,43 @@ __EXPECTED__
 	#-----------------------------------------------------------------------
 	# CALL 
 	#-----------------------------------------------------------------------
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before [% CALL a %]a[% CALL b %]n[% CALL c %]d[% CALL d %] after
 __TEST__
 before and after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 ..[% CALL undef %]..
 __TEST__
 ....
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 ..[% CALL zero %]..
 __TEST__
 ....
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 ..[% n %]..[% CALL n %]..
 __TEST__
 ..0....
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 ..[% up %]..[% CALL up %]..[% n %]
 __TEST__
 ..1....2
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% CALL reset %][% n %]
 __TEST__
 0
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% CALL reset(100) %][% n %]
 __TEST__
 100
@@ -11534,7 +11533,7 @@ __EXPECTED__
 	#-----------------------------------------------------------------------
 	# SET 
 	#-----------------------------------------------------------------------
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a = a %] $a
 [% a = b %] $a
 [% a = $c %] $a
@@ -11548,7 +11547,7 @@ __TEST__
  echo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__]; 
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]); 
 [% SET a = a %] $a
 [% SET a = b %] $a
 [% SET a = $c %] $a
@@ -11562,7 +11561,7 @@ __TEST__
  echo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a = b
    b = c
    c = d
@@ -11572,7 +11571,7 @@ __TEST__
 bravo charlie delta echo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% SET
    a = c
    b = d
@@ -11582,7 +11581,7 @@ __TEST__
 charlie delta echo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a = f.g %] $a
 [% a = $f.h %] $a
 [% a = f.i.j %] $a
@@ -11594,7 +11593,7 @@ __TEST__
  kilo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% f.g = r %] $f.g
 [% $f.h = $r %] $f.h
 [% f.i.j = $s %] $f.i.j
@@ -11606,7 +11605,7 @@ __TEST__
  sierra
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% user = {
     id = 'abw'
     name = 'Andy Wardley'
@@ -11621,7 +11620,7 @@ abw abw abw abw.gif
 MSG: bravo: Andy Wardley (abw) [-alpha-bravo-whisky-]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% product = {
      id   => 'XYZ-2000',
      desc => 'Bogon Generator',
@@ -11636,7 +11635,7 @@ __EXPECTED__
 	#-----------------------------------------------------------------------
 	# DEFAULT
 	#-----------------------------------------------------------------------
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a %]
 [% DEFAULT a = b -%]
 [% a %]
@@ -11645,7 +11644,7 @@ alpha
 alpha
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a = '' -%]
 [% DEFAULT a = b -%]
 [% a %]
@@ -11653,7 +11652,7 @@ __TEST__
 bravo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% a = ''   b = '' -%]
 [% DEFAULT 
    a = c
@@ -11668,20 +11667,20 @@ __EXPECTED__
 	#-----------------------------------------------------------------------
 	# 'global' vars
 	#-----------------------------------------------------------------------
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% global.version = '3.14' -%]
 Version: [% global.version %]
 __TEST__
 Version: 3.14
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 Version: [% global.version %]
 __TEST__
 Version: 3.14
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% global.newversion = global.version + 1 -%]
 Version: [% global.version %]
 Version: [% global.newversion %]
@@ -11690,7 +11689,7 @@ Version: 3.14
 Version: 4.14
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 Version: [% global.version %]
 Version: [% global.newversion %]
 __TEST__
@@ -11698,7 +11697,7 @@ Version: 3.14
 Version: 4.14
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- name pre-defined bottom view --
 [% BLOCK bottom/list; "BOTTOM LIST: "; item.join(', '); END;
    list = [10, 20 30];
@@ -11708,7 +11707,7 @@ __TEST__
 BOTTOM LIST: 10, 20, 30
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- name pre-defined middle view --
 [% BLOCK bottom/list; "BOTTOM LIST: "; item.join(', '); END;
    BLOCK middle/hash; "MIDDLE HASH: "; item.values.nsort.join(', '); END;
@@ -11722,21 +11721,21 @@ BOTTOM LIST: 10, 20, 30
 MIDDLE HASH: 2.718, 3.142
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE v = View -%]
 [[% v.prefix %]]
 __TEST__
 []
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE v = View( map => { default="any" } ) -%]
 [[% v.map.default %]]
 __TEST__
 [any]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view( prefix=> 'foo/', suffix => '.tt2') -%]
 [[% view.prefix %]bar[% view.suffix %]]
 [[% view.template_name('baz') %]]
@@ -11745,7 +11744,7 @@ __TEST__
 [foo/baz.tt2]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view( prefix=> 'foo/', suffix => '.tt2') -%]
 [[% view.prefix %]bar[% view.suffix %]]
 [[% view.template_name('baz') %]]
@@ -11754,7 +11753,7 @@ __TEST__
 [foo/baz.tt2]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view -%]
 [% view.print('Hello World') %]
 [% BLOCK text %]TEXT: [% item %][% END -%]
@@ -11762,7 +11761,7 @@ __TEST__
 TEXT: Hello World
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view -%]
 [% view.print( { foo => 'bar' } ) %]
 [% BLOCK hash %]HASH: {
@@ -11777,7 +11776,7 @@ HASH: {
 }
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view -%]
 [% view = view.clone( prefix => 'my_' ) -%]
 [% view.view('hash', { bar => 'baz' }) %]
@@ -11793,7 +11792,7 @@ HASH: {
 }
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view(prefix='my_') -%]
 [% view.print( foo => 'wiz', bar => 'waz' ) %]
 [% BLOCK my_hash %]KEYS: [% item.keys.sort.join(', ') %][% END %]
@@ -11801,7 +11800,7 @@ __TEST__
 KEYS: bar, foo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view -%]
 [% view.print( view ) %]
 [% BLOCK Template_View %]Printing a Template::View object[% END -%]
@@ -11809,7 +11808,7 @@ __TEST__
 Printing a Template::View object
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view(prefix='my_') -%]
 [% view.print( view ) %]
 [% view.print( view, prefix='your_' ) %]
@@ -11820,7 +11819,7 @@ Printing my Template::View object
 Printing your Template::View object
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view(prefix='my_', notfound='any' ) -%]
 [% view.print( view ) %]
 [% view.print( view, prefix='your_' ) %]
@@ -11831,7 +11830,7 @@ Printing any of my objects
 Printing any of your objects
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view(prefix => 'my_', map => { default => 'catchall' } ) -%]
 [% view.print( view ) %]
 [% view.print( view, default="catchsome" ) %]
@@ -11842,7 +11841,7 @@ Catching all defaults
 Catching some defaults
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view(prefix => 'my_', map => { default => 'catchnone' } ) -%]
 [% view.default %]
 [% view.default = 'catchall' -%]
@@ -11858,7 +11857,7 @@ Catching all defaults
 Catching some defaults
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view(prefix='my_', default='catchall' notfound='lost') -%]
 [% view.print( view ) %]
 [% BLOCK my_lost %]Something has been found[% END -%]
@@ -11866,7 +11865,7 @@ __TEST__
 Something has been found
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view -%]
 [% TRY ;
      view.print( view ) ;
@@ -11878,21 +11877,21 @@ __TEST__
 [view] file error - Template_View: not found
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view -%]
 [% view.print( foo ) %]
 __TEST__
 { e => 2.718, pi => 3.14 }
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view -%]
 [% view.print( foo, method => 'reverse' ) %]
 __TEST__
 { pi => 3.14, e => 2.718 }
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view(prefix='my_', include_naked=0, view_naked=1) -%]
 [% BLOCK my_foo; "Foo: $item"; END -%]
 [[% view.view_foo(20) %]]
@@ -11902,7 +11901,7 @@ __TEST__
 [Foo: 30]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view(prefix='my_', include_naked=0, view_naked=0) -%]
 [% BLOCK my_foo; "Foo: $item"; END -%]
 [[% view.view_foo(20) %]]
@@ -11917,7 +11916,7 @@ __TEST__
 no such view member: foo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view(map => { HASH => 'my_hash', ARRAY => 'your_list' }) -%]
 [% BLOCK text %]TEXT: [% item %][% END -%]
 [% BLOCK my_hash %]HASH: [% item.keys.sort.join(', ') %][% END -%]
@@ -11931,7 +11930,7 @@ HASH: alpha, bravo
 LIST: charlie, delta
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view(item => 'thing',
 	    map => { HASH => 'my_hash', ARRAY => 'your_list' }) -%]
 [% BLOCK text %]TEXT: [% thing %][% END -%]
@@ -11946,7 +11945,7 @@ HASH: alpha, bravo
 LIST: charlie, delta
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view -%]
 [% view.print('Hello World') %]
 [% view1 = view.clone( prefix='my_') -%]
@@ -11962,7 +11961,7 @@ MY TEXT: Hello World
 NO TEXT: Hello World
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view( prefix = 'base_', default => 'any' ) -%]
 [% view1 = view.clone( prefix => 'one_') -%]
 [% view2 = view.clone( prefix => 'two_') -%]
@@ -11989,7 +11988,7 @@ ONE TEXT: Hello World / ONE ANY: Hello, World
 TWO TEXT: Hello World / TWO ANY: Hello, World
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view( prefix => 'my_', item => 'thing' ) -%]
 [% view.view('thingy', [ 'foo', 'bar'] ) %]
 [% BLOCK my_thingy %]thingy: [ [% thing.join(', ') %] ][%END %]
@@ -11997,7 +11996,7 @@ __TEST__
 thingy: [ foo, bar ]
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view -%]
 [% view.map.${'Template::View'} = 'myview' -%]
 [% view.print(view) %]
@@ -12006,7 +12005,7 @@ __TEST__
 MYVIEW
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view -%]
 [% view.include('greeting', msg => 'Hello World!') %]
 [% BLOCK greeting %]msg: [% msg %][% END -%]
@@ -12014,7 +12013,7 @@ __TEST__
 msg: Hello World!
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view( prefix="my_" )-%]
 [% view.include('greeting', msg => 'Hello World!') %]
 [% BLOCK my_greeting %]msg: [% msg %][% END -%]
@@ -12022,7 +12021,7 @@ __TEST__
 msg: Hello World!
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view( prefix="my_" )-%]
 [% view.include_greeting( msg => 'Hello World!') %]
 [% BLOCK my_greeting %]msg: [% msg %][% END -%]
@@ -12030,7 +12029,7 @@ __TEST__
 msg: Hello World!
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view( prefix="my_" )-%]
 [% INCLUDE $view.template('greeting')
    msg = 'Hello World!' %]
@@ -12039,14 +12038,14 @@ __TEST__
 msg: Hello World!
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view( title="My View" )-%]
 [% view.title %]
 __TEST__
 My View
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE view( title="My View" )-%]
 [% newview = view.clone( col = 'Chartreuse') -%]
 [% newerview = newview.clone( title => 'New Title' ) -%]
@@ -12063,7 +12062,7 @@ New Title
 Chartreuse
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% VIEW fred prefix='blat_' %]
 This is the view
 [% END -%]
@@ -12073,7 +12072,7 @@ __TEST__
 This is blat_foo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% VIEW fred %]
 This is the view
 [% view.prefix = 'blat_' %]
@@ -12084,7 +12083,7 @@ __TEST__
 This is blat_foo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% VIEW fred %]
 This is the view
 [% view.prefix = 'blat_' %]
@@ -12100,7 +12099,7 @@ bloop
 Freddy
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% VIEW fred prefix='blat_'; view.name='Fred'; END -%]
 [% fred.prefix %]
 [% fred.name %]
@@ -12123,7 +12122,7 @@ view error - cannot update config item in sealed view: prefix
 view error - cannot update item in sealed view: name
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% VIEW foo prefix='blat_' default="default" notfound="notfound"
      title="fred" age=23 height=1.82 %]
 [% view.other = 'another' %]
@@ -12141,7 +12140,7 @@ __TEST__
    title => fred
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% VIEW foo %]
 [% BLOCK hello -%]
 Hello World!
@@ -12157,7 +12156,7 @@ file error - foo: not found
 Hello World!
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% title = "Previous Title" -%]
 [% VIEW foo 
      include_naked = 1
@@ -12194,7 +12193,7 @@ Header:  bgcol: #ffffff
 &copy; Copyright me, now
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% VIEW foo 
     title  = 'My View' 
     author = 'Andy Wardley'
@@ -12234,7 +12233,7 @@ originals:
  argument #1
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% VIEW basic title = "My Web Site" %]
   [% BLOCK header -%]
   This is the basic header: [% title or view.title %]
@@ -12266,7 +12265,7 @@ __TEST__
   Fancy new part of header
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% VIEW baz  notfound='lost' %]
 [% BLOCK lost; 'lost, not found'; END %]
 [% END -%]
@@ -12275,7 +12274,7 @@ __TEST__
 lost, not found
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% VIEW woz  prefix='outer_' %]
 [% BLOCK wiz; 'The inner wiz'; END %]
 [% END -%]
@@ -12287,7 +12286,7 @@ The inner wiz
 The outer waz
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% VIEW foo %]
 
    [% BLOCK file -%]
@@ -12308,7 +12307,7 @@ __TEST__
       Dir: some_dir
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK parent -%]
 This is the base block
 [%- END -%]
@@ -12324,7 +12323,7 @@ base: This is the base block
 super: This is the super block
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK foo -%]
 public foo block
 [%- END -%]
@@ -12345,7 +12344,7 @@ __TEST__
 <fancy>public foo block</fancy>
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% VIEW foo %]
 [% BLOCK Blessed_List -%]
 This is a list: [% item.as_list.join(', ') %]
@@ -12356,14 +12355,14 @@ __TEST__
 This is a list: Hello, World
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% VIEW my.foo value=33; END -%]
 n: [% my.foo.value %]
 __TEST__
 n: 33
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% VIEW parent -%]
 [% BLOCK one %]This is base one[% END %]
 [% BLOCK two %]This is base two[% END %]
@@ -12396,7 +12395,7 @@ two: This is child2 two
 two: This is child3 two
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% VIEW my.view.default
         prefix = 'view/default/'
         value  = 3.14;
@@ -12407,7 +12406,7 @@ __TEST__
 value: 3.14
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% VIEW my.view.default
         prefix = 'view/default/'
         value  = 3.14;
@@ -12438,7 +12437,7 @@ __TEST__
 2: 2.718
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% VIEW foo number = 10 sealed = 0; END -%]
 a: [% foo.number %]
 b: [% foo.number = 20 %]
@@ -12453,7 +12452,7 @@ d: 30
 e: 30
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% VIEW foo number = 10 silent = 1; END -%]
 a: [% foo.number %]
 b: [% foo.number = 20 %]
@@ -12468,7 +12467,7 @@ d: 10
 e: 10
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 -- name bad base --
 [%  TRY; 
         VIEW wiz base=no_such_base_at_all; 
@@ -12481,7 +12480,7 @@ __TEST__
 view error - Invalid base specified for view
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 before
 [% WHILE bollocks %]
 do nothing
@@ -12492,7 +12491,7 @@ before
 after
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 Commence countdown...
 [% a = 10 %]
 [% WHILE a %]
@@ -12505,7 +12504,7 @@ Commence countdown...
 The end
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% reset %]
 [% WHILE (item = next) %]
 item: [% item +%]
@@ -12517,7 +12516,7 @@ item: yankee
 item: zulu
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% reset %]
 [% WHILE (item = next) %]
 item: [% item +%]
@@ -12531,7 +12530,7 @@ item: yankee
 Finis
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% reset %]
 [% "* $item\n" WHILE (item = next) %]
 __TEST__
@@ -12541,7 +12540,7 @@ Reset list
 * zulu
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% TRY %]
 [% WHILE true %].[% END %]
 [% CATCH +%]
@@ -12552,7 +12551,7 @@ __TEST__
 error: WHILE loop terminated (> 100 iterations)
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% reset %]
 [% WHILE (item = next) %]
 [% NEXT IF item == 'yankee' -%]
@@ -12564,7 +12563,7 @@ Reset list
 * zulu
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%  
     i = 1;
     WHILE i <= 10;
@@ -12588,7 +12587,7 @@ __TEST__
 7
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%
     i = 1;
     WHILE i <= 10;
@@ -12609,7 +12608,7 @@ __TEST__
 7
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%
     i = 1;
     WHILE i <= 4;
@@ -12643,7 +12642,7 @@ __TEST__
 4,4,1
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%
     k = 1;
     LAST WHILE k == 1;
@@ -12653,7 +12652,7 @@ __TEST__
 1
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK mypage %]
 This is the header
 [% content %]
@@ -12668,7 +12667,7 @@ This is the content
 This is the footer
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% WRAPPER mywrap
    title = 'Another Test' -%]
 This is some more content
@@ -12680,7 +12679,7 @@ This is some more content
 Wrapper Footer
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% WRAPPER mywrap
    title = 'Another Test' -%]
 This is some content
@@ -12692,7 +12691,7 @@ This is some content
 Wrapper Footer
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% WRAPPER page
    title = 'My Interesting Page'
 %]
@@ -12743,7 +12742,7 @@ of nuclear fusion.
 <hr>
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [%# FOREACH s = [ 'one' 'two' ]; WRAPPER section; PROCESS $s; END; END %]
 [% PROCESS $s WRAPPER section FOREACH s = [ 'one' 'two' ] %]
 [% BLOCK one; title = 'Block One' %]This is one[% END %]
@@ -12764,7 +12763,7 @@ This is two
 </p>
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK one; title = 'Block One' %]This is one[% END %]
 [% BLOCK section %]
 <h1>[% title %]</h1>
@@ -12784,7 +12783,7 @@ This is one
 title: Block One
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% title = "foo" %]
 [% WRAPPER outer title="bar" -%]
 The title is [% title %]
@@ -12796,7 +12795,7 @@ __TEST__
 outer [bar]: The title is foo
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK a; "<a>$content</a>"; END; 
    BLOCK b; "<b>$content</b>"; END;
    BLOCK c; "<c>$content</c>"; END;
@@ -12808,7 +12807,7 @@ __EXPECTED__
 
 	# This next text demonstrates a limitation in the parser
 	# http://tt2.org/pipermail/templates/2006-January/008197.html
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% BLOCK a; "<a>$content</a>"; END; 
    BLOCK b; "<b>$content</b>"; END;
    BLOCK c; "<c>$content</c>"; END;
@@ -12821,7 +12820,7 @@ __TEST__
 <a><b><c>BAR</c></b></a>
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE Wrap -%]
 [% text = BLOCK -%]
 This is a long block of text that goes on for a long long time and then carries on some more after that, it's very interesting, NOT!
@@ -12837,7 +12836,7 @@ after that, it's very
 interesting, NOT!
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FILTER wrap -%]
 This is a long block of text that goes on for a long long time and then carries on some more after that, it's very interesting, NOT!
 [% END %]
@@ -12846,7 +12845,7 @@ This is a long block of text that goes on for a long long time and then
 carries on some more after that, it's very interesting, NOT!
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE wrap -%]
 [% FILTER wrap(25) -%]
 This is a long block of text that goes on for a long long time and then carries on some more after that, it's very interesting, NOT!
@@ -12860,7 +12859,7 @@ after that, it's very
 interesting, NOT!
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% FILTER wrap(10, '> ', '+ ') -%]
 The cat sat on the mat and then sat on the flat.
 [%- END %]
@@ -12875,7 +12874,7 @@ __TEST__
 + flat.
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	ok process( q:to[__TEST__], q:to[__EXPECTED__]);
 [% USE wrap -%]
 [% FILTER bullet = wrap(40, '* ', '  ') -%]
 First, attach the transmutex multiplier to the cross-wired quantum

@@ -1,11 +1,11 @@
 class Template::Toolkit::Actions {
 	has $.stashref;
 
-	use Template::Toolkit::Internals::Stash-Value;
-	use Template::Toolkit::Internals::Stash-Method;
-	use Template::Toolkit::Internals::Conditional;
-	use Template::Toolkit::Internals::Constant;
-	use Template::Toolkit::Internals::End;
+	use Template::Toolkit::Internal::Constant;
+	use Template::Toolkit::Internal::Directive::End;
+	use Template::Toolkit::Internal::Directive::If;
+	use Template::Toolkit::Internal::Directive::Get;
+	use Template::Toolkit::Internal::Directive::Stash-Method;
 
 	# Arguments might have to return to being objects due to stashrefs.
 	method Argument( $/ ) {
@@ -15,26 +15,29 @@ class Template::Toolkit::Actions {
 
 	method Function-Call( $/ ) {
 		if $/<Argument> {
-			make Template::Toolkit::Internals::Stash-Method.new(
+			make Template::Toolkit::Internal::Directive::Stash-Method.new(
 				:method-to-call( ~$/<Function-Name> ),
 				:argument( $/<Argument>>>.ast )
 			)
 		}
-		else {
-			make Template::Toolkit::Internals::Stash-Value.new(
+		elsif $/<Function-Name> {
+			make Template::Toolkit::Internal::Directive::Get.new(
 				:value-to-fetch( ~$/<Function-Name> )
 			)
+		}
+		else {
+die "Unknown case, shouldn't happen"
 		}
 	}
 
 	method Integer( $/ ) {
-		make Template::Toolkit::Internals::Constant.new(
+		make Template::Toolkit::Internal::Constant.new(
 			:value-to-fetch( +$/ )
 		)
 	}
 
 	method String( $/ ) {
-		make Template::Toolkit::Internals::Constant.new(
+		make Template::Toolkit::Internal::Constant.new(
 			:value-to-fetch( ~$/[0] )
 		)
 	}
@@ -65,15 +68,15 @@ class Template::Toolkit::Actions {
 	}
 
 	method Directive-End( $/ ) {
-		make Template::Toolkit::Internals::End.new
+		make Template::Toolkit::Internal::Directive::End.new
 	}
 
 	# IF normally won't have values immediately after it.
 	# We'll account for those later in testing.
 	#
 	method Directive-If( $/ ) {
-		make Template::Toolkit::Internals::Conditional.new(
-			:if-condition( $/<Expression>[0]<Value> )
+		make Template::Toolkit::Internal::Directive::If.new(
+			:if-condition( $/<Expression>.ast )
 		)
 	}
 
@@ -86,6 +89,7 @@ class Template::Toolkit::Actions {
 
 	# The constant chaining of 'make...' seems redundant to me.
 	method TOP( $/ ) {
+#say $/.gist;
 		make $/<Directive>[0].ast
 	}
 }

@@ -143,11 +143,11 @@ class Template::Toolkit {
 	use Template::Toolkit::Grammar;
 	use Template::Toolkit::Actions;
 
-	use Template::Toolkit::Internals::Stash-Value;
-	use Template::Toolkit::Internals::Stash-Method;
-	use Template::Toolkit::Internals::Conditional;
-	use Template::Toolkit::Internals::Constant;
-	use Template::Toolkit::Internals::End;
+	use Template::Toolkit::Internal::Constant;
+	use Template::Toolkit::Internal::Directive::End;
+	use Template::Toolkit::Internal::Directive::If;
+	use Template::Toolkit::Internal::Directive::Get;
+	use Template::Toolkit::Internal::Directive::Stash-Method;
 
 	# The original Perl 5 configuration options
 	#
@@ -369,10 +369,12 @@ class Template::Toolkit {
 		# Other unimplemented stuff
 	}
 
+#`(
 	method _parse( $str, $any-case = False ) {
 		my $*ANY-CASE = $any-case;
 		Template::Toolkit::Grammar.parse( $str )
 	}
+)
 
 	my class Element {
 		has Str $.content;
@@ -516,32 +518,29 @@ class Template::Toolkit {
 		@element
 	}
 
-	# We need a precompilation step for several reasons.
-	#
-	method _precompile( Element @element ) {
-		my @result;
-		my @stack;
-		for @element -> $element {
-			given $element {
-				when $_ ~~ Template::Toolkit::Internals::Conditional {
-					if $_.is-content {
-						@result.append( $element )
+	method _fold( Template::Toolkit::Internal @internal ) {
+		my Template::Toolkit::Internal @result;
+		my Template::Toolkit::Internal @stack;
+		for @internal -> $internal {
+			given $internal {
+				when Template::Toolkit::Internal::Directive::If {
+					@stack.push( $internal )
+				}
+				when Template::Toolkit::Internal::Constant {
+					if @stack {
+						@stack[*-1]._add-if-content(
+							$internal.value-to-fetch
+						)
 					}
 					else {
-						@stack.push( $element )
+						@result.append( $internal )
 					}
 				}
-				when ( $_ ~~ Template::Toolkit::Internals::Constant ) and @stack and ( @stack[*-1] ~~ Template::Toolkit::Internals::Conditional ) {
-					@stack[*-1].is-content =
-						$element.value-to-fetch
-				}
-				when $_ ~~ Template::Toolkit::Internals::End {
-					@result.append(
-						@stack.pop
-					)
+				when Template::Toolkit::Internal::Directive::End {
+					@result.append( @stack.pop )
 				}
 				default {
-					@result.append( $element )
+					@result.append( $internal )
 				}
 			}
 		}
@@ -553,17 +552,19 @@ class Template::Toolkit {
 	#	INSERT tags return a closure that opens the file,
 	#	slurps and returns the contents.
 	#
-	method _compile( Element @element, $stashref ) {
+	method _parse( Element @element, $stashref ) {
 		my $g = Template::Toolkit::Grammar.new;
 		my $a = Template::Toolkit::Actions.new;
-		my Routine @routine;
+		my Template::Toolkit::Internal @directive;
 		for @element -> $element {
 			given $element {
 				when Element::Text {
-					@routine.append(
-						sub ( $stashref ) {
-							$element.content
-						}
+					@directive.append(
+						Template::Toolkit::Internal::Constant.new(
+							:value-to-fetch(
+								$element.content
+							)
+						)
 					)
 				}
 				when Element::Tag {
@@ -571,31 +572,33 @@ class Template::Toolkit {
 						$element.content,
 						:actions( $a )
 					).ast;
-					for @ast {
-						@routine.append(
-							$_.compile( $stashref )
-						)
-					}
+					@directive.append( @ast )
 				}
 				default {
 					die "Shouldn't happen!"
 				}
 			}
 		}
-		@routine
+		@directive
 	}
 
-	# Crude pipelining.
+	# _split( $string ) breaks $string into a sequence of tags and text.
+	# _parse( @element ) turns elements into a sequence of directives.
+	# _compile( @parsed ) turns directives into a sequence of routines.
+	#
+	# Then the routines get evaluated for their content.
 	#
 	method _process( Str $string, $stashref = { } ) {
 		my Element @element = self._split( $string );
-		my Element @precompiled = self._precompile( @element );
-		my Routine @routine = self._compile( @precompiled, $stashref );
-		my $result;
-		for @routine {
-			$result ~= $_.( $stashref ) # Yes, $stashref is mutable
-		}
-		$result
+		my Template::Toolkit::Internal @directive =
+			self._parse( @element, $stashref );
+#say @directive.perl;
+		my @folded = self._fold( @directive );
+#say @folded.perl;
+		my @routine = map { .compile }, @folded;
+#say @routine.perl;
+
+		join( '', map { .( $stashref ) }, @routine )
 	}
 
 	method process( Str $filename, $stashref = { }, Str :$output-file ) {
