@@ -425,17 +425,28 @@ class Template::Toolkit {
 		$inset = min( @check );
 
 		if 0 < $inset <= $string.chars {
-			Element::Text.new(
-				:content( $string.substr( 0, $inset ) ),
-				:length( $inset )
-			)
+			my $loc-end = $string.index( $tag-end );
+			if $loc-start.defined and
+				$inset == $loc-start and
+				( !$loc-end.defined or $loc-end < $loc-start ) {
+				Element::Text.new(
+					:content( $string ),
+					:length( $string.chars )
+				)
+			}
+			else {
+				Element::Text.new(
+					:content( $string.substr( 0, $inset ) ),
+					:length( $inset )
+				)
+			}
 		}
 		else {
 			# [% "tag %]" %] is illegal.
 			# [%# "tag %]" %] is a commented tag, and '" %]' is the
 			# next tag in sequence.
 			# [% # "tag %]" %] acts the same.
-			# [%] is not a valid tag.
+			# [%] is just a string.
 			if $loc-start.defined and $loc-start == 0 {
 				my $loc-end = $string.index( $tag-end );
 				if $loc-end.defined and $loc-end > $tag-start.chars {
@@ -453,11 +464,7 @@ class Template::Toolkit {
 						)
 					)
 				}
-				elsif $loc-end.defined {
-					die "Tag '$tag-start' overlaps '$tag-end'... or something"
-				}
 				else {
-					$string.chars,
 					Element::Text.new(
 						:content( $string ),
 						:length( $string.chars )
@@ -475,7 +482,6 @@ class Template::Toolkit {
 						);
 					my $length = $content.chars;
 					$content ~~ s{ ^ \s+ } = '';
-					$length,
 					Element::Tag.new(
 						:content( $content ),
 						:length( $loc-end + $tag-end.chars )
@@ -516,6 +522,7 @@ class Template::Toolkit {
 				$next-element
 			)
 		}
+#say @element.perl;
 		@element
 	}
 
@@ -605,12 +612,21 @@ class Template::Toolkit {
 		join( '', map { .( $stashref ) }, @routine )
 	}
 
-	method process( Str $filename, $stashref = { }, Str :$output-file ) {
-		$filename.IO.e or die "Filename '$filename' not found!";
-		$filename.IO.f or die "Filename '$filename' not a file!";
-		my $template = $filename.IO.slurp;
+	method process( $filename, $stashref = { }, Str :$output-file ) {
+		my $template;
+		if $filename ~~ Str {
+			$filename.IO.e or die "Filename '$filename' not found!";
+			$filename.IO.f or die "Filename '$filename' not a file!";
+			$template = $filename.IO.slurp;
+		}
+		else {
+			$template = $filename.[0];
+		}
 
 		my $res = self._process( $template, $stashref );
+		if $*TESTING {
+			return $res
+		}
 	
 		# If the chosen output is an IO object (the default, STDOUT)
 		# then just print to it.

@@ -9,7 +9,7 @@ class Template::Toolkit::Actions {
 
 	# Arguments might have to return to being objects due to stashrefs.
 	method Argument( $/ ) {
-		make +$/<Integer> ||
+		make	+$/<Integer> ||
 			~$/<String>[0]
 	}
 

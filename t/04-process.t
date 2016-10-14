@@ -3,6 +3,216 @@ use Template::Toolkit;
 
 my $tt = Template::Toolkit.new;
 
+# XXX Tells Template::Toolkit to just return, rather than
+# XXX print to STDOUT. This overrides any OUTPUT value
+# XXX that's been set, and is for internal testing only.
+my $*TESTING = 1;
+
+# All of these tests are checked against Template Toolkit v5.
+#
+subtest {
+	is	$tt.process( \Q{hello} ),
+		Q{hello},
+		Q{text};
+
+	is	$tt.process( \Q{hello 'brave' world} ),
+		Q{hello 'brave' world},
+		Q{text with quotes};
+
+	is	$tt.process( \Q{hello \'brave\' world} ),
+		Q{hello \'brave\' world},
+		Q{text with single quotes};
+
+	is	$tt.process( \Q{hello \"brave\" world} ),
+		Q{hello \"brave\" world},
+		Q{text with double quotes};
+
+	# Open-tag with no close tag is interpreted as regular text.
+	#
+	is	$tt.process( \Q{does[% this string break?} ),
+		Q{does[% this string break?},
+		Q{open-tag};
+
+	# Close-tag with no open tag is interpreted as regular text.
+	#
+	is	$tt.process( \Q{does%] this string break?} ),
+		Q{does%] this string break?},
+		Q{close-tag};
+
+	# Close-tag followed by open-tag is also interpreted as regular text.
+	# (Note the opposite order)
+	#
+	is	$tt.process( \Q{does%] [%this string break?} ),
+		Q{does%] [%this string break?},
+		Q{close-tag before open-tag};
+
+	# Overlapping open and close tag
+	#
+	is	$tt.process( \Q{does [%] this string break?} ),
+		\Q{does [%] this string break?},
+		Q{overlapping open and close tags};
+
+	done-testing
+}, Q{text};
+
+# All of these tests are checked against Template Toolkit v5.
+#
+subtest {
+	is	$tt.process( \Q{[%27%]} ),
+		Q{27},
+		Q{integer};
+	
+	is	$tt.process( \Q{[% -27%]} ),
+		Q{-27},
+		Q{negative integer (Not testing [%--%] though.)};
+	
+	is	$tt.process( \Q{[%'hello'%]} ),
+		Q{hello},
+		Q{single-quote};
+	
+	is	$tt.process( \Q{[%"hello"%]} ),
+		Q{hello},
+		Q{double-quote};
+
+	is	$tt.process( \Q{[%'hello "brave" world'%]} ),
+		Q{hello "brave" world},
+		Q{single-quote, nested double-quote};
+
+	is	$tt.process( \Q{[%'hello \'brave\' world'%]} ),
+		Q{hello \'brave\' world},
+		Q{single-quote, nested escaped single-quote};
+	
+	is	$tt.process( \Q{[%"hello 'brave' world"%]} ),
+		Q{hello 'brave' world},
+		Q{double-quote, nested single-quote};
+
+	is	$tt.process( \Q{[%"hello \"brave\" world"%]} ),
+		Q{hello \"brave\" world},
+		Q{double-quote, nested escaped double-quote};
+	
+	done-testing
+}, Q{constant};
+
+subtest {
+	is	$tt.process( \Q{%[%6%]%} ),
+		Q{%6%},
+		Q{edge case};
+	
+	is	$tt.process( \Q{hello [%"brave"%] world} ),
+		Q{hello brave world},
+		Q{text-constant-text};
+	
+	done-testing
+}, Q{mixed text+constant};
+
+subtest {;
+	subtest {
+		subtest {
+			is	$tt.process( \Q{[%brave%]} ),
+				Q{},
+				Q{no stash};
+			
+			is	$tt.process( \Q{[%brave%]}, { hello => 'brave' } ),
+				Q{},
+				Q{unrelatead stash};
+			
+			is	$tt.process( \Q{[%brave%]},
+					{ brave => 'hello world' } ),
+				Q{hello world},
+				Q{related stash};
+		
+			done-testing
+		}, Q{single value};
+
+		subtest {
+			is	$tt.process( \Q{[%brave()%]} ),
+				Q{},
+				Q{no stash};
+
+			is	$tt.process(
+					\Q{[%brave()%]},
+					{ hello => sub () { } }
+				),
+				Q{},
+				Q{unrelatead stash};
+
+			subtest {
+				# Yes, in TT 5 \q{[% brave() %]}, { brave => 42 }
+				# substitutes 42, not failing to make a function call.
+				#
+				is	$tt.process( \Q{[%brave()%]},
+						{ brave => 'hello world' } ),
+					Q{hello world},
+					Q{related stash, no arguments};
+
+				# Even if calling with an argument, fallback is used.
+				#
+				is	$tt.process( \Q{[%brave(42)%]},
+						{ brave => 'hello world' } ),
+					Q{hello world},
+					Q{related stash, one argument};
+
+				done-testing
+			}, Q{stash with constant};
+
+			done-testing
+		}, Q{single function, no arguments};
+
+		done-testing
+	}, Q{GET};
+	subtest {;
+	}, Q{CALL};
+	subtest {;
+	}, Q{SET};
+	subtest {;
+	}, Q{DEFAULT};
+	subtest {;
+	}, Q{INSERT};
+	subtest {;
+	}, Q{INCLUDE};
+	subtest {;
+	}, Q{PROCESS};
+	subtest {;
+	}, Q{WRAPPER};
+	subtest {;
+	}, Q{BLOCK};
+	subtest {;
+	}, Q{IF/UNLESS/ELSIF/ELSE};
+	subtest {;
+	}, Q{SWITCH/CASE};
+	subtest {;
+	}, Q{FOREACH};
+	subtest {;
+	}, Q{WHILE};
+	subtest {;
+	}, Q{FILTER};
+	subtest {;
+	}, Q{MACRO};
+	subtest {;
+	}, Q{PERL};
+	subtest {;
+	}, Q{RAWPERL};
+	subtest {;
+	}, Q{TRY/THROW/CATCH/FINAL};
+	subtest {;
+	}, Q{NEXT};
+	subtest {;
+	}, Q{LAST};
+	subtest {;
+	}, Q{RETURN};
+	subtest {;
+	}, Q{STOP};
+	subtest {;
+	}, Q{CLEAR};
+	subtest {;
+	}, Q{META};
+	subtest {;
+	}, Q{TAGS};
+	subtest {;
+	}, Q{DEBUG};
+}, Q{directives};
+
+#`(
 subtest {
 	is $tt._process( Q{-6} ),
 		Q{-6},
@@ -65,7 +275,6 @@ subtest {
 	}, Q{stash};
 }, Q{IF};
 
-#`(
 is $tt._process(
 	Q{[% FOREACH i IN elements %]l[% END %]},
 	{ elements => [ 0, 1, 2 ] }
@@ -73,7 +282,6 @@ is $tt._process(
 )
 
 #`(
-
 sub is-parsed( $test ) {
 	ok $tt._parse( $test );
 }
