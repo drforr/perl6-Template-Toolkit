@@ -47,20 +47,35 @@ grammar Template::Toolkit::Grammar
 	rule Function-Call
 		{
 		| <Function-Name>
-		  [ '(' [ <Argument>* %% [ ',' | \s+ ] | <Argument>* ] ')' ]?
+		  '(' [ <Argument>* %% [ ',' | \s+ ] | <Argument>* ] ')'
+		| <Function-Name>
 		| <Positive-Integer>
 		}
 
-	# Moved <Integer> to the top so it's not interpreted immediately as a
-	# function call in the 'foo.1.bar' sense.
-	# Really there it's an array access.
-	#
-	rule Value
+	rule Constant
 		{
 		| <Integer>
-		| <Function-Call>+ %% '.'
 		| <String>
 		| <Floating-Point>
+		}
+
+	rule Variable-Start
+		{
+		| <Function-Name>
+		  '(' [ <Argument>* %% [ ',' | \s+ ] | <Argument>* ] ')'
+		| <Function-Name>
+		}
+
+	rule Variable-Element
+		{
+		| <Variable-Start>
+		| <Positive-Integer>
+		}
+
+	rule Variable
+		{
+		| <Variable-Start> '.' <Variable-Element>+ %% '.'
+		| <Variable-Start>
 		}
 
 	token Plugin-Name
@@ -110,20 +125,21 @@ grammar Template::Toolkit::Grammar
 
 	rule Expression
 		{
-		| <Value> <Times> <Value> <Plus> <Value> <Times> <Value>
-		| <Value> <Or> <Value> <Or> <Value> <Or> <Value>
-		| <Value> <Plus> <Value> <Times> <Value>
-		| <Value> <And> <Value> <Or> <Value>
-		| <Value> <And> <Value> <Or> <Value>
-		| <Value> <And> <Value>
-		| <Value> <Or> <Value>
-		| <Value> <Compared-To> <Value>
-		| <Value> <Equals> <Value>
-		| <Value> <Plus> <Value>
-		| <Value> <Times> <Value>
-		| <Value> <Modulo> <Value>
-		| <Not> <Value>
-		| <Value>
+		| <Variable> <Times> <Constant> <Plus> <Constant> <Times> <Constant>
+		| <Variable> <Or> <Variable> <Or> <Variable> <Or> <Variable>
+		| <Variable> <Plus> <Constant> <Times> <Constant>
+		| <Variable> <And> <Variable> <Or> <Variable>
+		| <Variable> <And> <Variable> <Or> <Variable>
+		| <Variable> <And> <Variable>
+		| <Variable> <Or> <Variable>
+		| <Variable> <Compared-To> <Variable>
+		| <Variable> <Equals> <Constant>
+		| <Variable> <Plus> <Variable>
+		| <Variable> <Times> <Variable>
+		| <Variable> <Modulo> <Variable>
+		| <Not> <Variable>
+		| <Variable>
+		| <Constant>
 		| <Array>
 		}
 
@@ -135,7 +151,7 @@ grammar Template::Toolkit::Grammar
 
 	rule Named-Parameter
 		{
-		| <Value> '=' <Expression>
+		| <Variable> '=' <Expression>
 		}
 
 	# Broken out for easier Action coding.
@@ -152,16 +168,16 @@ grammar Template::Toolkit::Grammar
 		}
 	rule Directive-Catch { 'CATCH' }
 	rule Directive-Get { 'GET'? <Expression> }
-	rule Directive-Foreach { 'FOREACH' <Value> '=' <Expression> }
+	rule Directive-Foreach { 'FOREACH' <Variable> '=' <Expression> }
 	rule Directive-If
 		{
 		| 'IF' <Expression>
-		| <Value> '=' 'IF' <Expression>
+		| <Variable> '=' 'IF' <Expression>
 		}
 	rule Directive-Include
 		{
 		| 'INCLUDE' <Path-Name> <Named-Parameter>*
-		| <Value> '=' 'INCLUDE' <Path-Name> <Named-Parameter>*
+		| <Variable> '=' 'INCLUDE' <Path-Name> <Named-Parameter>*
 		}
 	rule Directive-Else { 'ELSE' }
 	rule Directive-Elsif { 'ELSIF' <Expression> }
@@ -170,9 +186,9 @@ grammar Template::Toolkit::Grammar
 	rule Directive-Process
 		{
 		| 'PROCESS' <Path-Name>
-		| <Value> '=' 'PROCESS' <Path-Name>
+		| <Variable> '=' 'PROCESS' <Path-Name>
 		}
-	rule Directive-Set { 'SET' <Value> '=' <Expression> } # Hrm.
+	rule Directive-Set { 'SET' <Variable> '=' <Expression> }
 	rule Directive-Try { 'TRY' }
 	rule Directive-Unless
 		{
@@ -206,7 +222,7 @@ grammar Template::Toolkit::Grammar
 		| <Directive-Try>
 		| <Directive-Unless>
 		| <Directive-Use>
-		| <Value> '=' <Expression>
+		| <Variable> '=' <Expression>
 		}
 
 	rule TOP

@@ -9,7 +9,7 @@ my $g = Template::Toolkit::Grammar.new;
 my $tt = Template::Toolkit.new;
 
 sub is-parsed( $test ) {
-	ok $tt._parse( $test );
+	ok $g.parse( $test );
 }
 
 sub process( Str $test, Str $expected, $stashref = { } ) {
@@ -28,7 +28,7 @@ __TEST__
  NAMED: {  }
 __EXPECTED__
  
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 args(a b c d=e f=g)
 __PARSED__
 
@@ -39,7 +39,7 @@ __TEST__
  NAMED: { d => echo, f => golf }
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 args(a, b, c, d=e, f=g)
 __PARSED__
 
@@ -51,7 +51,7 @@ __TEST__
 __EXPECTED__
 
 # Doesn't break any previous
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #args(a, b, c, d=e, f=g,)
 #__PARSED__
 
@@ -64,7 +64,7 @@ __EXPECTED__
 
 # Doesn't break any previous
 #
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #args(d=e, a, b, f=g, c)
 #__PARSED__
 
@@ -75,7 +75,7 @@ __TEST__
  NAMED: { d => echo, f => golf }
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 obj.foo(d=e, a, b, f=g, c)
 __PARSED__
 
@@ -87,7 +87,7 @@ object:
  NAMED: { d => echo, f => golf }
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 obj.foo(d=e, a, b, f=g, c).split("\n").1
 __PARSED__
 
@@ -99,7 +99,7 @@ __EXPECTED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #object.nil
 #__PARSED__
 
@@ -109,7 +109,7 @@ __TEST__
 ()
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE assert;
    TRY; object.assert.nil; CATCH; error; END; "\n";
    TRY; object.assert.zip; CATCH; error; END;
@@ -127,7 +127,7 @@ __EXPECTED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #USE assert;
 #   TRY; hash.assert.bar; CATCH; error; END; "\n";
 #   TRY; hash.assert.bam; CATCH; error; END;
@@ -143,7 +143,7 @@ assert error - undefined value for bar
 assert error - undefined value for bam
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE assert;
    TRY; list.assert.0;     CATCH; error; END; "\n";
    TRY; list.assert.first; CATCH; error; END;
@@ -169,7 +169,7 @@ assert error - undefined value for 0
 assert error - undefined value for first
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE assert;
    TRY; assert.nothing; CATCH; error; END;
 __PARSED__
@@ -184,7 +184,7 @@ __EXPECTED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #USE assert;
 #   TRY; assert.subref; CATCH; error; END;
 #__PARSED__
@@ -197,11 +197,11 @@ __TEST__
 assert error - undefined value for subref
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 IF yes
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 END
 __PARSED__
 
@@ -215,7 +215,7 @@ maybe
 yes
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 ELSE
 __PARSED__
 
@@ -240,7 +240,7 @@ yes
 __EXPECTED__
 
 #`( ANY-CASE enabled
-	ok $tt._parse( q:to[__PARSED__], True ), 'any case';
+	ok $g.parse( q:to[__PARSED__], True ), 'any case';
 IF yes and true
 __PARSED__
 )
@@ -255,7 +255,7 @@ __TEST__
 yes
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 IF yes && true
 __PARSED__
 
@@ -269,7 +269,7 @@ __TEST__
 yes
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 IF yes && sad || happy
 __PARSED__
 
@@ -284,7 +284,7 @@ yes
 __EXPECTED__
 
 #`( ANY-CASE
-	ok $tt._parse( q:to[__PARSED__], True ), 'any case';
+	ok $g.parse( q:to[__PARSED__], True ), 'any case';
 IF yes AND ten && true and twenty && 30
 __PARSED__
 )
@@ -299,7 +299,7 @@ __TEST__
 yes
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 IF ! yes
 __PARSED__
 
@@ -313,7 +313,7 @@ __TEST__
 yes
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 UNLESS yes
 __PARSED__
 
@@ -327,7 +327,7 @@ __TEST__
 yes
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 "yes" UNLESS no
 __PARSED__
 
@@ -347,7 +347,7 @@ __TEST__
 yes
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 IF yes || no
 __PARSED__
 
@@ -361,7 +361,7 @@ __TEST__
 yes
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 IF yes || no || true || false
 __PARSED__
 
@@ -377,7 +377,7 @@ __EXPECTED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__], True ), 'any case';
+#	ok $g.parse( q:to[__PARSED__], True ), 'any case';
 #IF yes or no
 #__PARSED__
 
@@ -392,7 +392,7 @@ yes
 __EXPECTED__
 
 #`( ANY-CASE enabled
-	ok $tt._parse( q:to[__PARSED__], True ), 'any case';
+	ok $g.parse( q:to[__PARSED__], True ), 'any case';
 IF not false and not sad
 __PARSED__
 )
@@ -407,7 +407,7 @@ __TEST__
 yes
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 IF ten == 10
 __PARSED__
 
@@ -423,17 +423,17 @@ __EXPECTED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #IF ten == twenty
 #__PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 ELSIF ten > twenty
 __PARSED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #ELSIF twenty < ten
 #__PARSED__
 
@@ -452,14 +452,14 @@ Normality is restored.  Anything you can't cope with is your own problem.
 __EXPECTED__
 
 #`( ANY-CASE enabled
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 IF ten >= twenty or false
 __PARSED__
 )
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #ELSIF twenty <= ten
 #__PARSED__
 
@@ -476,13 +476,13 @@ __EXPECTED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #IF ten > twenty
 #__PARSED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #ELSIF ten < twenty
 #__PARSED__
 
@@ -498,13 +498,13 @@ __EXPECTED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #IF ten != 10
 #__PARSED__
   
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #ELSIF ten == 10
 #__PARSED__
 
@@ -520,11 +520,11 @@ __EXPECTED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #IF alpha AND omega
 #__PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 count
 __PARSED__
 
@@ -554,7 +554,7 @@ __EXPECTED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #IF alpha OR omega
 #__PARSED__
 
@@ -582,7 +582,7 @@ alpha and/or omega are true
 count: 33
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 small = 5
    mid   = 7
    big   = 10
@@ -593,11 +593,11 @@ small = 5
    mult  = big * small
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 mult + 2 * 2
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 mult * 2 + 2 * 3
 __PARSED__
 
@@ -628,25 +628,25 @@ maxi: 54
 mega: 106
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 10 mod 4
 __PARSED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #10 MOD 4
 #__PARSED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #10 div 3
 #__PARSED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #10 DIV 3
 #__PARSED__
 
@@ -658,7 +658,7 @@ __TEST__
 3 3
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 IF 'one' lt 'two'
 __PARSED__
 
@@ -673,7 +673,7 @@ __TEST__
 one is less than two
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 TRY; INCLUDE blockdef/block1; CATCH; error; END
 __PARSED__
 
@@ -685,7 +685,7 @@ __EXPECTED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #INCLUDE blockdef/block1
 #__PARSED__
 
@@ -696,7 +696,7 @@ __TEST__
 This is block 1, defined in blockdef, a is alpha
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 INCLUDE blockdef/block1 a='amazing'
 __PARSED__
 
@@ -708,7 +708,7 @@ __EXPECTED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #TRY; INCLUDE blockdef/none; CATCH; error; END
 #__PARSED__
 
@@ -718,7 +718,7 @@ __TEST__
 file error - blockdef/none: not found
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 INCLUDE "$dir/blockdef/block1" a='abstract'
 __PARSED__
 
@@ -728,19 +728,19 @@ __TEST__
 This is block 1, defined in blockdef, a is abstract
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 BLOCK one
 __PARSED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #INCLUDE one
 #__PARSED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #INCLUDE one/two b='brilliant'
 #__PARSED__
 
@@ -780,7 +780,7 @@ end of blockdef
 This is the original block1
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 PROCESS blockdef
 __PARSED__
 
@@ -798,7 +798,7 @@ end of blockdef
 This is block 1, defined in blockdef, a is alpha
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 INCLUDE block_a
 __PARSED__
 
@@ -812,7 +812,7 @@ __EXPECTED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #INCLUDE header 
 #   title = 'A New Beginning'
 #__PARSED__
@@ -829,7 +829,7 @@ A long time ago in a galaxy far, far away...
 </body></html>
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 BLOCK foo:bar
 __PARSED__
 
@@ -842,7 +842,7 @@ __TEST__
 blah
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 BLOCK 'hello html'
 __PARSED__
 
@@ -862,7 +862,7 @@ __TEST__
 <>
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 BLOCK foo eval_perl=0 tags="star"
 __PARSED__
 
@@ -875,7 +875,7 @@ __TEST__
 foo: This is the foo block
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 BLOCK eval_perl=0 tags="star"
 __PARSED__
 
@@ -887,13 +887,13 @@ __TEST__
 This is an anonymous block
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 b = INCLUDE foo
 __PARSED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #c = INCLUDE foo a = 'ammended'
 #__PARSED__
 
@@ -910,13 +910,13 @@ b: <This is block foo, a is alpha>
 c: <This is block foo, a is ammended>
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 d = BLOCK
 __PARSED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #a = 'charlie'
 #__PARSED__
 
@@ -930,7 +930,7 @@ __TEST__
 a: charlie   d: This is the block, a is alpha
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 e = IF a == 'alpha'
 __PARSED__
 
@@ -945,7 +945,7 @@ __TEST__
 e: a is alpha
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 a = FOREACH b = [1 2 3]
 __PARSED__
 
@@ -958,7 +958,7 @@ __TEST__
 a is 1,2,3,
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 out = PROCESS userinfo FOREACH user = [ 'tom', 'dick', 'larry' ]
 __PARSED__
 
@@ -977,14 +977,14 @@ name: larry
 __EXPECTED__
 
 	# XXX 'include' should not be interpreted here.
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 include = a
 __PARSED__
 
 # Doesn't (shouldn't) break any previous
 # 
 #	# XXX 'for' should not be interpreted here.
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #for = b
 #__PARSED__
 
@@ -1000,7 +1000,7 @@ __EXPECTED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #IF a AND b
 #__PARSED__
 
@@ -1016,7 +1016,7 @@ __EXPECTED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #IF a and b
 #__PARSED__
 
@@ -1040,7 +1040,7 @@ alpha
 __EXPECTED__
 
 #`( ANY-CASE
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 include foo bar='baz'
 __PARSED__
 )
@@ -1061,13 +1061,13 @@ __TEST__
 1 1
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE cgi = CGI('id=abw&name=Andy+Wardley'); global.cgi = cgi
 __PARSED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #global.cgi.param('name')
 #__PARSED__
 
@@ -1084,7 +1084,7 @@ __TEST__
 name: Andy Wardley
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FOREACH key = global.cgi.param.sort
 __PARSED__
 
@@ -1097,7 +1097,7 @@ __TEST__
    * name : Andy Wardley
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FOREACH key = global.cgi.param().sort
 __PARSED__
 
@@ -1110,7 +1110,7 @@ __TEST__
    * name : Andy Wardley
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FOREACH x = global.cgi.checkbox_group(
 		name     => 'words'
                values   => [ 'eenie', 'meenie', 'minie', 'moe' ]
@@ -1129,13 +1129,13 @@ __TEST__
 [% cgicheck %]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE cgi('item=foo&items=one&items=two')
 __PARSED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #cgi.params.item.join(', ')
 #__PARSED__
 
@@ -1152,7 +1152,7 @@ __EXPECTED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #a = 10; b = 20
 #__PARSED__
 
@@ -1252,19 +1252,19 @@ __EXPECTED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #TRY
 #__PARSED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #INCLUDE foo
 #__PARSED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #CATCH file
 #__PARSED__
 
@@ -1278,7 +1278,7 @@ __TEST__
 This is the foo file, a is 
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 META author => 'abw' version => 3.14
 __PARSED__
 
@@ -1308,7 +1308,7 @@ __EXPECTED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #INCLUDE foo a = 'any value'
 #__PARSED__
 
@@ -1356,7 +1356,7 @@ This is the footer, author: albert, version: emc2
 - 3 - 2 - 1 
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 TRY; INCLUDE complex; CATCH; near_line("*error", 18); END
 __PARSED__
 
@@ -1390,7 +1390,7 @@ __EXPECTED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #INCLUDE bar/baz word = 'wibble'
 #__PARSED__
 
@@ -1407,7 +1407,7 @@ __EXPECTED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #INCLUDE "$root/src/blam"
 #__PARSED__
 
@@ -1467,7 +1467,7 @@ __EXPECTED__
 
 # Doesn't break any previous
 # 
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 #const.col.keys.sort.join(', ')
 #__PARSED__
 
@@ -1479,7 +1479,7 @@ back, text
 __EXPECTED__
 
 #`(
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 const.col.keys.sort.join(const.joint)
 __PARSED__
 
@@ -1499,7 +1499,7 @@ zero 0
 one 1
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 constants.col.values.sort.reverse.join(constants.joint)
 __PARSED__
 
@@ -1526,7 +1526,7 @@ __TEST__
 no ?
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 const.col.${const.fave}
 __PARSED__
 
@@ -1538,7 +1538,7 @@ fave back
 col  orange
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 "$key\n" FOREACH key = constants.col.keys.sort
 __PARSED__
 
@@ -1551,7 +1551,7 @@ back
 text
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 const.author = 'Fred Smith'
 __PARSED__
 
@@ -1566,11 +1566,11 @@ b:
 c: abw
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE userlist = datafile(datafile.0)
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FOREACH user = userlist
 __PARSED__
 
@@ -1587,11 +1587,11 @@ Users:
   * nellb: Nell Browser
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE userlist = datafile(datafile.1, delim = '|')
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FOREACH user = userlist
 __PARSED__
 
@@ -1615,11 +1615,11 @@ __TEST__
 size: 3
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 date.format(format => '%Y')
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 now('%Y')
 __PARSED__
 
@@ -1635,7 +1635,7 @@ and now()...
 Year: [% now('%Y') %]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE date(time => time)
 __PARSED__
 
@@ -1655,7 +1655,7 @@ __TEST__
 [% daystr %]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE date(time => time, format = format.date)
 __PARSED__
 
@@ -1667,11 +1667,11 @@ __TEST__
 Date: [% datestr %]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE date(format = format.date)
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 date.format(time, format.time)
 __PARSED__
 
@@ -1683,7 +1683,7 @@ __TEST__
 Time: [% timestr %]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 date.format(time, format = format.time)
 __PARSED__
 
@@ -1703,7 +1703,7 @@ __TEST__
 Time: [% timestr %]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE english = date(format => '%A', locale => 'en_GB')
 __PARSED__
 
@@ -1718,19 +1718,19 @@ In English, today's day is: [% time_locale(time, '%A', 'en_GB') +%]
 In French, today's day is: [% time_locale(time, '%A', 'fr_FR') +%]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE english = date(format => '%A')
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE french  = date()
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 english.format(locale => 'en_GB')
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 french.format(format => '%A', locale => 'fr_FR')
 __PARSED__
 
@@ -1747,7 +1747,7 @@ In English, today's day is: [% time_locale(time, '%A', 'en_GB') +%]
 In French, today's day is: [% time_locale(time, '%A', 'fr_FR') +%]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 date.format('4:20:00 13-6-2000', '%H')
 __PARSED__
 
@@ -1765,7 +1765,7 @@ __TEST__
 04
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 day.format('4:20:00 13-9-2000')
 __PARSED__
 
@@ -1778,7 +1778,7 @@ __TEST__
 [% date_locale('4:20:00 13-9-2000', '%A', 'en_GB') %]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 date.format('some stupid date')
 __PARSED__
 
@@ -1793,7 +1793,7 @@ __TEST__
 Bad date: bad time/date string:  expects 'h:m:s d:m:y'  got: 'some stupid date'
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 date.format(template.modtime, format='%Y')
 __PARSED__
 
@@ -1805,7 +1805,7 @@ __TEST__
 input text [% now('%Y') %]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE date; calc = date.calc; calc.Monday_of_Week(22, 2001).join('/')
 __PARSED__
 
@@ -1824,7 +1824,7 @@ not testing
 [% END -%]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE date;
    date.format('12:59:00 30/09/2001', '%H:%M')
 __PARSED__
@@ -1870,7 +1870,7 @@ Hello World
 foo: <!-- input text line 2 : [% foo %] -->10
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 DEBUG on
 __PARSED__
 
@@ -1888,7 +1888,7 @@ Debugging enabled
 foo: 10
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 DEBUG off
 __PARSED__
 
@@ -1908,7 +1908,7 @@ Debugging enabled
 foo: <!-- input text line 6 : [% foo %] -->10
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 "$baz.ping/$baz.pong"
 __PARSED__
 
@@ -1925,7 +1925,7 @@ hello <!-- input text line 2 : [% "$baz.ping/$baz.pong" %] -->100/200 world
 bar: 20
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 INCLUDE foo a=10
 __PARSED__
 
@@ -1943,7 +1943,7 @@ foo: <!-- input text line 1 : [% foo %] -->10
 This is the foo file, a is 20
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 DEBUG format '[ $file line $line ]'
 __PARSED__
 
@@ -1957,7 +1957,7 @@ __TEST__
 [ input text line 3 ]10
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 DEBUG on + format '[ $file line $line ]'
 __PARSED__
 
@@ -1969,7 +1969,7 @@ __TEST__
 [ input text line 2 ]10
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 DEBUG on;
    DEBUG format '$text at line $line of $file';
    DEBUG msg line='3.14' file='this file' text='hello world' 
@@ -2036,7 +2036,7 @@ __EXPECTED__
 
 # XXX This won't ever actually get to the parser, since '#' occurs at the start
 # XXX of the [%# .. %] tag.
-#	ok $tt._parse( q:to[__PARSED__] );
+#	ok $g.parse( q:to[__PARSED__] );
 ## this is a comment which should
 #    be ignored in totality
 #__PARSED__
@@ -2052,7 +2052,7 @@ __EXPECTED__
 	# XXX Notice that we're stripping the leading space.
 	# XXX The upper layer strips leading spaces, so we emulate that
 	# XXX behavior here.
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 # this is a one-line comment
    a
 __PARSED__
@@ -2065,7 +2065,7 @@ __TEST__
 alpha
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 # this is a two-line comment
    a =
    # here's the next line
@@ -2083,7 +2083,7 @@ __TEST__
 bravo
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 a = c   # this is a comment on the end of the line
    b = d   # so is this
 __PARSED__
@@ -2350,7 +2350,7 @@ __TEST__
 end
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 r; r = s; "-"; r
 __PARSED__
 
@@ -2360,7 +2360,7 @@ __TEST__
 romeo-sierra.
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 IF a; b; ELSIF c; d; ELSE; s; END
 __PARSED__
 
@@ -2370,7 +2370,7 @@ __TEST__
 bravo
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 TRY ;
      USE Directory ;
    CATCH ;
@@ -2389,7 +2389,7 @@ __TEST__
 Directory error - no directory specified
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 TRY ;
      USE Directory('/no/such/place') ;
    CATCH ;
@@ -2408,7 +2408,7 @@ __TEST__
 Directory error on /no/such/place
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE d = Directory(dir, nostat=1)
 __PARSED__
 
@@ -2420,7 +2420,7 @@ __TEST__
 [% dir %]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE d = Directory(dir)
 __PARSED__
 
@@ -2432,7 +2432,7 @@ __TEST__
 [% dir %]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE directory(dir)
 __PARSED__
 
@@ -2444,11 +2444,11 @@ __TEST__
 [% dir %]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FOREACH f = d.files
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FOREACH f = d.dirs; NEXT IF f.name == 'CVS';
 __PARSED__
 
@@ -2468,11 +2468,11 @@ __TEST__
    * sub_two
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FOREACH f = dir.files
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 INCLUDE dir dir=f FILTER indent(4)
 __PARSED__
 
@@ -2502,20 +2502,20 @@ __TEST__
         - wiz.html
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 BLOCK dir;
      FOREACH f = dir.list ;
      NEXT IF f.name == 'CVS'; 
        IF f.isdir ;
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 f.scan ;
 	 INCLUDE dir dir=f FILTER indent(4) ;
        ELSE
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 END ;
     END ;
    END
@@ -2551,7 +2551,7 @@ __TEST__
     - xyzfile
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE d = Directory(dir, recurse=1)
 __PARSED__
 
@@ -2571,18 +2571,18 @@ __TEST__
    * sub_two
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE dir = Directory(dir, recurse=1, root=cwd)
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 BLOCK dir;
      FOREACH f = dir.list ;
      NEXT IF f.name == 'CVS'; 
        IF f.isdir ;
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 INCLUDE dir dir=f FILTER indent(4) ;
        ELSE
 __PARSED__
@@ -2645,7 +2645,7 @@ __TEST__
     - xyzfile => [% dot %]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 file = dir.file('xyzfile')
 __PARSED__
 
@@ -2657,7 +2657,7 @@ __TEST__
 xyzfile
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE dir = Directory('.', root=dir)
 __PARSED__
 
@@ -2674,15 +2674,15 @@ __TEST__
 - xyzfile
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 BLOCK directory; NEXT IF item.name == 'CVS';
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 item.content(view) | indent
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 filelist.print(dir)
 __PARSED__
 
@@ -2715,7 +2715,7 @@ d dir => [% dir %]
     f xyzfile => [% dir %]/xyzfile
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 META
    author = 'Tom Smith'
    version = 1.23 
@@ -2748,11 +2748,11 @@ __TEST__
    This is the end of block foo
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 META title = 'My Template Title'
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 template.title or title
 __PARSED__
 
@@ -2783,7 +2783,7 @@ component title: header
  template title: input text
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 INCLUDE header title = 'A New Title'
 __PARSED__
 
@@ -2806,7 +2806,7 @@ __TEST__
 some output
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 INCLUDE one;
    INCLUDE two;
    INCLUDE three;
@@ -2829,7 +2829,7 @@ __TEST__
 Dumper
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 Dumper.dump({ foo = 'bar' }, 'hello' )
 __PARSED__
 
@@ -2852,7 +2852,7 @@ $VAR1 = {
         };
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 Dumper.dump_html(params)
 __PARSED__
 
@@ -2865,7 +2865,7 @@ $VAR1 = {<br>
         };<br>
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE dumper(indent=1, pad='> ', varname="frank")
 __PARSED__
 
@@ -2878,7 +2878,7 @@ __TEST__
 > };
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE dumper(Pad='>> ', Varname="bob")
 __PARSED__
 
@@ -2891,22 +2891,22 @@ __TEST__
 >> };
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 META 
    author  = 'Andy Wardley'
    title   = 'Test Template $foo #6'
    version = 1.23
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 PERL
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 CATCH
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 RAWPERL
 __PARSED__
 
@@ -3070,7 +3070,7 @@ __TEST__
 3.14
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 place = 'World'
 __PARSED__
 
@@ -3089,7 +3089,7 @@ line: 3
 warn: Argument "" isn't numeric in addition (+)
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 file.chunk(-16).last
 __PARSED__
 
@@ -3121,7 +3121,7 @@ line: 10
 warn: Argument "" isn't numeric in addition (+)
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 TRY; 
      INCLUDE chomp; 
    CATCH; 
@@ -3141,7 +3141,7 @@ file error - parse error - chomp line 6: unexpected token (END)
   [% END %]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE f = File('/foo/bar/baz.html', nostat=1)
 __PARSED__
 
@@ -3183,7 +3183,7 @@ h: ../..
 a: foo/bar/baz.html
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE f = File('baz.html', nostat=1)
 __PARSED__
 
@@ -3206,7 +3206,7 @@ h:
 a: baz.html
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE f = File('bar/baz.html', root='/foo', nostat=1)
 __PARSED__
 
@@ -3229,7 +3229,7 @@ h: ..
 a: /foo/bar/baz.html
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 f.rel('wiz/waz.html')
 __PARSED__
 
@@ -3244,7 +3244,7 @@ h: ..
 rel: ../wiz/waz.html
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE baz = File('foo/bar/baz.html', root='/tmp/tt2', nostat=1)
 __PARSED__
 
@@ -3263,7 +3263,7 @@ __TEST__
 []
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE f = File(file)
 __PARSED__
 
@@ -3297,7 +3297,7 @@ __TEST__
 [% mtime %]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE f = File('')
 __PARSED__
 
@@ -3312,7 +3312,7 @@ __TEST__
 Drat, there was a File error.
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FILTER nonfilt
 __PARSED__
 
@@ -3352,7 +3352,7 @@ __TEST__
 BZZZT: filter: invalid FILTER entry for 'badfilt' (not a CODE ref)
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 TRY;
      "foo" | barfilt;
    CATCH;
@@ -3454,11 +3454,11 @@ __TEST__
 Hello World!
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FILTER comment = format('<!-- %s -->')
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 "Goodbye, cruel World" FILTER comment
 __PARSED__
 
@@ -3481,15 +3481,15 @@ __TEST__
 Hello World!
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 "Foo" FILTER test1 = format('+++ %-4s +++')
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FOREACH item = [ 'Bar' 'Baz' 'Duz' 'Doze' ]
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 item FILTER test1
 __PARSED__
 
@@ -3534,7 +3534,7 @@ at Microsloth, illustrated Microsloth's strategy of "Embrace,
 Extend, Extinguish"
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FILTER censor('bottom' 'nipple')
 __PARSED__
 
@@ -3548,11 +3548,11 @@ At the [** CENSORED **] of the hill, he had to pinch the
 [** CENSORED **] to reduce the oil flow.
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FILTER bold = format('<b>%s</b>')
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 'This is both' FILTER bold FILTER italic
 __PARSED__
 
@@ -3570,7 +3570,7 @@ __TEST__
 <i><b>This is both</b></i>
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 "foo" FILTER format("<< %s >>") FILTER format("=%s=")
 __PARSED__
 
@@ -3580,11 +3580,11 @@ __TEST__
 =<< foo >>=
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 blocktext = BLOCK
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 global.blocktext = blocktext; blocktext
 __PARSED__
 
@@ -3611,7 +3611,7 @@ You shall have a fishy on a little dishy, when the boat comes in.  What
 if I can't wait until then?  I'm hungry!
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 global.blocktext FILTER html_para
 __PARSED__
 
@@ -3671,7 +3671,7 @@ You shall have a fishy on a little dishy, when the boat comes in.  What <br />
 if I can't wait until then?  I'm hungry!<br />
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 global.blocktext FILTER truncate(10)
 __PARSED__
 
@@ -3689,7 +3689,7 @@ The cat sat on the mat
 Mary ...
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 'Hello World' | truncate(2)
 __PARSED__
 
@@ -3707,7 +3707,7 @@ Hello World
 Hello World
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 "foo..." FILTER repeat(5)
 __PARSED__
 
@@ -3744,7 +3744,7 @@ Am I repeating myself?
 Am I repeating myself?
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 text FILTER remove(' ')
 __PARSED__
 
@@ -3762,7 +3762,7 @@ The c s on the m
 The c s on the m
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 text FILTER replace(' ', '_')
 __PARSED__
 
@@ -3783,7 +3783,7 @@ __TEST__
 The &lt;=&gt; operator
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 text | html | replace('blah', 'rhubarb')
 __PARSED__
 
@@ -3794,7 +3794,7 @@ __TEST__
 The &lt;=&gt; operator, rhubarb, rhubarb
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 | truncate(25)
 __PARSED__
 
@@ -3825,7 +3825,7 @@ __TEST__
 the cat sat on the mat
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 'arse' | stderr
 __PARSED__
 
@@ -3836,7 +3836,7 @@ __TEST__
 stderr: arse
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 percent = '%'
    left    = "[$percent"
    right   = "$percent]"
@@ -3858,7 +3858,7 @@ FILTER [alpha blah blah bravo]
 FILTER [alpha blah blah bravo]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 dir = "[\% FOREACH a = { 1 2 3 } %\]a: [\% a %\]\n[\% END %\]"
 __PARSED__
 
@@ -3874,7 +3874,7 @@ error: [file] [parse error - input text line 1: unexpected token (1)
   [% FOREACH a = { 1 2 3 } %]]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 TRY;
     '$x = 10; $b = 20; $x + $b' | evalperl;
    CATCH;
@@ -3996,7 +3996,7 @@ wiz: The cat sat on the mat
 wiz: The dog sat on the log
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FILTER $merlyn
 __PARSED__
 
@@ -4094,7 +4094,7 @@ foo bar baz
 foo bar baz
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 '$stash->{ a } = 25' FILTER evalperl
 __PARSED__
 
@@ -4106,7 +4106,7 @@ __TEST__
 25
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 '$stash->{ a } = 25' FILTER perl
 __PARSED__
 
@@ -4148,7 +4148,7 @@ __TEST__
 >> on the mat
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 text = 'The cat sat on the mat';
    text | indent('> ') | indent('+')
 __PARSED__
@@ -4198,7 +4198,7 @@ __TEST__
 Hello World
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 "my file.html" FILTER uri
 __PARSED__
 
@@ -4208,7 +4208,7 @@ __TEST__
 my%20file.html
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 "my<file & your>file.html" FILTER uri
 __PARSED__
 
@@ -4230,7 +4230,7 @@ __TEST__
 foo@bar
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 "my<file & your>file.html" | uri | html
 __PARSED__
 
@@ -4246,7 +4246,7 @@ __TEST__
 wide%3A%E6%97%A5%E6%9C%AC%E8%AA%9E
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 'foobar' | ucfirst
 __PARSED__
 
@@ -4256,7 +4256,7 @@ __TEST__
 Foobar
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 'FOOBAR' | lcfirst
 __PARSED__
 
@@ -4266,7 +4266,7 @@ __TEST__
 fOOBAR
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 "foo(bar)" | uri
 __PARSED__
 
@@ -4276,7 +4276,7 @@ __TEST__
 foo(bar)
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 "foo(bar)" | url
 __PARSED__
 
@@ -4286,7 +4286,7 @@ __TEST__
 foo(bar)
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 use_rfc3986;
    "foo(bar)" | url;
 __PARSED__
@@ -4304,7 +4304,7 @@ __TEST__
 foo%28bar%29
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 use_rfc2732;
    "foo(bar)" | url;
 __PARSED__
@@ -4323,11 +4323,11 @@ __TEST__
 foo(bar)
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FOREACH a = [ 1, 2, 3 ]
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FOREACH foo.bar
 __PARSED__
 
@@ -4345,7 +4345,7 @@ __TEST__
    3
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FOREACH count = [ 'five' 'four' 'three' 'two' 'one' ]
 __PARSED__
 
@@ -4365,7 +4365,7 @@ Commence countdown...
 Fire!
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FOR count = [ 1 2 3 ]
 __PARSED__
 
@@ -4375,7 +4375,7 @@ __TEST__
 1..2..3..
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 people = [ c, bloke, o, 'frank' ]
 __PARSED__
 
@@ -4426,7 +4426,7 @@ __TEST__
    Simon Matthews
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 name = 'Joe Random Hacker' id = 'jrh'
 __PARSED__
 
@@ -4442,7 +4442,7 @@ __TEST__
    Joe Random Hacker (jrh)
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FOREACH i = [1..4]
 __PARSED__
 
@@ -4457,12 +4457,12 @@ __TEST__
 4
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 first = 4 
    last  = 8
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FOREACH i = [first..last]
 __PARSED__
 
@@ -4481,7 +4481,7 @@ __TEST__
 8
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 list.${n}
 __PARSED__
 
@@ -4497,7 +4497,7 @@ one four
 one, two, three, four, 
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 "$i, " FOREACH i = [-2..2]
 __PARSED__
 
@@ -4535,7 +4535,7 @@ charlie
 delta
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 items = [ d C a c b ]
 __PARSED__
 
@@ -4552,7 +4552,7 @@ charlie
 delta
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FOREACH item = items.sort.reverse
 __PARSED__
 
@@ -4568,7 +4568,7 @@ bravo
 alpha
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 userlist = [ b c d a C 'Andy' 'tom' 'dick' 'harry' ]
 __PARSED__
 
@@ -4589,15 +4589,15 @@ harry
 tom
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 ulist = [ b c d a 'Andy' ]
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE f = format("[- %-7s -]\n")
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 f(item) FOREACH item = ulist.sort
 __PARSED__
 
@@ -4613,7 +4613,7 @@ __TEST__
 [- delta   -]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 "List of $loop.size items:\\n" IF loop.first
 __PARSED__
 
@@ -4632,7 +4632,7 @@ List of 4 items:
 That's all folks
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 "List of $loop.size items:\n----------------\n" IF loop.first
 __PARSED__
 
@@ -4653,7 +4653,7 @@ List of 4 items:
 ----------------
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 i = inc(i)
 __PARSED__
 
@@ -4671,7 +4671,7 @@ __TEST__
  #4/4: delta
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FOREACH a = ['foo', 'bar', 'baz']
 __PARSED__
 
@@ -4697,14 +4697,14 @@ __TEST__
   - 2 waz
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 id    = 12345
    name  = 'Original'
    user1 = { id => 'tom', name => 'Thomas'   }
    user2 = { id => 'reg', name => 'Reginald' }
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FOREACH [ user1 ]
 __PARSED__
 
@@ -4733,11 +4733,11 @@ id: 12345
 name: Original
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 them = [ people.1 people.2 ]
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 "$p.id($p.code): $p.name\n"
        FOREACH p = them.sort('id')
 __PARSED__
@@ -4761,7 +4761,7 @@ aaz(zaz): Azbaz Azbaz Zazbazzer
 efg(zzz): Extra Fine Grass
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 "$p.id($p.code): $p.name\n"
        FOREACH p = people.sort('code').reverse
 __PARSED__
@@ -4776,7 +4776,7 @@ bcd(dec): Binary Coded Decimal
 abw(abw): Andy Wardley
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 "$p.id($p.code): $p.name\n"
        FOREACH p = people.sort('code')
 __PARSED__
@@ -4804,7 +4804,7 @@ Section List:
   two - Section Two
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 NEXT IF a == 5
 __PARSED__
 
@@ -4825,15 +4825,15 @@ before 5before 6
 after 6
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 count = 1; WHILE (count < 10)
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 count = count + 1
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 NEXT IF count < 5
 __PARSED__
 
@@ -4928,7 +4928,7 @@ __TEST__
 * 3
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FOREACH i = [1 .. 10];
         SWITCH i;
         CASE 5;
@@ -4962,7 +4962,7 @@ __TEST__
 __EXPECTED__
 
 	# XXX Elided leading sapce
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FOREACH i = [1 .. 10];
         IF 1;
             IF i == 5; NEXT; END;
@@ -4992,7 +4992,7 @@ __TEST__
 __EXPECTED__
 
 	# XXX Eliding leading space
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FOREACH i = [1 .. 4];
         FOREACH j = [1 .. 4];
             k = 1;
@@ -5037,7 +5037,7 @@ __TEST__
 4,4,1
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 LAST FOREACH k = [ 1 .. 4];
     "$k\n";
     # Should finish loop with k = 4.  Instead this is an infinite loop!!
@@ -5057,7 +5057,7 @@ __TEST__
 1
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FOREACH prime IN [2, 3, 5, 7, 11, 13];
      "$prime\n";
     END
@@ -5077,7 +5077,7 @@ __TEST__
 13
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FOREACH i IN [ 1..6 ];
         "${i}: ";
         j = 0;
@@ -5151,7 +5151,7 @@ __TEST__
 <i>This is italic</i>
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE padleft  = format('%-*s')
 __PARSED__
 
@@ -5180,7 +5180,7 @@ __TEST__
 &lt; &amp;amp; &gt;
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 TRY; 
         text = "Léon Brocard" | html_entity;
 
@@ -5221,7 +5221,7 @@ html_entity error - cannot locate Apache::Util or HTML::Entities
 [%- END %]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE html; html.url('my file.html')
 __PARSED__
 
@@ -5231,7 +5231,7 @@ __TEST__
 my%20file.html
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 HTML.escape("if (a < b && c > d) ...")
 __PARSED__
 
@@ -5243,7 +5243,7 @@ __TEST__
 if (a &lt; b &amp;&amp; c &gt; d) ...
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 HTML.element(table => { border => 1, cellpadding => 2 })
 __PARSED__
 
@@ -5255,7 +5255,7 @@ __TEST__
 <table border="1" cellpadding="2">
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 HTML.attributes(border => 1, cellpadding => 2).split.sort.join
 __PARSED__
 
@@ -5267,7 +5267,7 @@ __TEST__
 border="1" cellpadding="2"
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE Image(file.logo)
 __PARSED__
 
@@ -5285,7 +5285,7 @@ width: 110
 height: 60
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE image( name = file.power)
 __PARSED__
 
@@ -5325,7 +5325,7 @@ tag: <img src="[% file.logo %]" width="110" height="60" alt="image" class="myima
 # test "root"
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE image( root=dir name=file.lname )
 __PARSED__
 
@@ -5336,7 +5336,7 @@ __TEST__
 <img src="[% file.lname %]" width="110" height="60" alt="" />
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE image( file= file.logo  name = "other.jpg" alt="myfile")
 __PARSED__
 
@@ -5364,7 +5364,7 @@ __TEST__
 this is my first block, a is set to 'alpha'
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 INCLUDE first_block a = 'abstract'
 __PARSED__
 
@@ -5376,7 +5376,7 @@ this is my first block, a is set to 'abstract'
 alpha
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 INCLUDE 'first_block' a = t
 __PARSED__
 
@@ -5395,7 +5395,7 @@ this is my second block, a is initially set to 'alpha' and
 then set to 'sierra'  b is bravo  m is 98
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 INCLUDE second_block a = r, b = c.f.g, m = 97
 __PARSED__
 
@@ -5416,11 +5416,11 @@ FOO: This is the foo file, a is alpha
 FOO: This is the foo file, a is bravo
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 INCLUDE $c.f.g  g = c.f.h
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 DEFAULT g = "a new $c.f.g"
 __PARSED__
 
@@ -5508,7 +5508,7 @@ TITLE: The cat sat on the mat
 metadata last modified [% metamod %]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 PROCESS recurse counter = 1
 __PARSED__
 
@@ -5542,7 +5542,7 @@ recursion count: 2
 recursion count: 3
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 TRY;
    INCLUDE nosuchfile;
    CATCH;
@@ -5561,7 +5561,7 @@ __TEST__
 ERROR: file error - nosuchfile: not found
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 BLOCK src:foo; "This is foo!"; END
 __PARSED__
 
@@ -5572,16 +5572,16 @@ __TEST__
 This is foo!
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 a = ''; b = ''; d = ''; e = 0
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 INCLUDE foo name = a or b or 'c'
                item = d or e or 'f'
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 BLOCK foo; "name: $name  item: $item\n"; END
 __PARSED__
 
@@ -5594,17 +5594,17 @@ __TEST__
 name: c  item: f
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 style = 'light'; your_title="Hello World"
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 INCLUDE foo 
          title = my_title or your_title or default_title
          bgcol = (style == 'dark' ? '#000000' : '#ffffff')
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 BLOCK foo; "title: $title\nbgcol: $bgcol\n"; END
 __PARSED__
 
@@ -5619,20 +5619,20 @@ title: Hello World
 bgcol: #ffffff
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 myhash = {
     name  = 'Tom'
     item  = 'teacup'
    }
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 INCLUDE myblock
     name = 'Fred'
     item = 'fish'
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 PROCESS myblock
      import={ name = 'Tim', item = 'teapot' }
 __PARSED__
@@ -5766,7 +5766,7 @@ __TEST__
 * 10 0 1 even
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 a = holler('first'); trace
 __PARSED__
 
@@ -5783,7 +5783,7 @@ first created
 first destroyed
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 clear; b = [ ]; b.0 = holler('list'); trace
 __PARSED__
 
@@ -5800,7 +5800,7 @@ list created
 list destroyed
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 BLOCK shout; a = holler('second'); END
 __PARSED__
 
@@ -5819,7 +5819,7 @@ third created
 third destroyed
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 MACRO shout BLOCK; a = holler('fourth'); END
 __PARSED__
 
@@ -5831,7 +5831,7 @@ fourth created
 fourth destroyed
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 clear; USE holler('holler plugin'); trace
 __PARSED__
 
@@ -5841,7 +5841,7 @@ __TEST__
 holler plugin created
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 BLOCK shout; USE holler('process plugin'); END
 __PARSED__
 
@@ -5861,7 +5861,7 @@ include plugin created
 include plugin destroyed
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 MACRO shout BLOCK; USE holler('macro plugin'); END
 __PARSED__
 
@@ -5873,7 +5873,7 @@ macro plugin created
 macro plugin destroyed
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 MACRO shout BLOCK; 
 	USE holler('macro plugin'); 
 	holler.trace;
@@ -5893,7 +5893,7 @@ TRACE ==macro plugin created
 macro plugin destroyed
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 clear; PROCESS leak1; trace
 __PARSED__
 
@@ -5931,14 +5931,14 @@ Goodbye created
 Goodbye destroyed
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 MACRO leak BLOCK;
 	PROCESS leak1 + leak2;
         USE holler('macro plugin');
     END
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 IF v56;
 	clear; leak; trace;
     ELSE;
@@ -5999,11 +5999,11 @@ perl created
 perl destroyed
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 MACRO y PERL
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 y; trace
 __PARSED__
 
@@ -6019,7 +6019,7 @@ perl macro created
 perl macro destroyed
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 data.0
 __PARSED__
 
@@ -6047,7 +6047,7 @@ __TEST__
 romeo, juliet, sierra, tango, yankee, echo, foxtrot, zulu
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 data.reverse.join(', ')
 __PARSED__
 
@@ -6074,7 +6074,7 @@ __TEST__
 * Zebedee
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 FOREACH item = wxyz.sort('rank')
 __PARSED__
 
@@ -6119,7 +6119,7 @@ __TEST__
 nsort: 1, 2, 5, 6, 8, 10, 11, 50, 52, 70, 90
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 ilist.push("<a href=\"$i.url\">$i.name</a>") FOREACH i = inst
 __PARSED__
 
@@ -6162,7 +6162,7 @@ __TEST__
 __EXPECTED__
 
 	# XXX Elide the leading space
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 # define some initial data
    people   => [ 
      { id => 'tom',   name => 'Tom'     },
@@ -6171,7 +6171,7 @@ __EXPECTED__
    ]
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 folk.push("<a href=\\"${person.id}.html\\">$person.name</a>")
        FOREACH person = people.sort('name')
 __PARSED__
@@ -6194,7 +6194,7 @@ __TEST__
 <a href="tom.html">Tom</a>
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 data.grep('r').join(', ')
 __PARSED__
 
@@ -6210,7 +6210,7 @@ __TEST__
 romeo
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 MACRO foo INCLUDE foo
 __PARSED__
 
@@ -6238,7 +6238,7 @@ foo: This is the foo file, a is
 foo(c): This is the foo file, a is charlie
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 INCLUDE mypage a = 'New Alpha'
 __PARSED__
 
@@ -6274,7 +6274,7 @@ end
 __EXPECTED__
 
 	# XXX Notice we're eliding the leading space
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 # now we can call the main table template, and alias our macro to 'rows' 
    INCLUDE table 
      rows = user_summary
@@ -6322,7 +6322,7 @@ __TEST__
 </table>
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 MACRO two BLOCK; title="2[$title]"
 __PARSED__
 
@@ -6339,7 +6339,7 @@ __TEST__
 two: 2[The Title] -> one:
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 two(title="The Title")
 __PARSED__
 
@@ -6356,7 +6356,7 @@ __TEST__
 two: 2[The Title] -> one: 2[The Title]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 MACRO number(n) GET n.chunk(-3).join(',')
 __PARSED__
 
@@ -6368,7 +6368,7 @@ __TEST__
 1,234,567
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 MACRO triple(n) PERL
 __PARSED__
 
@@ -6383,7 +6383,7 @@ __TEST__
 30
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE Math; Math.sqrt(9)
 __PARSED__
 
@@ -6399,7 +6399,7 @@ __TEST__
 1
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE Math; Math.atan2(42, 42).substr(0,17)
 __PARSED__
 
@@ -6504,7 +6504,7 @@ Live for today and die for tomorrow.
 Oh I believe in yesterday.
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 thing.belief('fish' 'chips')
 __PARSED__
 
@@ -6554,7 +6554,7 @@ __TEST__
 []
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 thing.$key = 'foo'
 __PARSED__
 
@@ -6582,7 +6582,7 @@ __TEST__
 stringified 'Test String'
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 "-> $string <-"
 __PARSED__
 
@@ -6610,7 +6610,7 @@ __TEST__
 ..
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 TRY; t1.die; CATCH; error; END
 __PARSED__
 
@@ -6666,7 +6666,7 @@ this is a
 end
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 data.first; ' to '; data.last
 __PARSED__
 
@@ -6688,7 +6688,7 @@ begin
 end
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 c = 'b'; 'hello'
 __PARSED__
 
@@ -6746,7 +6746,7 @@ start $a
 end
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 sql = "
      SELECT *
      FROM table"
@@ -6772,7 +6772,7 @@ a: abc
 def
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 a = "\f\o\o"
    b = "a is '$a'"
    c = "b is \$100"
@@ -6788,7 +6788,7 @@ __TEST__
 a: foo  b: a is 'foo'  c: b is $100
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 tag = {
       a => "[\%"
       z => "%\]"
@@ -6810,7 +6810,7 @@ A directive looks like: [% INCLUDE foo %]
 The quoted value is [% INSERT foo %]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 wintxt | replace("(\r\n){2,}", "\n<break>\n")
 __PARSED__
 
@@ -6847,11 +6847,11 @@ __EXPECTED__
 __TEST__
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE Table([2, 3, 5, 7, 11, 13], rows=2)
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 Table.row(0).join(', ')
 __PARSED__
 
@@ -6883,7 +6883,7 @@ __TEST__
 61, 71, 79
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE t = table([89, 97, 101, 103, 107, 109], rows=2)
 __PARSED__
 
@@ -6973,7 +6973,7 @@ __TEST__
 /cgi-bin/bar.pl?debug=1
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE mycgi = UrL('/cgi-bin/bar.pl', debug=1);
 __PARSED__
 
@@ -7027,7 +7027,7 @@ test 2: **badger**
 test 3: **world**
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 BLOCK foo; "This is foo!"; END
 __PARSED__
 
@@ -7047,7 +7047,7 @@ This is foo!
 This is bar!
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 PROCESS foo+bar
 __PARSED__
 
@@ -7060,7 +7060,7 @@ This is foo!
 This is bar!
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 WRAPPER edge + box + indent
      title = "The Title"
 __PARSED__
@@ -7103,12 +7103,12 @@ This is file baz
 The word is '[% word %]'
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 file1 = 'foo'
    file2 = 'bar/baz'
 __PARSED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 INSERT "$file1" + "$file2"
 __PARSED__
 
@@ -7123,7 +7123,7 @@ This is file baz
 The word is '[% word %]'
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE pod;
     pom = pod.parse("$podloc/no_such_file.pod");
     pom ? 'not ok' : 'ok'; ' - file does not exist';
@@ -7138,7 +7138,7 @@ __TEST__
 ok - file does not exist
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE pod;
     pom = pod.parse("$podloc/test1.pod");
     pom ? 'ok' : 'not ok'; ' - file parsed';
@@ -7185,7 +7185,7 @@ __TEST__
 + Second Subsection
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 PROCESS $item.type FOREACH item=global.pom.head1.2.content
 __PARSED__
 
@@ -7216,7 +7216,7 @@ __TEST__
 This is the foo file, a is 10
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 INCLUDE src:foo a=20
 __PARSED__
 
@@ -7232,7 +7232,7 @@ __TEST__
 This is the foo file, a is 30
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 TRY;
     INCLUDE lib:foo a=30 ;
    CATCH;
@@ -7265,7 +7265,7 @@ This is the first test
 This is the end.
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 META title = 'Test 2'
 __PARSED__
 
@@ -7384,7 +7384,7 @@ __TEST__
 This is the foo file, a is Error: file - absolute paths are not allowed (set ABSOLUTE option)
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 TRY; INSERT foo;      CATCH; "$error\n"; END
 __PARSED__
 
@@ -7442,7 +7442,7 @@ __TEST__
 This is the old content
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 CALL fixfile('This is the new content')
 __PARSED__
 
@@ -7453,7 +7453,7 @@ __TEST__
 This is the new content
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 PROCESS baz a='alpha' | trim
 __PARSED__
 
@@ -7495,7 +7495,7 @@ foo: This is two/foo
 bar: This is two/bar
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 TRY; INCLUDE foo; CATCH; e; END
 __PARSED__
 
@@ -7516,7 +7516,7 @@ a(5): a sub [5]
 a(5,10): a sub [5, 10]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 b = \a
 __PARSED__
 
@@ -7531,7 +7531,7 @@ b(5): a sub [5]
 b(5,10): a sub [5, 10]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 c = \a(10,20)
 __PARSED__
 
@@ -7546,7 +7546,7 @@ c(30): a sub [10, 20, 30]
 c(30,40): a sub [10, 20, 30, 40]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 z(\a)
 __PARSED__
 
@@ -7556,7 +7556,7 @@ __TEST__
 z called a sub [10, 20, 30]
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 f = \j.k
 __PARSED__
 
@@ -7567,7 +7567,7 @@ __TEST__
 f: 3
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 f = \j.m.n
 __PARSED__
 
@@ -7606,7 +7606,7 @@ __TEST__
 list object method called in scalar context
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 hash = { a = 10 }; 
    TRY; hash.scalar.a; CATCH; error; END;
 __PARSED__
@@ -7619,7 +7619,7 @@ __TEST__
 scalar error - invalid object method: a
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 subref(10, 20).join
 __PARSED__
 
@@ -7629,7 +7629,7 @@ __TEST__
 subroutine called in array context 10 20
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 USE scalar; scalar.subref(30, 40)
 __PARSED__
 
@@ -7660,7 +7660,7 @@ This is a demo
 footer
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 INCLUDE astext a = 'artifact'
 __PARSED__
 
@@ -7675,7 +7675,7 @@ Another template block, a is 'artifact'
 footer
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 THROW barf 'Not feeling too good'
 __PARSED__
 
@@ -7702,7 +7702,7 @@ error: [file] [no_such_file: not found]
 footer
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 INCLUDE block1
    a = 'alpha'
 __PARSED__
@@ -7877,7 +7877,7 @@ __TEST__
 a: 
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 TRY; a; CATCH; "ERROR: $error"; END
 __PARSED__
 
@@ -7900,7 +7900,7 @@ __TEST__
 3: foo
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 "* $item\n" FOREACH item = myitem
 __PARSED__
 
@@ -7920,7 +7920,7 @@ __TEST__
 foo
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 myitem = 'foo'
    mylist = [ 'one', myitem, 'three' ]
    global.mylist = mylist
@@ -7954,7 +7954,7 @@ __TEST__
 + three
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 global.mylist.push('bar');
    "* $item.key => $item.value\n" FOREACH item = global.mylist.hash
 __PARSED__
@@ -7967,7 +7967,7 @@ __TEST__
 * three => bar
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 myhash = { msg => 'Hello World', things => global.mylist, a => 'alpha' };
    global.myhash = myhash 
 __PARSED__
@@ -7998,7 +7998,7 @@ __TEST__
 * msg
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 items = [ 'foo', 'bar', 'baz' ];
    take  = [ 0, 2 ];
    slice = items.$take;
@@ -8015,7 +8015,7 @@ __TEST__
 foo, baz
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 items = {
     foo = 'one',
     bar = 'two',
@@ -8040,7 +8040,7 @@ __TEST__
 one, three
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 items = {
     foo = 'one',
     bar = 'two',
@@ -8117,7 +8117,7 @@ __TEST__
 ==
 __EXPECTED__
 
-	ok $tt._parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] );
 foo = { "one" = "bar" "" = "empty" }
 __PARSED__
 

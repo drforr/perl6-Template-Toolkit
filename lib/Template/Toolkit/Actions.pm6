@@ -25,6 +25,9 @@ class Template::Toolkit::Actions {
 				:value-to-fetch( ~$/<Function-Name> )
 			)
 		}
+		elsif $/<Positive-Integer> {
+die "Whoops, fix this later"
+		}
 		else {
 die "Unknown case, shouldn't happen"
 		}
@@ -42,11 +45,36 @@ die "Unknown case, shouldn't happen"
 		)
 	}
 
-	method Value( $/ ) {
+	method Constant( $/ ) {
 		make
 			$/<Integer>.ast ||
 			$/<String>.ast ||
-			$/<Function-Call>[0].ast
+			$/<Floating-Point>.ast
+	}
+
+	method Variable-Start( $/ ) {
+#		if $/<Argument> {
+#			make Template::Toolkit::Internal::Stash-Method.new(
+#				:method-to-call( ~$/<Function-Name> ),
+#				:argument( $/<Argument>>>.ast )
+#			)
+#		}
+#		else {
+			make Template::Toolkit::Internal::Directive::Get.new(
+				:value-to-fetch( ~$/<Function-Name> )
+			)
+#		}
+	}
+
+	method Variable-Element( $/ ) {
+		make
+			$/<Variable-Start>[0].ast ||
+			$/<Positive-Integer>.ast
+	}
+
+	method Variable( $/ ) {
+		make
+			$/<Variable-Start>.ast # XXX *HORRIBLY* broken.
 	}
 
 # From the output of $/.gist, it is *not* obvious that I have to use an
@@ -60,7 +88,14 @@ die "Unknown case, shouldn't happen"
 #     Positive-Integer => ｢6｣
 
 	method Expression( $/ ) {
-		make $/<Value>[0].ast
+		given $/ {
+			when $_<Constant> {
+				make $_<Constant>[0].ast
+			}
+			when $_<Variable> {
+				make $_<Variable>[0].ast
+			}
+		}
 	}
 
 	method Directive-Get( $/ ) {
@@ -97,7 +132,6 @@ die "Unknown case, shouldn't happen"
 
 	# The constant chaining of 'make...' seems redundant to me.
 	method TOP( $/ ) {
-#say $/.gist;
 		make $/<Directive>[0].ast
 	}
 }
