@@ -144,11 +144,11 @@ class Template::Toolkit {
 	use Template::Toolkit::Actions;
 
 	use Template::Toolkit::Internal::Constant;
+	use Template::Toolkit::Internal::Stash-Method;
 	use Template::Toolkit::Internal::Directive::End;
 	use Template::Toolkit::Internal::Directive::Foreach;
 	use Template::Toolkit::Internal::Directive::If;
 	use Template::Toolkit::Internal::Directive::Get;
-	use Template::Toolkit::Internal::Directive::Stash-Method;
 
 	# The original Perl 5 configuration options
 	#

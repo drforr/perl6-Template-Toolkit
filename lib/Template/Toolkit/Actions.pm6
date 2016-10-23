@@ -2,10 +2,10 @@ class Template::Toolkit::Actions {
 	has $.stashref;
 
 	use Template::Toolkit::Internal::Constant;
+	use Template::Toolkit::Internal::Stash-Method;
 	use Template::Toolkit::Internal::Directive::End;
 	use Template::Toolkit::Internal::Directive::If;
 	use Template::Toolkit::Internal::Directive::Get;
-	use Template::Toolkit::Internal::Directive::Stash-Method;
 
 	# Arguments might have to return to being objects due to stashrefs.
 	method Argument( $/ ) {
@@ -15,7 +15,7 @@ class Template::Toolkit::Actions {
 
 	method Function-Call( $/ ) {
 		if $/<Argument> {
-			make Template::Toolkit::Internal::Directive::Stash-Method.new(
+			make Template::Toolkit::Internal::Stash-Method.new(
 				:method-to-call( ~$/<Function-Name> ),
 				:argument( $/<Argument>>>.ast )
 			)
