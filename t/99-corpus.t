@@ -17,7 +17,7 @@ sub process( Str $test, Str $expected, $stashref = { } ) {
 }
 
 subtest {
-	ok $g.parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] ), Q{args(a b c)};
 args(a b c)
 __PARSED__
 
@@ -28,7 +28,7 @@ __TEST__
  NAMED: {  }
 __EXPECTED__
  
-	ok $g.parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] ), Q{args(a b c d=e f=g)};
 args(a b c d=e f=g)
 __PARSED__
 
@@ -39,7 +39,7 @@ __TEST__
  NAMED: { d => echo, f => golf }
 __EXPECTED__
 
-	ok $g.parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] ), Q{args(a, b, c, d=e, f=g)};
 args(a, b, c, d=e, f=g)
 __PARSED__
 
@@ -75,7 +75,7 @@ __TEST__
  NAMED: { d => echo, f => golf }
 __EXPECTED__
 
-	ok $g.parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] ), Q{obj.foo(d=e,a, b, f=g, c)};
 obj.foo(d=e, a, b, f=g, c)
 __PARSED__
 
@@ -87,7 +87,7 @@ object:
  NAMED: { d => echo, f => golf }
 __EXPECTED__
 
-	ok $g.parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] ), Q{obj.foo(...).split("\n").1};
 obj.foo(d=e, a, b, f=g, c).split("\n").1
 __PARSED__
 
@@ -109,7 +109,7 @@ __TEST__
 ()
 __EXPECTED__
 
-	ok $g.parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] ), Q{USE...TRY in single block};
 USE assert;
    TRY; object.assert.nil; CATCH; error; END; "\n";
    TRY; object.assert.zip; CATCH; error; END;
@@ -143,7 +143,7 @@ assert error - undefined value for bar
 assert error - undefined value for bam
 __EXPECTED__
 
-	ok $g.parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] ), Q{USE...TRY with assert.0};
 USE assert;
    TRY; list.assert.0;     CATCH; error; END; "\n";
    TRY; list.assert.first; CATCH; error; END;

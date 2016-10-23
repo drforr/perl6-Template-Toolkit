@@ -8,9 +8,9 @@ Template::Toolkit - A drop-in replacement for Perl 5's TT library
 
 =begin SYNOPSIS
 
-    # Mix Perl5-style options ('PRE_CHOMP') with modern Perl 6 pairs
-    #
-    my $tt = Template.new( PRE_CHOMP => 1, :post-chomp(True) );
+#    # Mix Perl5-style options ('PRE_CHOMP') with modern Perl 6 pairs
+#    #
+#    my $tt = Template.new( PRE_CHOMP => 1, :post-chomp(True) );
 
     # Use the old Perl5-style hashref.
     #
@@ -234,8 +234,8 @@ class Template::Toolkit {
 	has Bool $!use-scalar = False;	# INTERPOLATE
 
 	has %!chomp =
-		pre => none,		# PRE_CHOMP
-		post => none;		# POST_CHOMP
+		:pre( 0 ),		# PRE_CHOMP
+		:post( 0 );		# POST_CHOMP
 	has Bool $!trim = False;	# TRIM
 	has Bool $!any-case = False;	# ANYCASE
 
@@ -305,11 +305,21 @@ class Template::Toolkit {
 		%!tags<end> = %args<END_TAG> // TAG-END;
 		%!tags<outline> = %args<OUTLINE_TAG> // TAG-OUTLINE;
 
-		$!use-outlines = True if
-			%args<TAG_STYLE> and %args<TAG_STYLE> eq 'outline';
+		if %args<TAG_STYLE> {
+			$!use-outlines = True if %args<TAG_STYLE> eq 'outline';
+			if %tag-styles{%args<TAG_STYLE>} {
+				%!tags<start> =
+					%tag-styles{%args<TAG_STYLE>}[0];
+				%!tags<end> =
+					%tag-styles{%args<TAG_STYLE>}[1];
+			}
+		}
 
-		%!chomp<pre> = %args<PRE_CHOMP> // none;
-		%!chomp<post> = %args<POST_CHOMP> // none;
+		$!use-outlines = True if %args<OUTLINE_TAG>;
+
+		%!chomp<pre> = %args<PRE_CHOMP> // 0;
+		%!chomp<post> = %args<POST_CHOMP> // 0;
+
 		$!trim = True if
 			%args<TRIM> and %args<TRIM> != 0;
 
@@ -370,13 +380,6 @@ class Template::Toolkit {
 		# Other unimplemented stuff
 	}
 
-#`(
-	method _parse( $str, $any-case = False ) {
-		my $*ANY-CASE = $any-case;
-		Template::Toolkit::Grammar.parse( $str )
-	}
-)
-
 	my class Element {
 		has Str $.content;
 		has Int $.length;
@@ -392,8 +395,8 @@ class Template::Toolkit {
 		also is Element;
 	};
 
-	method next-element( Str $string ) {
-		return '' unless $string.defined;
+	method next-element( Str $string, Bool $is-first-text ) {
+		return unless $string.defined;
 
 		my $tag-start = %!tags.<start>;
 		my $tag-end = %!tags.<end>;
@@ -435,8 +438,23 @@ class Template::Toolkit {
 				)
 			}
 			else {
+				my $content = $string.substr( 0, $inset );
+				given %!chomp<pre> {
+					when 1 {
+						$content ~~
+							s{ [ \n \h* ]+ $ } = '';
+					}
+				}
+				if !$is-first-text {
+					given %!chomp<post> {
+						when 1 {
+							$content ~~
+								s{ ^ [ \h* \n ]+ } = '';
+						}
+					}
+				}
 				Element::Text.new(
-					:content( $string.substr( 0, $inset ) ),
+					:content( $content ),
 					:length( $inset )
 				)
 			}
@@ -471,6 +489,10 @@ class Template::Toolkit {
 					)
 				}
 			}
+
+			# 'foo\n%% 1\nbar' is 'foo1bar' even if only
+			# PRE_CHOMP is set
+			#
 			elsif $!use-outlines and
 				($loc-outline.defined and $loc-outline == 0) {
 				my $loc-end = $string.index( "\n" );
@@ -480,7 +502,6 @@ class Template::Toolkit {
 							$tag-outline.chars,
 							$loc-end - $tag-outline.chars
 						);
-					my $length = $content.chars;
 					$content ~~ s{ ^ \s+ } = '';
 					Element::Tag.new(
 						:content( $content ),
@@ -491,6 +512,15 @@ class Template::Toolkit {
 					die "Can't happen, tag start is '$tag-outline' and has a newline inside '$tag-outline'"
 				}
 				else {
+					my $content = 
+						$string.substr(
+							$tag-outline.chars
+						);
+					$content ~~ s{ ^ \s+ } = '';
+					Element::Tag.new(
+						:content( $content ),
+						:length( $string.chars )
+					)
 				}
 			}
 			elsif $!use-scalar and
@@ -515,7 +545,10 @@ class Template::Toolkit {
 		my $inset = 0;
 		while $inset < $string.chars {
 			my $remainder = $string.substr( $inset );
-			my $next-element = self.next-element( $remainder );
+			my $next-element = self.next-element(
+				$remainder,
+				@element.elems == 0
+			);
 
 			$inset += $next-element.length;
 			@element.append(
@@ -609,7 +642,12 @@ class Template::Toolkit {
 		my @routine = map { .compile }, @folded;
 #say @routine.perl;
 
-		join( '', map { .( $stashref ) }, @routine )
+		my $text = join( '', map { .( $stashref ) }, @routine );
+		if $!trim {
+			$text ~~ s{ ^ \s+ } = '';
+			$text ~~ s{ \s+ $ } = '';
+		}
+		$text
 	}
 
 	method process( $filename, $stashref = { }, Str :$output-file ) {

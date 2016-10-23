@@ -1,26 +1,15 @@
 use Test;
 use Template::Toolkit;
 
-plan 1;
-
-#`(
-
 my $g = Template::Toolkit::Grammar.new;
 
 my $tt = Template::Toolkit.new;
-
-sub is-parsed( $test ) {
-	ok $tt._parse( $test );
-}
-
-sub is-valid( $test, $expected ) {
-	ok 1;
-}
 
 ok $g.parse( q:to[__PARSED__] ), 'single constant';
 1
 __PARSED__
 
+#`(
 subtest {
 	#ok $tt._parse( q:to[__PARSED__] );
 	ok $g.parse( q:to[__PARSED__] );
@@ -12891,3 +12880,5 @@ __TEST__
 __EXPECTED__
 }, Q{all-tests};
 )
+
+done-testing;

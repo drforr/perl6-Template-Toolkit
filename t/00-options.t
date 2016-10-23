@@ -3,180 +3,140 @@ use v6;
 use Test;
 use Template::Toolkit;
 
-plan 8;
-
 # One subtest for each configuration option (that we're going to do)
 #
 subtest {;
 }, Q{ENCODING};
 
 subtest {
-	plan 1;
-
 	my $tt = Template::Toolkit.new( START_TAG => '(+' );
 	is $tt._process( '(+1%]' ), '1';
-	plan 2;
 
-	subtest {
-		plan 1;
+	$tt = Template::Toolkit.new;
+	is $tt._process( Q{(+1%]} ), Q{(+1%]}, Q{disabled};
 
-		my $tt = Template::Toolkit.new;
-		is $tt._process( Q{(+1%]} ), Q{(+1%]};
-	}, Q{disabled};
+	$tt = Template::Toolkit.new( START_TAG => '(+' );
+	is $tt._process( Q{(+1%]} ), '1', Q{enabled};
 
-	subtest {
-		plan 1;
-
-		my $tt = Template::Toolkit.new( START_TAG => '(+' );
-		is $tt._process( Q{(+1%]} ), '1';
-	}, Q{enabled};
+	done-testing;
 }, Q{START_TAG};
 
 subtest {
-	plan 2;
+	my $tt = Template::Toolkit.new;
+	is $tt._process( Q{[%1+)} ), Q{[%1+)}, Q{disabled};
 
-	subtest {
-		plan 1;
+	$tt = Template::Toolkit.new( END_TAG => '+)' );
+	is $tt._process( Q{[%1+)} ), '1', Q{enabled};
 
-		my $tt = Template::Toolkit.new;
-		is $tt._process( Q{[%1+)} ), Q{[%1+)};
-	}, Q{disabled};
-
-	subtest {
-		plan 1;
-
-		my $tt = Template::Toolkit.new( END_TAG => '+)' );
-		is $tt._process( Q{[%1+)} ), '1';
-	}, Q{enabled};
+	done-testing;
 }, Q{END_TAG};
 
 subtest {
-	plan 2;
+	my $tt = Template::Toolkit.new;
+	is $tt._process( Q{%%1} ), Q{%%1}, Q{disabled};
 
-	subtest {
-		plan 1;
+	$tt = Template::Toolkit.new( OUTLINE_TAG => '%%' );
+	is $tt._process( Q{%%1} ), '1', Q{enabled};
 
-		my $tt = Template::Toolkit.new;
-		is $tt._process( Q{%%1} ), Q{%%1};
-	}, Q{disabled};
-
-	subtest {
-		plan 1;
-
-		my $tt = Template::Toolkit.new( OUTLINE_TAG => '%%' );
-		is $tt._process( Q{%%1} ), '1';
-	}, Q{enabled};
+	done-testing;
 }, Q{OUTLINE_TAG};
 
 subtest {
-	plan 2;
+	my $tt = Template::Toolkit.new;
+	is $tt._process( Q{[*1*]} ), Q{[*1*]}, Q{disabled};
 
-	subtest {
-		plan 1;
+	$tt = Template::Toolkit.new( TAG_STYLE => 'star' );
+	is $tt._process( Q{[*1*]} ), '1', Q{enabled};
 
-		my $tt = Template::Toolkit.new;
-		is $tt._process( Q{[*1*]} ), Q{[*1*]};
-	}, Q{disabled};
-
-	subtest {
-		plan 1;
-
-		my $tt = Template::Toolkit.new( TAG_STYLE => 'star' );
-		is $tt._process( Q{[*1*]} ), '1';
-	}, Q{enabled};
+	done-testing;
 }, Q{TAG_STYLE};
 
 subtest {
-	plan 2;
+	my $tt = Template::Toolkit.new;
+	is $tt._process( qq{\n[%1%]} ), qq{\n1}, Q{disabled};
 
+	$tt = Template::Toolkit.new( PRE_CHOMP => 1 );
+
+	# Despite the manual, only whitespace that has at least one newline
+	# gets trimmed.
+	#
 	subtest {
-		plan 1;
+		is	$tt._process( qq{\n[%1%]} ),
+			Q{1},
+			Q{newline};
+		is	$tt._process( qq{|\n[%1%]} ),
+			Q{|1},
+			Q{newline with text};
+		is	$tt._process( qq{|  \n[%1%]} ),
+			Q{|  1},
+			Q{newline with text and newline};
 
-		my $tt = Template::Toolkit.new;
-		is $tt._process( Q{ [%1%]} ), Q{ 1};
-	}, Q{disabled};
-
-	subtest {
-		plan 1;
-
-		my $tt = Template::Toolkit.new( PRE_CHOMP => 1 );
-		is $tt._process( Q{ [%1%]} ), Q{1};
+		done-testing;
 	}, Q{enabled};
+
+	done-testing;
 }, Q{PRE_CHOMP};
 
 subtest {
-	plan 2;
+	my $tt = Template::Toolkit.new;
+	is $tt._process( Q{[%1%] } ), Q{1 }, Q{disabled};
 
+	$tt = Template::Toolkit.new( POST_CHOMP => 1 );
+	# Despite the manual, only whitespace that has at least one newline
+	# gets trimmed.
+	#
 	subtest {
-		plan 1;
+		is	$tt._process( qq{[%1%]\n} ),
+			Q{1},
+			Q{newline};
+		is	$tt._process( qq{|[%1%]\n} ),
+			Q{|1},
+			Q{newline with text};
+		is	$tt._process( qq{|  [%1%]\n} ),
+			Q{|  1},
+			Q{newline with text and newline};
 
-		my $tt = Template::Toolkit.new;
-		is $tt._process( Q{[%1%] } ), Q{1 };
-	}, Q{disabled};
-
-	subtest {
-		plan 1;
-
-		my $tt = Template::Toolkit.new( POST_CHOMP => 1 );
-		is $tt._process( Q{[%1%] } ), Q{1};
+		done-testing;
 	}, Q{enabled};
+
+	done-testing;
 }, Q{POST_CHOMP};
 
 subtest {
-	plan 2;
+	my $tt = Template::Toolkit.new;
+	is $tt._process( Q{ [%1%] } ), Q{ 1 }, Q{disabled};
 
-	subtest {
-		plan 1;
+	$tt = Template::Toolkit.new( TRIM => 1 );
+	is $tt._process( Q{ [%1%] } ), Q{1}, Q{enabled};
 
-		my $tt = Template::Toolkit.new;
-		is $tt._process( Q{ [%1%] } ), Q{ 1 };
-	}, Q{disabled};
-
-	subtest {
-		plan 1;
-
-		my $tt = Template::Toolkit.new( TRIM => 1 );
-		is $tt._process( Q{ [%1%] } ), Q{1};
-	}, Q{enabled};
+	done-testing;
 }, Q{TRIM};
 
+#`(
 subtest {
-	plan 2;
+	my $tt = Template::Toolkit.new;
+	is $tt._process( Q{$a} ), Q{$a}, Q{disabled};
 
-	subtest {
-		plan 1;
+	$tt = Template::Toolkit.new( INTERPOLATE => 1 );
+	is $tt._process( Q{$a}, { a => 1 } ), Q{1}, Q{enabled};
 
-		my $tt = Template::Toolkit.new;
-		is $tt._process( Q{$a} ), Q{$a};
-	}, Q{disabled};
-
-	subtest {
-		plan 1;
-
-		my $tt = Template::Toolkit.new( INTERPOLATE => 1 );
-		is $tt._process( Q{$a}, { a => 1 } ), Q{1};
-	}, Q{enabled};
+	done-testing;
 }, Q{INTERPOLATE};
+)
 
+#`(
 subtest {
-	plan 2;
+	my $tt = Template::Toolkit.new;
+	ok $tt._process( Q{[% include = 10 %]} ), Q{}, Q{disabled};
 
-	subtest {
-		plan 1;
-
-		my $tt = Template::Toolkit.new;
-		ok $tt._process( Q{[% include = 10 %]} ), Q{};
-	}, Q{disabled};
-
-	subtest {
-		plan 1;
-
-		my $tt = Template::Toolkit.new( ANYCASE => 1 );
-		dies-ok {
-			 $tt._process( Q{[% include = 10 %]} )
-		};
+	$tt = Template::Toolkit.new( ANYCASE => 1 );
+	dies-ok {
+		 $tt._process( Q{[% include = 10 %]} )
 	}, Q{enabled};
+
+	done-testing;
 }, Q{ANYCASE};
+)
 
 # XXX	has $.INCLUDE_PATH;
 # XXX	has $.DELIMITER;
@@ -190,19 +150,20 @@ subtest {
 # XXX	has $.VARIABLES;
 # XXX	has $.PREDEFINE;
 
+#`(
 subtest {
-	plan 1;
-
 	# 'constants.pi' is legal but does nothing ordinarily.
 	# So we can't drop a constant in and expect it to fail.
 	#
 	my $tt = Template::Toolkit.new( CONSTANTS => { pi => 3.14 } );
 	is $tt._process( Q{[% constants.pi %]} ), '3.14';
+
+	done-testing;
 }, Q{CONSTANTS};
+)
 
+#`(
 subtest {
-	plan 1;
-
 	my $tt = Template::Toolkit.new(
 		CONSTANTS_NAMESPACE => 'const',
 		CONSTANTS => { pi => 3.14 }
@@ -220,7 +181,10 @@ subtest {
 	# Check that TT constants are still available in the new namespace.
 	#
 	is $tt._process( Q{[% const.pi %]} ), '3.14';
+
+	done-testing;
 }, Q{CONSTANTS_NAMESPACE};
+)
 
 # XXX	has $.NAMESPACE;
 # XXX	has $.PROCESS;
@@ -255,5 +219,7 @@ subtest {
 #my $TT = Template::Toolkit.new( ENCODING => 'KOI_8' );
 #say $TT.perl;
 #say $TT.see-encoding;
+
+done-testing;
 
 # vim: ft=perl6

@@ -1,3 +1,4 @@
+# Template::Toolkit [![Build Status](https://secure.travis-ci.org/drforr/perl6-Template-Toolkit.svg?branch=master)](http://travis-ci.org/drforr/perl6-Template-Toolkit)
 Template::Toolkit
 =======
 

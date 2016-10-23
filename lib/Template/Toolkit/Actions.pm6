@@ -53,17 +53,17 @@ die "Unknown case, shouldn't happen"
 	}
 
 	method Variable-Start( $/ ) {
-#		if $/<Argument> {
-#			make Template::Toolkit::Internal::Stash-Method.new(
-#				:method-to-call( ~$/<Function-Name> ),
-#				:argument( $/<Argument>>>.ast )
-#			)
-#		}
-#		else {
+		if $/<Argument> {
+			make Template::Toolkit::Internal::Stash-Method.new(
+				:method-to-call( ~$/<Function-Name> ),
+				:argument( $/<Argument>>>.ast )
+			)
+		}
+		else {
 			make Template::Toolkit::Internal::Directive::Get.new(
 				:value-to-fetch( ~$/<Function-Name> )
 			)
-#		}
+		}
 	}
 
 	method Variable-Element( $/ ) {
@@ -88,6 +88,7 @@ die "Unknown case, shouldn't happen"
 #     Positive-Integer => ｢6｣
 
 	method Expression( $/ ) {
+		# XXX The [0] may go away later, in which case so can the given.
 		given $/ {
 			when $_<Constant> {
 				make $_<Constant>[0].ast

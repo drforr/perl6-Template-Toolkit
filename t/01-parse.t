@@ -15,23 +15,23 @@ my $g = Template::Toolkit::Grammar.new;
 
 # Some basic constants, just for the sake of coverage.
 #
-ok $g.parse( Q{1} );
-ok $g.parse( Q{-15} );
-ok $g.parse( Q{-15.32} );
-nok $g.parse( Q{-.32} ); # Require leading 0
-ok $g.parse( Q{-0.32} );
-ok $g.parse( Q{'foo'} );
-ok $g.parse( Q{"foo"} );
+ok $g.parse( Q{1} ), Q{'1'};
+ok $g.parse( Q{-15} ), Q{'-15'};
+ok $g.parse( Q{-15.32} ), Q{'-15.32'};
+nok $g.parse( Q{-.32} ), Q{not '-.32'}; # Require leading 0
+ok $g.parse( Q{-0.32} ), Q{'-0.32'};
+ok $g.parse( Q{'foo'} ), Q{"'foo'"};
+ok $g.parse( Q{"foo"} ), Q{'"foo"'};
 
-	ok $g.parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] ), Q{'args(a b c)'};
 args(a b c)
 __PARSED__
 
-	ok $g.parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] ), Q{'args(a b c d=e f=g)'};
 args(a b c d=e f=g)
 __PARSED__
 
-	ok $g.parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] ), Q{'args(a, b, c, d=e, f=g')};
 args(a, b, c, d=e, f=g)
 __PARSED__
 
@@ -46,11 +46,11 @@ __PARSED__
 #args(d=e, a, b, f=g, c)
 #__PARSED__
 
-	ok $g.parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] ), Q{'obj.foo(d=e, a, b, f=g, c)'};
 obj.foo(d=e, a, b, f=g, c)
 __PARSED__
 
-	ok $g.parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] ), Q{'obj.foo(d=e, a, b, f=g, c).split("\n").1'};
 obj.foo(d=e, a, b, f=g, c).split("\n").1
 __PARSED__
 
@@ -60,7 +60,7 @@ __PARSED__
 #object.nil
 #__PARSED__
 
-	ok $g.parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] ), Q{USE...TRY};
 USE assert;
    TRY; object.assert.nil; CATCH; error; END; "\n";
    TRY; object.assert.zip; CATCH; error; END;
@@ -74,13 +74,13 @@ __PARSED__
 #   TRY; hash.assert.bam; CATCH; error; END;
 #__PARSED__
 
-	ok $g.parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] ), Q{USE..TRY with numbers};
 USE assert;
    TRY; list.assert.0;     CATCH; error; END; "\n";
    TRY; list.assert.first; CATCH; error; END;
 __PARSED__
 
-	ok $g.parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] ), Q{USE..TRY with 'nothing'};
 USE assert;
    TRY; assert.nothing; CATCH; error; END;
 __PARSED__
@@ -92,15 +92,15 @@ __PARSED__
 #   TRY; assert.subref; CATCH; error; END;
 #__PARSED__
 
-	ok $g.parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] ), Q{IF yes};
 IF yes
 __PARSED__
 
-	ok $g.parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] ), Q{END};
 END
 __PARSED__
 
-	ok $g.parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] ), Q{ELSE};
 ELSE
 __PARSED__
 
@@ -108,11 +108,11 @@ __PARSED__
 #IF yes and true
 #__PARSED__
 
-	ok $g.parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] ), Q{IF yes && true};
 IF yes && true
 __PARSED__
 
-	ok $g.parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] ), Q{IF yes && sad || happy};
 IF yes && sad || happy
 __PARSED__
 
@@ -120,11 +120,11 @@ __PARSED__
 #IF yes AND ten && true and twenty && 30
 #__PARSED__
 
-	ok $g.parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] ), Q{IF ! yes};
 IF ! yes
 __PARSED__
 
-	ok $g.parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] ), Q{UNLESS yes};
 UNLESS yes
 __PARSED__
 
@@ -139,17 +139,17 @@ __TEST__
 yes
 __EXPECTED__
 
-	ok $g.parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] ), Q{"yes" UNLESS no};
 "yes" UNLESS no
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__], Q{tag UNLESS};
 [% "yes" UNLESS no %]
 __TEST__
 yes
 __EXPECTED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__], Q{tag IF};
 [% IF ! yes %]
 no
 [% ELSE %]
@@ -159,11 +159,11 @@ __TEST__
 yes
 __EXPECTED__
 
-	ok $g.parse( q:to[__PARSED__] );
+	ok $g.parse( q:to[__PARSED__] ), Q{IF yes || no};
 IF yes || no
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__], Q{IF yes || no compound};
 [% IF yes || no %]
 yes
 [% ELSE %]
