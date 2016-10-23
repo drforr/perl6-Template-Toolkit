@@ -52,17 +52,22 @@ die "Unknown case, shouldn't happen"
 	}
 
 	method Variable-Start( $/ ) {
-		if $/<Argument> {
-			make Template::Toolkit::Internal::Directive::Get.new(
-				:value-to-fetch( ~$/<Function-Name> ),
-				:argument( $/<Argument>>>.ast )
+		my $key = ~$/<Function-Name>;
+		my @args = $/<Argument>>>.ast; # XXX May be undef...
+		make Template::Toolkit::Internal::Directive::Get.new(
+			:filter-to-run(
+				sub ( $stash ) {
+					if $stash.{$key} and
+						$stash.{$key} ~~ Routine and
+						@args {
+						$stash.{$key}(|@args) // ''
+					}
+					else {
+						$stash.{$key} // ''
+					}
+				}
 			)
-		}
-		else {
-			make Template::Toolkit::Internal::Directive::Get.new(
-				:value-to-fetch( ~$/<Function-Name> )
-			)
-		}
+		)
 	}
 
 	method Variable-Element( $/ ) {

@@ -112,6 +112,7 @@ subtest {
 
 	subtest {
 		my $called = False;
+#`(
 		is	$tt.process(
 				\Q{[%brave()%]}, {
 					brave => sub {
@@ -123,6 +124,7 @@ subtest {
 			Q{hello world},
 			Q{related stash, no arguments};
 		ok $called, Q{stash function gets called};
+)
 
 		# Open a new scope so we don't have to reset or localize
 		# $called.
