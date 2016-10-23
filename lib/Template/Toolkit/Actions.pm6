@@ -2,7 +2,6 @@ class Template::Toolkit::Actions {
 	has $.stashref;
 
 	use Template::Toolkit::Internal::Constant;
-	use Template::Toolkit::Internal::Stash-Method;
 	use Template::Toolkit::Internal::Directive::End;
 	use Template::Toolkit::Internal::Directive::If;
 	use Template::Toolkit::Internal::Directive::Get;
@@ -15,8 +14,8 @@ class Template::Toolkit::Actions {
 
 	method Function-Call( $/ ) {
 		if $/<Argument> {
-			make Template::Toolkit::Internal::Stash-Method.new(
-				:method-to-call( ~$/<Function-Name> ),
+			make Template::Toolkit::Internal::Directive::Get.new(
+				:value-to-fetch( ~$/<Function-Name> ),
 				:argument( $/<Argument>>>.ast )
 			)
 		}
@@ -54,8 +53,8 @@ die "Unknown case, shouldn't happen"
 
 	method Variable-Start( $/ ) {
 		if $/<Argument> {
-			make Template::Toolkit::Internal::Stash-Method.new(
-				:method-to-call( ~$/<Function-Name> ),
+			make Template::Toolkit::Internal::Directive::Get.new(
+				:value-to-fetch( ~$/<Function-Name> ),
 				:argument( $/<Argument>>>.ast )
 			)
 		}
@@ -94,6 +93,7 @@ die "Unknown case, shouldn't happen"
 				make $_<Constant>[0].ast
 			}
 			when $_<Variable> {
+#say $_.gist;
 				make $_<Variable>[0].ast
 			}
 		}

@@ -67,7 +67,7 @@ subtest {
 			{ hello => 'brave' }
 		),
 		Q{},
-		Q{unrelatead stash};
+		Q{unrelated stash};
 	
 	is	$tt.process( \Q{[%brave%]},
 			{ brave => 'hello world' } ),
@@ -87,7 +87,7 @@ subtest {
 			{ hello => sub () { } }
 		),
 		Q{},
-		Q{unrelatead stash};
+		Q{unrelated stash};
 
 	subtest {
 		# Yes, in TT 5
@@ -130,7 +130,6 @@ subtest {
 			my $called = False;
 			is	$tt.process(
 					\Q{[%brave(42)%]}, {
-						#brave => sub ($x) {
 						brave => sub (*@args) {
 							$called = True;
 							'hello world'
@@ -166,5 +165,26 @@ subtest {
 
 	done-testing;
 }, Q{single stash function};
+
+#`(
+subtest {
+	is	$tt.process( \Q{[%brave.new%]} ),
+		Q{},
+		Q{no stash};
+	
+	is	$tt.process( \Q{[%brave.new%]},
+			{ hello => 'brave' }
+		),
+		Q{},
+		Q{unrelated stash};
+	
+	is	$tt.process( \Q{[%brave.new%]},
+			{ brave => { new => 'hello world' } } ),
+		Q{hello world},
+		Q{related stash};
+
+	done-testing;
+}, Q{multiple-element stash key};
+)
 
 done-testing;

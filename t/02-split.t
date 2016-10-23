@@ -5,18 +5,20 @@ my $g = Template::Toolkit::Grammar.new;
 
 my $tt = Template::Toolkit.new;
 
+sub valid( $test, $expected ) {
+	return True
+}
+
 ok $g.parse( q:to[__PARSED__] ), 'single constant';
 1
 __PARSED__
 
-#`(
-subtest {
-	#ok $tt._parse( q:to[__PARSED__] );
-	ok $g.parse( q:to[__PARSED__] );
+ok $g.parse( q:to[__PARSED__] ), Q{args(a b c)};
 args(a b c)
 __PARSED__
 
-	is-valid $tt._process( q:to[__TEST__] ), q:to[__EXPECTED__];
+#`(
+ok valid( $test, q:to[__EXPECTED__] );
 [% args(a b c) %]
 __TEST__
   ARGS: [ alpha, bravo, charlie ]

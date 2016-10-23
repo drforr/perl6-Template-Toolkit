@@ -144,7 +144,6 @@ class Template::Toolkit {
 	use Template::Toolkit::Actions;
 
 	use Template::Toolkit::Internal::Constant;
-	use Template::Toolkit::Internal::Stash-Method;
 	use Template::Toolkit::Internal::Directive::End;
 	use Template::Toolkit::Internal::Directive::Foreach;
 	use Template::Toolkit::Internal::Directive::If;
@@ -389,10 +388,26 @@ class Template::Toolkit {
 	#
 	my class Element::Tag {
 		also is Element;
+
+		method to-directive( $g, $a ) {
+			my @ast = $g.parse(
+				self.content,
+				:actions( $a )
+			).ast;
+			@ast
+		}
 	};
 
 	my class Element::Text {
 		also is Element;
+
+		method to-directive( $g, $a ) {
+			Template::Toolkit::Internal::Constant.new(
+				:value-to-fetch(
+					self.content
+				)
+			)
+		}
 	};
 
 	method next-element( Str $string, Bool $is-first-text ) {
@@ -600,28 +615,10 @@ class Template::Toolkit {
 		my $g = Template::Toolkit::Grammar.new;
 		my $a = Template::Toolkit::Actions.new;
 		my Template::Toolkit::Internal @directive;
-		for @element -> $element {
-			given $element {
-				when Element::Text {
-					@directive.append(
-						Template::Toolkit::Internal::Constant.new(
-							:value-to-fetch(
-								$element.content
-							)
-						)
-					)
-				}
-				when Element::Tag {
-					my @ast = $g.parse(
-						$element.content,
-						:actions( $a )
-					).ast;
-					@directive.append( @ast )
-				}
-				default {
-					die "Shouldn't happen!"
-				}
-			}
+		for @element {
+			@directive.append(
+				$_.to-directive( $g, $a )
+			)
 		}
 		@directive
 	}
