@@ -51,21 +51,32 @@ die "Unknown case, shouldn't happen"
 			$/<Floating-Point>.ast
 	}
 
-	method Variable-Start( $/ ) {
+	method make-hash-closure( $/ ) {
 		my $key = ~$/<Function-Name>;
-		my @args = $/<Argument>>>.ast; # XXX May be undef...
+		my @args = $/<Argument>>>.ast;
+		sub ( $stash ) {
+			if $stash.{$key} and
+				$stash.{$key} ~~ Routine and
+				@args {
+				$stash.{$key}(|@args) // ''
+			}
+			else {
+				$stash.{$key} // ''
+			}
+		}
+	}
+
+	method make-array-closure( $/ ) {
+		my $key = +$/<Integer>;
+		sub ( $stash ) {
+			$stash.[$key] // ''
+		}
+	}
+
+	method Variable-Start( $/ ) {
 		make Template::Toolkit::Internal::Directive::Get.new(
 			:filter-to-run(
-				sub ( $stash ) {
-					if $stash.{$key} and
-						$stash.{$key} ~~ Routine and
-						@args {
-						$stash.{$key}(|@args) // ''
-					}
-					else {
-						$stash.{$key} // ''
-					}
-				}
+				self.make-hash-closure( $/ )
 			)
 		)
 	}
@@ -77,8 +88,31 @@ die "Unknown case, shouldn't happen"
 	}
 
 	method Variable( $/ ) {
-		make
-			$/<Variable-Start>.ast # XXX *HORRIBLY* broken.
+		my @closure;
+
+		@closure.append(
+			self.make-hash-closure( $/<Variable-Start> )
+		);
+		for $/<Variable-Element> {
+			my $closure;
+			if $_<Variable-Start> {
+				$closure =
+					self.make-hash-closure( $_<Variable-Start> )
+			}
+			else {
+				$closure =
+					self.make-array-closure( $_<Positive-Integer> )
+			}
+			@closure.append(
+				$closure
+			)
+		}
+
+		make Template::Toolkit::Internal::Directive::Get.new(
+			:filter-to-run(
+				@closure
+			)
+		)
 	}
 
 # From the output of $/.gist, it is *not* obvious that I have to use an

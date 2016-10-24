@@ -168,7 +168,6 @@ subtest {
 	done-testing;
 }, Q{single stash function};
 
-#`(
 subtest {
 	is	$tt.process( \Q{[%brave.new%]} ),
 		Q{},
@@ -187,6 +186,5 @@ subtest {
 
 	done-testing;
 }, Q{multiple-element stash key};
-)
 
 done-testing;
