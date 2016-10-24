@@ -12,26 +12,6 @@ class Template::Toolkit::Actions {
 			~$/<String>[0]
 	}
 
-	method Function-Call( $/ ) {
-		if $/<Argument> {
-			make Template::Toolkit::Internal::Directive::Get.new(
-				:value-to-fetch( ~$/<Function-Name> ),
-				:argument( $/<Argument>>>.ast )
-			)
-		}
-		elsif $/<Function-Name> {
-			make Template::Toolkit::Internal::Directive::Get.new(
-				:value-to-fetch( ~$/<Function-Name> )
-			)
-		}
-		elsif $/<Positive-Integer> {
-die "Whoops, fix this later"
-		}
-		else {
-die "Unknown case, shouldn't happen"
-		}
-	}
-
 	method Integer( $/ ) {
 		make Template::Toolkit::Internal::Constant.new(
 			:value-to-fetch( +$/ )
@@ -73,35 +53,22 @@ die "Unknown case, shouldn't happen"
 		}
 	}
 
-	method Variable-Start( $/ ) {
-		make Template::Toolkit::Internal::Directive::Get.new(
-			:filter-to-run(
-				self.make-hash-closure( $/ )
-			)
-		)
-	}
-
-	method Variable-Element( $/ ) {
-		make
-			$/<Variable-Start>[0].ast ||
-			$/<Positive-Integer>.ast
-	}
-
 	method Variable( $/ ) {
-		my @closure;
-
-		@closure.append(
-			self.make-hash-closure( $/<Variable-Start> )
-		);
+		my @closure =
+			self.make-hash-closure( $/<Variable-Start> );
 		for $/<Variable-Element> {
 			my $closure;
 			if $_<Variable-Start> {
 				$closure =
-					self.make-hash-closure( $_<Variable-Start> )
+					self.make-hash-closure(
+						$_<Variable-Start>
+					)
 			}
-			else {
+			elsif $_<Positive-Integer> {
 				$closure =
-					self.make-array-closure( $_<Positive-Integer> )
+					self.make-array-closure(
+						$_<Positive-Integer>
+					)
 			}
 			@closure.append(
 				$closure

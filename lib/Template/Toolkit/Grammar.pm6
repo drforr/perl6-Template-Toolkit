@@ -44,7 +44,7 @@ grammar Template::Toolkit::Grammar
 		| <Integer>
 		}
 
-	rule Function-Call
+	rule Package-Name
 		{
 		| <Function-Name>
 		  '(' [ <Argument>* %% [ ',' | \s+ ] | <Argument>* ] ')'
@@ -199,8 +199,8 @@ grammar Template::Toolkit::Grammar
 		{
 		| 'USE'
 			(
-			| <Plugin-Name> '=' <Function-Call>
-			| <Function-Call>
+			| <Plugin-Name> '=' <Package-Name>
+			| <Package-Name>
 			| <Plugin-Name>
 			)
 		}

@@ -9,8 +9,14 @@ class Template::Toolkit::Internal::Directive::If
 	}
 	method compile( ) {
 		sub ( $stashref ) {
-			if $.if-condition.compile.($stashref) != 0 {
-				join( '', map { .compile.($stashref) }, @.if-content )
+			if $.if-condition.compile.($stashref) {
+				join( '',
+					map { .compile.($stashref) },
+					@.if-content
+				)
+			}
+			else {
+				''
 			}
 		}
 	}
