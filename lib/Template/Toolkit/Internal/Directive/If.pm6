@@ -24,39 +24,43 @@ class Template::Toolkit::Internal::Directive::If
 	# ELSIF 42; --> Create a new clause with 42 as the condition.
 	# "tag" ; --> add-tag()) populates @.class[1].body
 	# ELSE ; --> Switch to populating the default tag.
-	# "foo" ; --> Goes into $.default.body
+	# "foo" ; --> Goes into @.default
 	# END ; --> And we're spent.
 	#
 	has Bool $.in-main = True;
 	has Template::Toolkit::Internal::Clause @.clause;
-	has Template::Toolkit::Internal::Clause $.default;
+	has Template::Toolkit::Internal @.default;
 
 	method _add-tag( Template::Toolkit::Internal $content ) {
-		@.clause[*-1].body.append( $content )
-	}
-	method populate-default( ) {
-		$.in-main = False;
-	}
-	method add-clause( Template::Toolkit::Internal::Clause $clause ) {
 		if $.in-main {
-			@.clause.append( $clause )
+			@.clause[*-1].body.append( $content )
 		}
 		else {
-			$.default = $clause
+			@.default.append( $content )
 		}
+	}
+	method populate-default( ) {
+		$!in-main = False;
+	}
+	method add-clause( Template::Toolkit::Internal::Clause $clause ) {
+		@.clause.append( $clause )
 	}
 	method compile( ) {
 		sub ( $stashref ) {
-			for @.clause[0] {
+			for @.clause {
 				if $_.condition.compile.($stashref) {
 					return $_.evaluate($stashref)
 				}
 			}
-			if $.default and
-				$.default.compile($stashref) {
-				return $.default.evaluate($stashref)
+			if @.default {
+				join( '',
+					map { .compile.($stashref) },
+					@.default
+				)
 			}
-			''
+			else {
+				''
+			}
 		}
 	}
 }

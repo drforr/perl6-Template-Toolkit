@@ -81,7 +81,6 @@ subtest {
 			Q{27},
 			Q{true string};
 
-#`(
 		subtest {
 			is	$tt.process(
 					\Q{[%IF 0%]27[%ELSE%]42[%END%]}
@@ -109,7 +108,6 @@ subtest {
 
 			done-testing;
 		}, Q{ELSE};
-)
 
 		done-testing;
 	}, Q{constant, multiple directives};

@@ -142,10 +142,11 @@ class Template::Toolkit::Actions {
 
 	method Directive( $/ ) {
 		make
-			$/<Directive-Get>.ast ||
-			$/<Directive-Foreach>.ast ||
-			$/<Directive-If>.ast ||
-			$/<Directive-End>.ast
+			$/<Directive-Get>.ast
+		||	$/<Directive-Foreach>.ast
+		||	$/<Directive-If>.ast
+		||	$/<Directive-Else>.ast
+		||	$/<Directive-End>.ast
 	}
 
 	# The constant chaining of 'make...' seems redundant to me.
