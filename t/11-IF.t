@@ -11,65 +11,110 @@ my $*TESTING = 1;
 # XXX GET ran, no need to check compound terms or single strings.
 #
 subtest {
+	subtest {
 #`(
-	is	$tt.process( \Q{[%IF 0; 27; END%]} ),
-		Q{},
-		Q{false};
+		is	$tt.process( \Q{[%IF 0; 27; END%]} ),
+			Q{},
+			Q{false integer};
 
-	is	$tt.process( \Q{[%IF 1; 27; END%]} ),
-		Q{27},
-		Q{true};
+		is	$tt.process( \Q{[%IF ''; 27; END%]} ),
+			Q{},
+			Q{false string};
+
+		is	$tt.process( \Q{[%IF 1; 27; END%]} ),
+			Q{27},
+			Q{true integer};
+
+		is	$tt.process( \Q{[%IF 'a'; 27; END%]} ),
+			Q{27},
+			Q{true string};
+
+		subtest {
+			is	$tt.process(
+					\Q{[%IF 0; 27; ELSE; 42; END%]}
+				),
+				Q{42},
+				Q{false integer};
+
+			is	$tt.process(
+					\Q{[%IF ''; 27; ELSE; 42; END%]}
+				),
+				Q{42},
+				Q{false string};
+
+			is	$tt.process(
+					\Q{[%IF 1; 27; ELSE; 42; END%]}
+				),
+				Q{27},
+				Q{true integer};
+
+			is	$tt.process(
+					\Q{[%IF 'a'; 27; ELSE; 42; END%]}
+				),
+				Q{27},
+				Q{true string};
+
+			done-testing;
+		}, Q{ELSE};
+
+		subtest {
+			done-testing;
+		}, Q{ELSIF};
 )
-	done-testing;
-}, Q{constant single directive};
+		done-testing;
+	}, Q{constant single directive};
 
-subtest {
-	is	$tt.process( \Q{[%IF 0%]27[%END%]} ),
-		Q{},
-		Q{false};
+	subtest {
+		is	$tt.process( \Q{[%IF 0%]27[%END%]} ),
+			Q{},
+			Q{false integer};
 
-	is	$tt.process( \Q{[%IF 1%]27[%END%]} ),
-		Q{27},
-		Q{true};
+		is	$tt.process( \Q{[%IF ''%]27[%END%]} ),
+			Q{},
+			Q{false string};
 
-	done-testing;
-}, Q{constant, multiple directives};
+		is	$tt.process( \Q{[%IF 1%]27[%END%]} ),
+			Q{27},
+			Q{true integer};
 
-subtest {
+		is	$tt.process( \Q{[%IF 'a'%]27[%END%]} ),
+			Q{27},
+			Q{true string};
+
 #`(
-	is	$tt.process(
-			\Q{[%IF brave; 27; END%]},
-			{ brave => 0 }
-		),
-		Q{},
-		Q{false};
+		subtest {
+			is	$tt.process(
+					\Q{[%IF 0%]27[%ELSE%]42[%END%]}
+				),
+				Q{42},
+				Q{false integer};
 
-	is	$tt.process(
-			\Q{[%IF brave; 27; END%]},
-			{ brave => 1 }
-		),
-		Q{27},
-		Q{true};
+			is	$tt.process(
+					\Q{[%IF ''%]27[%ELSE%]42[%END%]}
+				),
+				Q{42},
+				Q{false string};
+
+			is	$tt.process(
+					\Q{[%IF 1%]27[%ELSE%]42[%END%]}
+				),
+				Q{27},
+				Q{true integer};
+
+			is	$tt.process(
+					\Q{[%IF 'a'%]27[%ELSE%]42[%END%]}
+				),
+				Q{27},
+				Q{true string};
+
+			done-testing;
+		}, Q{ELSE};
 )
-	done-testing;
-}, Q{variable, single directive};
 
-subtest {
-	is	$tt.process(
-			\Q{[%IF brave%]27[%END%]},
-			{ brave => 0 }
-		),
-		Q{},
-		Q{false};
-
-	is	$tt.process(
-			\Q{[%IF brave%]27[%END%]},
-			{ brave => 1 }
-		),
-		Q{27},
-		Q{true};
+		done-testing;
+	}, Q{constant, multiple directives};
 
 	done-testing;
-}, Q{variable, multiple directives};
+}, Q{constant condition};
 
 done-testing;

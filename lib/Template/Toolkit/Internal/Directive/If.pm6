@@ -1,23 +1,62 @@
+use Template::Toolkit::Internal::Clause;
 use Template::Toolkit::Internal::Directive;
 class Template::Toolkit::Internal::Directive::If 
 	is Template::Toolkit::Internal::Directive {
 
-	has $.if-condition;
-	has @.if-content; # Gets filled in later in most cases.
-	method _add-if-content( Template::Toolkit::Internal $content ) {
-		@!if-content.append( $content )
+	# A bit of a wart, $.in-main keeps track of where tags should go.
+	# By default they're added to the last clause, which in general
+	# is the right thing to do - Until an 'ELSIF' or 'ELSE' is encountered,
+	# tags should be accumulated as part of the IF clause.
+	#
+	# Pushing a new dependent clause means that the tags are now part
+	# of the ELSIF conditional, and so on until all of the ELSIF
+	# clauses are used up.
+	#
+	# Finally, since ELSE doesn't have a condition associated with it, we
+	# just call 'populate-default' to tell this object to start populating
+	# the default ('ELSE') clause.
+	# 
+	# Notionally:
+	#
+	# IF 1 ; --> Initialize, treat '1' as the condition.
+	# "foo" ; --> add-tag() populates @.clause[0].body
+	# 2 ; --> The second.
+	# ELSIF 42; --> Create a new clause with 42 as the condition.
+	# "tag" ; --> add-tag()) populates @.class[1].body
+	# ELSE ; --> Switch to populating the default tag.
+	# "foo" ; --> Goes into $.default.body
+	# END ; --> And we're spent.
+	#
+	has Bool $.in-main = True;
+	has Template::Toolkit::Internal::Clause @.clause;
+	has Template::Toolkit::Internal::Clause $.default;
+
+	method _add-tag( Template::Toolkit::Internal $content ) {
+		@.clause[*-1].body.append( $content )
+	}
+	method populate-default( ) {
+		$.in-main = False;
+	}
+	method add-clause( Template::Toolkit::Internal::Clause $clause ) {
+		if $.in-main {
+			@.clause.append( $clause )
+		}
+		else {
+			$.default = $clause
+		}
 	}
 	method compile( ) {
 		sub ( $stashref ) {
-			if $.if-condition.compile.($stashref) {
-				join( '',
-					map { .compile.($stashref) },
-					@.if-content
-				)
+			for @.clause[0] {
+				if $_.condition.compile.($stashref) {
+					return $_.evaluate($stashref)
+				}
 			}
-			else {
-				''
+			if $.default and
+				$.default.compile($stashref) {
+				return $.default.evaluate($stashref)
 			}
+			''
 		}
 	}
 }

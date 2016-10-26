@@ -146,6 +146,7 @@ class Template::Toolkit {
 	use Template::Toolkit::Internal::Constant;
 	use Template::Toolkit::Internal::Directive::End;
 	use Template::Toolkit::Internal::Directive::Foreach;
+	use Template::Toolkit::Internal::Directive::Else;
 	use Template::Toolkit::Internal::Directive::If;
 	use Template::Toolkit::Internal::Directive::Get;
 
@@ -582,12 +583,15 @@ class Template::Toolkit {
 				when Template::Toolkit::Internal::Directive::If {
 					@stack.push( $internal )
 				}
+				when Template::Toolkit::Internal::Directive::Else {
+					@stack[*-1].populate-default();
+				}
 				when Template::Toolkit::Internal::Directive::Foreach {
 					@stack.push( $internal )
 				}
 				when Template::Toolkit::Internal::Constant {
 					if @stack {
-						@stack[*-1]._add-if-content(
+						@stack[*-1]._add-tag(
 							$internal
 						)
 					}

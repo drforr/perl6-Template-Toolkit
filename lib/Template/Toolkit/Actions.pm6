@@ -1,7 +1,9 @@
 class Template::Toolkit::Actions {
 	has $.stashref;
 
+	use Template::Toolkit::Internal::Clause;
 	use Template::Toolkit::Internal::Constant;
+	use Template::Toolkit::Internal::Directive::Else;
 	use Template::Toolkit::Internal::Directive::End;
 	use Template::Toolkit::Internal::Directive::If;
 	use Template::Toolkit::Internal::Directive::Get;
@@ -109,6 +111,12 @@ class Template::Toolkit::Actions {
 		make $/<Expression>.ast
 	}
 
+	# ELSE doesn't introduce a new condition, so it takes no arguments.
+	#
+	method Directive-Else( $/ ) {
+		make Template::Toolkit::Internal::Directive::Else.new
+	}
+
 	method Directive-End( $/ ) {
 		make Template::Toolkit::Internal::Directive::End.new
 	}
@@ -117,8 +125,11 @@ class Template::Toolkit::Actions {
 	# We'll account for those later in testing.
 	#
 	method Directive-If( $/ ) {
+		my $clause = Template::Toolkit::Internal::Clause.new(
+			:condition( $/<Expression>.ast )
+		);
 		make Template::Toolkit::Internal::Directive::If.new(
-			:if-condition( $/<Expression>.ast )
+			:clause( $clause )
 		)
 	}
 
