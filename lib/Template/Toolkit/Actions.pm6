@@ -4,6 +4,7 @@ class Template::Toolkit::Actions {
 	use Template::Toolkit::Internal::Clause;
 	use Template::Toolkit::Internal::Constant;
 	use Template::Toolkit::Internal::Directive::Else;
+	use Template::Toolkit::Internal::Directive::Elsif;
 	use Template::Toolkit::Internal::Directive::End;
 	use Template::Toolkit::Internal::Directive::If;
 	use Template::Toolkit::Internal::Directive::Get;
@@ -124,6 +125,14 @@ class Template::Toolkit::Actions {
 	# IF normally won't have values immediately after it.
 	# We'll account for those later in testing.
 	#
+	method Directive-Elsif( $/ ) {
+		my $clause = Template::Toolkit::Internal::Clause.new(
+			:condition( $/<Expression>.ast )
+		);
+		make Template::Toolkit::Internal::Directive::Elsif.new(
+			:clause( $clause )
+		)
+	}
 	method Directive-If( $/ ) {
 		my $clause = Template::Toolkit::Internal::Clause.new(
 			:condition( $/<Expression>.ast )
@@ -146,6 +155,7 @@ class Template::Toolkit::Actions {
 		||	$/<Directive-Foreach>.ast
 		||	$/<Directive-If>.ast
 		||	$/<Directive-Else>.ast
+		||	$/<Directive-Elsif>.ast
 		||	$/<Directive-End>.ast
 	}
 

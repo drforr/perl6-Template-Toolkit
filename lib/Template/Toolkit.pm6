@@ -147,6 +147,7 @@ class Template::Toolkit {
 	use Template::Toolkit::Internal::Directive::End;
 	use Template::Toolkit::Internal::Directive::Foreach;
 	use Template::Toolkit::Internal::Directive::Else;
+	use Template::Toolkit::Internal::Directive::Elsif;
 	use Template::Toolkit::Internal::Directive::If;
 	use Template::Toolkit::Internal::Directive::Get;
 
@@ -582,6 +583,9 @@ class Template::Toolkit {
 			given $internal {
 				when Template::Toolkit::Internal::Directive::If {
 					@stack.push( $internal )
+				}
+				when Template::Toolkit::Internal::Directive::Elsif {
+					@stack[*-1].add-clause( $internal.clause )
 				}
 				when Template::Toolkit::Internal::Directive::Else {
 					@stack[*-1].populate-default();

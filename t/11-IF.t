@@ -109,6 +109,61 @@ subtest {
 			done-testing;
 		}, Q{ELSE};
 
+		# Not going to test all int/string combinations.
+		# Too much combinatorial explosion.
+		#
+		subtest {
+			is	$tt.process(
+					\Q{[%IF 0%]27[%ELSIF 0%]9[%ELSE%]42[%END%]}
+				),
+				Q{42},
+				Q{false integer, false integer};
+
+			is	$tt.process(
+					\Q{[%IF ''%]27[%ELSIF 0%]9[%ELSE%]42[%END%]}
+				),
+				Q{42},
+				Q{false string, false integer};
+
+			is	$tt.process(
+					\Q{[%IF 1%]27[%ELSIF 0%]9[%ELSE%]42[%END%]}
+				),
+				Q{27},
+				Q{true integer, false integer};
+
+			is	$tt.process(
+					\Q{[%IF 'a'%]27[%ELSIF 0%]9[%ELSE%]42[%END%]}
+				),
+				Q{27},
+				Q{true string, false integer};
+
+			is	$tt.process(
+					\Q{[%IF 0%]27[%ELSIF 1%]9[%ELSE%]42[%END%]}
+				),
+				Q{9},
+				Q{false integer, true integer};
+
+			is	$tt.process(
+					\Q{[%IF ''%]27[%ELSIF 1%]9[%ELSE%]42[%END%]}
+				),
+				Q{9},
+				Q{false string, true integer};
+
+			is	$tt.process(
+					\Q{[%IF 1%]27[%ELSIF 1%]9[%ELSE%]42[%END%]}
+				),
+				Q{27},
+				Q{true integer, true integer};
+
+			is	$tt.process(
+					\Q{[%IF 'a'%]27[%ELSIF 1%]9[%ELSE%]42[%END%]}
+				),
+				Q{27},
+				Q{true string, true integer};
+
+			done-testing;
+		}, Q{ELSE};
+
 		done-testing;
 	}, Q{constant, multiple directives};
 
