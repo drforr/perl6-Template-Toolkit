@@ -14,4 +14,10 @@ class Template::Toolkit::Internal::Directive::Foreach
 #			}
 		}
 	}
+
+	method fold(
+		Template::Toolkit::Internal @stack,
+		Template::Toolkit::Internal @result ) {
+		@stack.push( self )
+	}
 }

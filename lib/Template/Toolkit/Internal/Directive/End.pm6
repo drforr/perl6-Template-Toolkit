@@ -5,4 +5,10 @@ class Template::Toolkit::Internal::Directive::End
 	method compile( ) {
 		sub ( $stashref ) { }
 	}
+
+	method fold(
+		Template::Toolkit::Internal @stack,
+		Template::Toolkit::Internal @result ) {
+		@result.append( @stack.pop )
+	}
 }

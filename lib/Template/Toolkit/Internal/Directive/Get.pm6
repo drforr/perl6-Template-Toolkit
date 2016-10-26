@@ -27,4 +27,10 @@ class Template::Toolkit::Internal::Directive::Get
 			}
 		}
 	}
+
+	method fold(
+		Template::Toolkit::Internal @stack,
+		Template::Toolkit::Internal @result ) {
+		@result.append( self )
+	}
 }

@@ -63,4 +63,10 @@ class Template::Toolkit::Internal::Directive::If
 			}
 		}
 	}
+
+	method fold(
+		Template::Toolkit::Internal @stack,
+		Template::Toolkit::Internal @result ) {
+		@stack.push( self )
+	}
 }

@@ -6,4 +6,15 @@ class Template::Toolkit::Internal::Constant
 	method compile( ) {
 		sub ( $stashref ) { $.value-to-fetch }
 	}
+
+	method fold(
+		Template::Toolkit::Internal @stack,
+		Template::Toolkit::Internal @result ) {
+		if @stack {
+			@stack[*-1]._add-tag( self )
+		}
+		else {
+			@result.append( self )
+		}
+	}
 }

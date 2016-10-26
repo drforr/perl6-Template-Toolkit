@@ -580,36 +580,7 @@ class Template::Toolkit {
 		my Template::Toolkit::Internal @result;
 		my Template::Toolkit::Internal @stack;
 		for @internal -> $internal {
-			given $internal {
-				when Template::Toolkit::Internal::Directive::If {
-					@stack.push( $internal )
-				}
-				when Template::Toolkit::Internal::Directive::Elsif {
-					@stack[*-1].add-clause( $internal.clause )
-				}
-				when Template::Toolkit::Internal::Directive::Else {
-					@stack[*-1].populate-default();
-				}
-				when Template::Toolkit::Internal::Directive::Foreach {
-					@stack.push( $internal )
-				}
-				when Template::Toolkit::Internal::Constant {
-					if @stack {
-						@stack[*-1]._add-tag(
-							$internal
-						)
-					}
-					else {
-						@result.append( $internal )
-					}
-				}
-				when Template::Toolkit::Internal::Directive::End {
-					@result.append( @stack.pop )
-				}
-				default {
-					@result.append( $internal )
-				}
-			}
+			$internal.fold( @stack, @result )
 		}
 		@result
 	}
