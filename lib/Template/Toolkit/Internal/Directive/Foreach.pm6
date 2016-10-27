@@ -1,17 +1,34 @@
+use Template::Toolkit::Internal::Clause;
 use Template::Toolkit::Internal::Directive;
 class Template::Toolkit::Internal::Directive::Foreach 
 	is Template::Toolkit::Internal::Directive {
 
+	has $.topic;
 	has $.iterator;
-	has $.data;
-	method _add-data( $data ) {
-		$!data = $data
+	has @.body;
+
+	method _add-tag( Template::Toolkit::Internal $content ) {
+		@.body.append( $content )
 	}
 	method compile( ) {
 		sub ( $stashref ) {
-#			if $.if-condition.compile.($stashref) {
-#				$.if-content
-#			}
+			my $iterator = $.iterator.compile.($stashref);
+			my $res = '';
+			if $iterator ~~ Array {
+				for @( $iterator ) {
+					$res ~= join( '',
+						map { .compile.($stashref) },
+						@.body
+					)
+				}
+			}
+			elsif $iterator {
+				$res ~= join( '',
+					map { .compile.($stashref) },
+					@.body
+				)
+			}
+			$res
 		}
 	}
 

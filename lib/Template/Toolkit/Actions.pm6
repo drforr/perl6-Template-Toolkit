@@ -6,6 +6,7 @@ class Template::Toolkit::Actions {
 	use Template::Toolkit::Internal::Directive::Else;
 	use Template::Toolkit::Internal::Directive::Elsif;
 	use Template::Toolkit::Internal::Directive::End;
+	use Template::Toolkit::Internal::Directive::Foreach;
 	use Template::Toolkit::Internal::Directive::If;
 	use Template::Toolkit::Internal::Directive::Get;
 
@@ -133,6 +134,12 @@ class Template::Toolkit::Actions {
 			:clause( $clause )
 		)
 	}
+	method Directive-Foreach( $/ ) {
+		make Template::Toolkit::Internal::Directive::Foreach.new(
+			:topic( $/<Variable>.ast ),
+			:iterator( $/<Expression>.ast )
+		)
+	}
 	method Directive-If( $/ ) {
 		my $clause = Template::Toolkit::Internal::Clause.new(
 			:condition( $/<Expression>.ast )
@@ -142,17 +149,10 @@ class Template::Toolkit::Actions {
 		)
 	}
 
-	method Directive-Foreach( $/ ) {
-		make Template::Toolkit::Internal::Directive::Foreach.new(
-			:iterator( $/<Value>.ast ),
-			:data( $/<Expression> )
-		)
-	}
-
 	method Directive( $/ ) {
 		make
-			$/<Directive-Get>.ast
-		||	$/<Directive-Foreach>.ast
+		  	$/<Directive-Foreach>.ast
+		||	$/<Directive-Get>.ast
 		||	$/<Directive-If>.ast
 		||	$/<Directive-Else>.ast
 		||	$/<Directive-Elsif>.ast

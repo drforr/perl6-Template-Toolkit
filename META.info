@@ -6,8 +6,18 @@
 		"Test"
 	],
 	"provides"     : {
-		"Template::Toolkit::Grammar" : "lib/Template/Toolkit/Grammar.pm6"
 		"Template::Toolkit::Actions" : "lib/Template/Toolkit/Actions.pm6"
+		"Template::Toolkit::Grammar" : "lib/Template/Toolkit/Grammar.pm6"
+		"Template::Toolkit::Internal" : "lib/Template/Toolkit/Internal.pm6"
+		"Template::Toolkit::Internal::Clause" : "lib/Template/Toolkit/Internal/Clause.pm6"
+		"Template::Toolkit::Internal::Constant" : "lib/Template/Toolkit/Internal/Constant.pm6"
+		"Template::Toolkit::Internal::Directive" : "lib/Template/Toolkit/Internal/Directive.pm6"
+		"Template::Toolkit::Internal::Directive::Else" : "lib/Template/Toolkit/Internal/Directive/Else.pm6"
+		"Template::Toolkit::Internal::Directive::Elsif" : "lib/Template/Toolkit/Internal/Directive/Elsif.pm6"
+		"Template::Toolkit::Internal::Directive::End" : "lib/Template/Toolkit/Internal/Directive/End.pm6"
+		"Template::Toolkit::Internal::Directive::Foreach" : "lib/Template/Toolkit/Internal/Directive/Foreach.pm6"
+		"Template::Toolkit::Internal::Directive::Get" : "lib/Template/Toolkit/Internal/Directive/Get.pm6"
+		"Template::Toolkit::Internal::Directive::If" : "lib/Template/Toolkit/Internal/Directive/If.pm6"
 		"Template::Toolkit"          : "lib/Template/Toolkit.pm6"
 	},
 	"source-url"   : "git://github.com/drforr/perl6-Template-Toolkit.git"
