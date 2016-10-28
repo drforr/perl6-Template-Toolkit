@@ -82,21 +82,15 @@ subtest {
 			Q{true string};
 
 		subtest {
-			is	$tt.process(
-					\Q{[%IF 0%]27[%ELSE%]42[%END%]}
-				),
+			is	$tt.process( \Q{[%IF 0%]27[%ELSE%]42[%END%]} ),
 				Q{42},
 				Q{false integer};
 
-			is	$tt.process(
-					\Q{[%IF ''%]27[%ELSE%]42[%END%]}
-				),
+			is	$tt.process( \Q{[%IF ''%]27[%ELSE%]42[%END%]} ),
 				Q{42},
 				Q{false string};
 
-			is	$tt.process(
-					\Q{[%IF 1%]27[%ELSE%]42[%END%]}
-				),
+			is	$tt.process( \Q{[%IF 1%]27[%ELSE%]42[%END%]} ),
 				Q{27},
 				Q{true integer};
 
@@ -120,22 +114,10 @@ subtest {
 				Q{false integer, false integer};
 
 			is	$tt.process(
-					\Q{[%IF ''%]27[%ELSIF 0%]9[%ELSE%]42[%END%]}
-				),
-				Q{42},
-				Q{false string, false integer};
-
-			is	$tt.process(
 					\Q{[%IF 1%]27[%ELSIF 0%]9[%ELSE%]42[%END%]}
 				),
 				Q{27},
 				Q{true integer, false integer};
-
-			is	$tt.process(
-					\Q{[%IF 'a'%]27[%ELSIF 0%]9[%ELSE%]42[%END%]}
-				),
-				Q{27},
-				Q{true string, false integer};
 
 			is	$tt.process(
 					\Q{[%IF 0%]27[%ELSIF 1%]9[%ELSE%]42[%END%]}
@@ -144,25 +126,13 @@ subtest {
 				Q{false integer, true integer};
 
 			is	$tt.process(
-					\Q{[%IF ''%]27[%ELSIF 1%]9[%ELSE%]42[%END%]}
-				),
-				Q{9},
-				Q{false string, true integer};
-
-			is	$tt.process(
 					\Q{[%IF 1%]27[%ELSIF 1%]9[%ELSE%]42[%END%]}
 				),
 				Q{27},
 				Q{true integer, true integer};
 
-			is	$tt.process(
-					\Q{[%IF 'a'%]27[%ELSIF 1%]9[%ELSE%]42[%END%]}
-				),
-				Q{27},
-				Q{true string, true integer};
-
 			done-testing;
-		}, Q{ELSE};
+		}, Q{ELSIF};
 
 		done-testing;
 	}, Q{constant, multiple directives};

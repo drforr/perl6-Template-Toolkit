@@ -14,15 +14,28 @@ subtest {
 	done-testing;
 }, Q{single directive};
 
+#`(
 subtest {
 	is	$tt.process( \Q{[%FOREACH item = items%]27[%END%]} ),
+		Q{},
+		Q{no control variable};
+
+	done-testing;
+}, Q{constant};
+
+subtest {
+}, Q{variable};
+)
+
+subtest {
+	is	$tt.process( \Q{[%FOREACH items%]27[%END%]} ),
 		Q{},
 		Q{no control variable};
 
 	# N.B. if it's not referenced, there's no need to test variants.
 	#
 	is	$tt.process(
-			\Q{[%FOREACH item = items%]27[%END%]},
+			\Q{[%FOREACH items%]27[%END%]},
 			{ brave => Any }
 		),
 		Q{},
@@ -30,47 +43,54 @@ subtest {
 
 	subtest {
 		is	$tt.process(
-				\Q{[%FOREACH item = itemss%]27[%END%]},
+				\Q{[%FOREACH itemss%]27[%END%]},
 				{ items => Any }
 			),
 			Q{},
 			Q{Any};
 
 		is	$tt.process(
-				\Q{[%FOREACH item = items%]27[%END%]},
-				{ items => 1 }
+				\Q{[%FOREACH items%]27[%END%]},
+				{ items => 9 }
 			),
 			Q{27},
 			Q{integer};
 
 		is	$tt.process(
-				\Q{[%FOREACH item = items%]27[%END%]},
+				\Q{[%FOREACH items%]27[%items%][%END%]},
+				{ items => 9 }
+			),
+			Q{279},
+			Q{integer with body};
+
+		is	$tt.process(
+				\Q{[%FOREACH items%]27[%END%]},
 				{ items => [ ] }
 			),
 			Q{},
 			Q{empty arrayref};
 
 		is	$tt.process(
-				\Q{[%FOREACH item = items%]27[%END%]},
+				\Q{[%FOREACH items%]27[%END%]},
 				{ items => [ 1 ] }
 			),
 			Q{27},
 			Q{populated arrayref};
 
 		is	$tt.process(
-				\Q{[%FOREACH item = items%]27[%END%]},
+				\Q{[%FOREACH items%]27[%END%]},
 				{ items => [ 1, 2 ] }
 			),
 			Q{2727},
 			Q{populated arrayref};
-#`(
+
 		is	$tt.process(
-				\Q{[%FOREACH items%]27[%END%]},
-				{ items => [ 1 ] }
+				\Q{[%FOREACH item = items%][%item%][%END%]},
+				{ items => [ 1, 2 ] }
 			),
-			Q{27},
-			Q{populated arrayref};
-)
+			Q{12},
+			Q{topic};
+
 		done-testing;
 	}, Q{related variable};
 

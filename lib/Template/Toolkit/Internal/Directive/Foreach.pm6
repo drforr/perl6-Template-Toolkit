@@ -1,9 +1,10 @@
 use Template::Toolkit::Internal::Clause;
+use Template::Toolkit::Internal::Constant;
 use Template::Toolkit::Internal::Directive;
 class Template::Toolkit::Internal::Directive::Foreach 
 	is Template::Toolkit::Internal::Directive {
 
-	has $.topic;
+	has Str $.topic;
 	has $.iterator;
 	has @.body;
 
@@ -16,8 +17,12 @@ class Template::Toolkit::Internal::Directive::Foreach
 			my $res = '';
 			if $iterator ~~ Array {
 				for @( $iterator ) {
+					my $everything = $stashref.clone;
+					if $.topic {
+						$everything.{$.topic} = $_;
+					}
 					$res ~= join( '',
-						map { .compile.($stashref) },
+						map { .compile.($everything) },
 						@.body
 					)
 				}

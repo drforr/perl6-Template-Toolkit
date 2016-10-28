@@ -75,7 +75,7 @@ subtest {
 		Q{related stash};
 
 	done-testing;
-}, Q{single stash value};
+}, Q{single stash variable};
 
 subtest {
 	is	$tt.process( \Q{[%brave()%]} ),
@@ -186,5 +186,17 @@ subtest {
 
 	done-testing;
 }, Q{multiple-element stash key};
+
+subtest {
+	is	$tt.process( \Q{hello [%"brave"%] [%"new"%] world} ),
+		Q{hello brave new world},
+		Q{constant text tags};
+
+	is	$tt.process( \Q{hello [%"brave"%][%" new "%]world} ),
+		Q{hello brave new world},
+		Q{constant text tags, internal whitespace};
+
+	done-testing;
+}, Q{multiple tags};
 
 done-testing;

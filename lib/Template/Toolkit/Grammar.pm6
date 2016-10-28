@@ -168,7 +168,11 @@ grammar Template::Toolkit::Grammar
 		}
 	rule Directive-Catch { 'CATCH' }
 	rule Directive-Get { 'GET'? <Expression> }
-	rule Directive-Foreach { 'FOREACH' <Variable> '=' <Expression> }
+	rule Directive-Foreach
+		{
+		| 'FOREACH' <Variable> '=' <Expression>
+		| 'FOREACH' <Expression>
+		}
 	rule Directive-If
 		{
 		| 'IF' <Expression>

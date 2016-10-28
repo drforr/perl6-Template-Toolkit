@@ -2,9 +2,7 @@ use Template::Toolkit::Internal::Directive;
 class Template::Toolkit::Internal::Directive::Get
 	is Template::Toolkit::Internal::Directive {
 
-	has $.value-to-fetch;
 	has @.filter-to-run;
-	has @.argument;
 	method compile( ) {
 		sub ( $stashref ) {
 			if @.filter-to-run {
@@ -14,23 +12,17 @@ class Template::Toolkit::Internal::Directive::Get
 				}
 				return $temp
 			}
-			if $stashref.{$.value-to-fetch} {
-				if $stashref.{$.value-to-fetch} ~~ Routine {
-					$stashref.{$.value-to-fetch}.(|@.argument) // ''
-				}
-				else {
-					$stashref.{$.value-to-fetch} // ''
-				}
-			}
-			else {
-				''
-			}
 		}
 	}
 
 	method fold(
 		Template::Toolkit::Internal @stack,
 		Template::Toolkit::Internal @result ) {
-		@result.append( self )
+		if @stack {
+			@stack[*-1]._add-tag( self )
+		}
+		else {
+			@result.append( self )
+		}
 	}
 }

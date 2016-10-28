@@ -74,6 +74,9 @@ class Template::Toolkit::Actions {
 						$_<Positive-Integer>
 					)
 			}
+			else {
+die "Can't happen"
+			}
 			@closure.append(
 				$closure
 			)
@@ -135,10 +138,17 @@ class Template::Toolkit::Actions {
 		)
 	}
 	method Directive-Foreach( $/ ) {
-		make Template::Toolkit::Internal::Directive::Foreach.new(
-			:topic( $/<Variable>.ast ),
-			:iterator( $/<Expression>.ast )
-		)
+		if $/<Variable> {
+			make Template::Toolkit::Internal::Directive::Foreach.new(
+				:topic( ~$/<Variable><Variable-Start><Function-Name> ),
+				:iterator( $/<Expression>.ast )
+			)
+		}
+		else {
+			make Template::Toolkit::Internal::Directive::Foreach.new(
+				:iterator( $/<Expression>.ast )
+			)
+		}
 	}
 	method Directive-If( $/ ) {
 		my $clause = Template::Toolkit::Internal::Clause.new(
